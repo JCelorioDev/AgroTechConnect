@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet, CommonModule, RouterLink],
+  imports: [RouterOutlet, CommonModule, RouterLink, ToggleSwitch],
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
@@ -37,4 +38,16 @@ export class SidebarComponent {
   closeSidebar() {
     if (this.isMobile) this.isOpen = false;
   }
+
+  // Para cambiar al modo dark
+
+  toggleDarkMode() {
+    const element = document.querySelector('html');
+    if (element !== null) {
+      element.classList.toggle('custom-dark-mode');
+    }
+  }
+
+  
+  
 }
