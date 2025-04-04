@@ -1,2 +1,26 @@
-/* You can add global styles to this file, and also import other style files */
+html.custom-dark-mode {
+  --background-color: #25282E !important;
+  --text-color: #E0E0E0 !important;
+  --button-bg: #2FF77B !important;
+  --button-text: #FFFFFF !important;
+  --card-bg: #2D3035 !important;
+}
 
+html.custom-dark-mode body {
+  background-color: var(--background-color) !important;
+  color: var(--text-color) !important;
+}
+
+
+html.custom-dark-mode button,
+html.custom-dark-mode .p-button {
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+  border: 1px solid #555 !important;
+}
+
+
+html.custom-dark-mode .p-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
