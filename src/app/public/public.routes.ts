@@ -1,6 +1,9 @@
 import { Routes } from "@angular/router";
 import { PublicationComponent } from "./pages/publication/publication.component";
 import { SidebarComponent } from "../shared/components/sidebar/sidebar.component";
+import { privateRoutes } from "../private/private.routes";
+import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
+
 
 export default [
   {
@@ -15,7 +18,12 @@ export default [
       {
         path: 'publicaciones',
         component: PublicationComponent
-      }
+      },
+      {
+        path: 'preguntas',
+        component: PreguntasComponent
+      },
+      ...privateRoutes
     ]
   }
 ] as Routes

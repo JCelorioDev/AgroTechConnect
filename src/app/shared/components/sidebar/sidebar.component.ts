@@ -14,10 +14,10 @@ export class SidebarComponent {
   isMobile = false;
 
   menuItems = [
-    { label: 'Inicio', route: '/inicio', icon: 'pi-home' },
-    { label: 'Productos', route: '/productos', icon: 'pi-box' },
-    { label: 'Pedidos', route: '/pedidos', icon: 'pi-shopping-cart' },
-    { label: 'Perfil', route: '/perfil', icon: 'pi-user' }
+    { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-home' },
+    { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-box' },
+    { label: 'Preguntas por contestar', route: 'preguntas', icon: 'pi-shopping-cart' },
+    { label: 'Logros', route: 'logros', icon: 'pi-user' }
   ];
 
   constructor() {
