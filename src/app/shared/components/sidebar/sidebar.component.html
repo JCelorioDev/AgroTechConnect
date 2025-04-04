@@ -4,6 +4,12 @@
       <i class="pi" [ngClass]="isOpen ? 'pi-angle-left' : 'pi-angle-right'"></i>
     </button>
 
+    <div class="logo-container">
+      <img src="logo/web/logo_agrotechconnectlblack.png" alt="AgroTech Connect Logo" />
+    </div>
+    
+    
+
     <ul>
       <li *ngFor="let item of menuItems">
         <a [routerLink]="item.route" (click)="closeSidebar()">

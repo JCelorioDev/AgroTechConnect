@@ -12,6 +12,7 @@
   left: 0;
   top: 0;
   padding: 20px;
+  font-family: 'Orbitron Variable', sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -21,6 +22,156 @@
   z-index: 1000;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 5px;
+    transition: all 0.3s ease-in-out;
+
+    img {
+      max-width: 160px;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
+    }
+  }
+  
+  
+  // Ajustes para pantallas más grandes
+  @media (max-width: 768px) {
+    .logo-container img {
+      max-width: 120px;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    .logo-container img {
+      max-width: 180px;
+    }
+  }
+  
+  @media (min-width: 3840px) {
+    .logo-container img {
+      max-width: 200px;
+    }
+  }
+  
+  
+  p-avatar {
+    width: 100%;
+    max-width: 140px; // Aumenta el tamaño del logo
+    height: auto;
+  
+    img {
+      width: 100% !important;
+      height: auto !important;
+      object-fit: contain;
+    }
+  }
+  
+  // Reduce aún más el espacio en la sidebar
+  .sidebar {
+    padding-top: 5px; // Pega más el logo arriba
+  }
+  
+  // Ajustes para pantallas más grandes
+  @media (max-width: 768px) {
+    p-avatar {
+      max-width: 110px;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    p-avatar {
+      max-width: 160px;
+    }
+  }
+  
+  @media (min-width: 3840px) {
+    p-avatar {
+      max-width: 180px;
+    }
+  }
+  
+  
+  p-avatar {
+    width: 100%;
+    max-width: 110px;
+    height: auto;
+    margin-bottom: 5px; // Lo acerca más a los elementos de abajo
+  
+    img {
+      width: 100% !important;
+      height: auto !important;
+      object-fit: contain;
+    }
+  }
+  
+  // Pega más el logo arriba en móviles y reduce espacio
+  .sidebar {
+    padding-top: 10px; // Reduce espacio superior
+  }
+  
+  // Ajustes por tamaño de pantalla
+  @media (max-width: 768px) {
+    p-avatar {
+      max-width: 90px;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    p-avatar {
+      max-width: 130px;
+    }
+  }
+  
+  @media (min-width: 3840px) {
+    p-avatar {
+      max-width: 150px;
+    }
+  }
+  
+  
+  p-avatar {
+    width: 100%;
+    max-width: 120px;
+    height: auto;
+  
+    img {
+      width: 100% !important;
+      height: auto !important;
+      object-fit: contain;
+    }
+  }
+  
+  // Ajustes por tamaño de pantalla
+  @media (max-width: 768px) {
+    p-avatar {
+      max-width: 100px;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    p-avatar {
+      max-width: 140px;
+    }
+  }
+  
+  @media (min-width: 3840px) {
+    p-avatar {
+      max-width: 160px;
+    }
+  }
+  
 
   &.open {
     transform: translateX(0);
@@ -206,3 +357,4 @@ html.custom-dark-mode {
 body {
   transition: background 0.3s ease;
 }
+

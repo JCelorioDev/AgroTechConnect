@@ -4,11 +4,12 @@ import { RouterLink, RouterOutlet } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { AvatarModule } from 'primeng/avatar';
 
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet,CommonModule, RouterLink, ToggleSwitch, FormsModule, ButtonModule],
+  imports: [RouterOutlet,CommonModule, RouterLink, ToggleSwitch, FormsModule, ButtonModule, AvatarModule],
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
@@ -22,7 +23,7 @@ export class SidebarComponent {
     { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-book' },
     { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-users' },
     { label: 'Preguntas sin resolver', route: 'preguntas', icon: 'pi-question' },
-    { label: 'Mis preguntas', route: 'preguntas', icon: 'pi-question' },
+    { label: 'Mis preguntas', route: 'preguntas', icon: 'pi-receipt' },
     { label: 'Logros', route: 'logros', icon: 'pi-trophy' }
   ];
 
