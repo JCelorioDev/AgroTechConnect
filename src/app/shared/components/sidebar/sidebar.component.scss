@@ -6,7 +6,7 @@
 .sidebar {
   width: 260px;
   height: 100vh;
-  background: linear-gradient(135deg, #1e1e1e, #292b2c);
+  background: linear-gradient(135deg, #222425, #23262e);
   color: #ffffff;
   position: fixed;
   left: 0;
@@ -14,6 +14,8 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
@@ -31,13 +33,16 @@
   @media (max-width: 768px) {
     transform: translateX(-100%);
     width: 220px;
+    padding-top: 60px;
+    align-items: flex-start;
   }
 }
 
 .content {
-  margin-left: 260px; /* Espacio para la barra lateral en desktop */
+  margin-left: 260px;
   flex: 1;
   padding: 20px;
+  padding-top: 70px;
   transition: margin-left 0.3s ease-in-out;
 
   @media (max-width: 768px) {
@@ -47,15 +52,15 @@
 
 .sidebar-toggle {
   position: absolute;
-  top: 10px; /* Alineado con la esquina superior */
-  left: 100%; /* Asegura que esté justo en la punta del sidebar */
+  top: 10px;
+  left: 100%;
   transform: translateX(-50%);
   background: linear-gradient(135deg, #198754, #157347);
   color: white;
   border: none;
   padding: 12px;
   cursor: pointer;
-  display: none; /* Oculto en desktop */
+  display: none;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
@@ -63,8 +68,7 @@
   height: 40px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
   transition: background 0.3s, transform 0.2s;
-  z-index: 1100; /* Asegura que siempre esté por encima del contenido */
-  background: rgba(25, 135, 84, 0.9); /* Fondo semitransparente para mejor visibilidad */
+  z-index: 1100;
 
   &:hover {
     background: linear-gradient(135deg, #157347, #115e38);
@@ -72,35 +76,34 @@
   }
 
   @media (max-width: 768px) {
-    display: flex; /* Visible solo en móviles */
-    left: calc(100% + 5px); /* Ligeramente fuera del sidebar para visibilidad */
-    top: 10px; /* Mantiene la alineación superior */
+    display: flex;
+    left: calc(100% + 5px);
+    top: 10px;
   }
 }
 
-/* Mueve el botón aún más afuera cuando el sidebar está cerrado */
 .sidebar.closed ~ .sidebar-toggle {
-  left: calc(100% + 35px); /* Lo empuja aún más afuera para evitar que se tape */
+  left: calc(100% + 35px);
 }
-
-/* Agrega margen al contenido para evitar que quede tapado */
-.content {
-  padding-top: 70px; /* Ajusta para mayor separación */
-}
-
 
 .sidebar ul {
   list-style: none;
   padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
 }
 
 .sidebar li {
-  padding: 15px;
+  padding: 12px;
   display: flex;
   align-items: center;
   border-radius: 8px;
   transition: background 0.3s, transform 0.2s;
   font-size: 1rem;
+  width: 100%;
 
   &:hover {
     background: rgba(255, 255, 255, 0.1);
@@ -118,26 +121,88 @@
   width: 100%;
 }
 
+.sidebar label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 10px 0;
+  width: 100%;
+  text-align: center;
+}
+
+
+.add-question-btn {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+  width: 100%;
+
+  ::ng-deep .p-button {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start; 
+    background: #198754;
+    border: none;
+    font-weight: bold;
+    padding: 0.75rem 1.25rem;
+    font-size: 1rem;
+    white-space: nowrap; 
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #157347;
+      transform: scale(1.03);
+    }
+
+    .p-button-icon {
+      margin-right: 0.5rem;
+    }
+  }
+}
+
+.p-toggleswitch {
+  transform: scale(1.1);
+}
+
 .p-icon {
   font-size: 1.5rem;
   color: #17a2b8;
 }
 
 @media (max-width: 768px) {
-  .sidebar {
-    padding-top: 60px;
-  }
-
   .sidebar a {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
   }
 
   .sidebar li {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .p-icon {
     font-size: 2rem;
   }
+
+  .add-question-btn {
+    justify-content: flex-start;
+
+    ::ng-deep .p-button {
+      width: 100%;
+    }
+  }
+}
+
+/* Modo oscuro */
+html.custom-dark-mode {
+  background: #121212 !important;
+  color: #ffffff;
+}
+
+body {
+  transition: background 0.3s ease;
 }

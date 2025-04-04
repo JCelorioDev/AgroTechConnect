@@ -2,10 +2,13 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
+import { FormsModule } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet, CommonModule, RouterLink, ToggleSwitch],
+  imports: [RouterOutlet,CommonModule, RouterLink, ToggleSwitch, FormsModule, ButtonModule],
   standalone: true,
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss'
@@ -13,6 +16,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 export class SidebarComponent {
   isOpen = true;
   isMobile = false;
+  checked: boolean = true;
 
   menuItems = [
     { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-home' },
@@ -20,6 +24,10 @@ export class SidebarComponent {
     { label: 'Preguntas por contestar', route: 'preguntas', icon: 'pi-shopping-cart' },
     { label: 'Logros', route: 'logros', icon: 'pi-user' }
   ];
+
+  ngOnInit():void{
+    this.toggleDarkMode();
+  }
 
   constructor() {
     this.checkViewport();
@@ -47,6 +55,8 @@ export class SidebarComponent {
       element.classList.toggle('custom-dark-mode');
     }
   }
+
+  
 
   
   

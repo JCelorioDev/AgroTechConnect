@@ -11,7 +11,12 @@
           <span>{{ item.label }}</span>
         </a>
       </li>
-      <label >Modo Dark: <p-toggleswitch (click)="toggleDarkMode()" /></label> 
+      <li>
+        <label >Modo Oscuro <p-toggleswitch [(ngModel)]="checked" (click)="toggleDarkMode()" /></label> 
+      </li>
+      <div class="add-question-btn">
+        <p-button label="Añadir pregunta" icon="pi pi-question" />
+      </div>
     </ul>
   </div>
 
