@@ -19,10 +19,11 @@ export class SidebarComponent {
   checked: boolean = true;
 
   menuItems = [
-    { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-home' },
-    { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-box' },
-    { label: 'Preguntas por contestar', route: 'preguntas', icon: 'pi-shopping-cart' },
-    { label: 'Logros', route: 'logros', icon: 'pi-user' }
+    { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-book' },
+    { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-users' },
+    { label: 'Preguntas sin resolver', route: 'preguntas', icon: 'pi-question' },
+    { label: 'Mis preguntas', route: 'preguntas', icon: 'pi-question' },
+    { label: 'Logros', route: 'logros', icon: 'pi-trophy' }
   ];
 
   ngOnInit():void{
