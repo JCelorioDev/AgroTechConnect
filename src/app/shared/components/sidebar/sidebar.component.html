@@ -1,2 +1,20 @@
-<p>sidebar works!</p>
-<router-outlet></router-outlet>
+<div class="app-container">
+  <div class="sidebar" [class.open]="isOpen" [class.closed]="!isOpen && isMobile">
+    <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <i class="pi" [ngClass]="isOpen ? 'pi-angle-left' : 'pi-angle-right'"></i>
+    </button>
+
+    <ul>
+      <li *ngFor="let item of menuItems">
+        <a [routerLink]="item.route" (click)="closeSidebar()">
+          <i class="pi pi-fw" [ngClass]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

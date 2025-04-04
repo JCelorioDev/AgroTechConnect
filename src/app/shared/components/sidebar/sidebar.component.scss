@@ -1,0 +1,134 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e1e1e, #292b2c);
+  color: #ffffff;
+  position: fixed;
+  left: 0;
+  top: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  &.closed {
+    transform: translateX(-100%);
+  }
+
+  @media (max-width: 768px) {
+    transform: translateX(-100%);
+    width: 220px;
+  }
+}
+
+.content {
+  margin-left: 260px; /* Espacio para la barra lateral en desktop */
+  flex: 1;
+  padding: 20px;
+  transition: margin-left 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #198754, #157347);
+  color: white;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, transform 0.2s;
+
+  &:hover {
+    background: linear-gradient(135deg, #157347, #115e38);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  @media (min-width: 769px) {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    left: auto;
+    right: -45px;
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+  font-size: 1rem;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+  }
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-weight: 500;
+  width: 100%;
+}
+
+.p-icon {
+  font-size: 1.5rem;
+  color: #17a2b8;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    padding-top: 60px;
+  }
+
+  .sidebar a {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .sidebar li {
+    justify-content: center;
+  }
+
+  .p-icon {
+    font-size: 2rem;
+  }
+}
