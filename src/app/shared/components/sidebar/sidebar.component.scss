@@ -11,244 +11,57 @@
   position: fixed;
   left: 0;
   top: 0;
-  padding: 20px;
+  padding: 10px 20px; /* Reducido para subir el contenido */
   font-family: 'Orbitron Variable', sans-serif;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start; /* Mantiene el contenido pegado arriba */
   align-items: center;
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease-in-out;
   z-index: 1000;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
-
-  .logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    padding: 0;
-    margin-bottom: 5px;
-    transition: all 0.3s ease-in-out;
-
-    img {
-      max-width: 160px;
-      height: auto;
-      object-fit: contain;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-      &:hover {
-        transform: scale(1.05);
-        filter: brightness(1.1);
-      }
-    }
-  }
-  
-  
-  // Ajustes para pantallas más grandes
-  @media (max-width: 768px) {
-    .logo-container img {
-      max-width: 120px;
-    }
-  }
-  
-  @media (min-width: 1920px) {
-    .logo-container img {
-      max-width: 180px;
-    }
-  }
-  
-  @media (min-width: 3840px) {
-    .logo-container img {
-      max-width: 200px;
-    }
-  }
-  
-  
-  p-avatar {
-    width: 100%;
-    max-width: 140px; // Aumenta el tamaño del logo
-    height: auto;
-  
-    img {
-      width: 100% !important;
-      height: auto !important;
-      object-fit: contain;
-    }
-  }
-  
-  // Reduce aún más el espacio en la sidebar
-  .sidebar {
-    padding-top: 5px; // Pega más el logo arriba
-  }
-  
-  // Ajustes para pantallas más grandes
-  @media (max-width: 768px) {
-    p-avatar {
-      max-width: 110px;
-    }
-  }
-  
-  @media (min-width: 1920px) {
-    p-avatar {
-      max-width: 160px;
-    }
-  }
-  
-  @media (min-width: 3840px) {
-    p-avatar {
-      max-width: 180px;
-    }
-  }
-  
-  
-  p-avatar {
-    width: 100%;
-    max-width: 110px;
-    height: auto;
-    margin-bottom: 5px; // Lo acerca más a los elementos de abajo
-  
-    img {
-      width: 100% !important;
-      height: auto !important;
-      object-fit: contain;
-    }
-  }
-  
-  // Pega más el logo arriba en móviles y reduce espacio
-  .sidebar {
-    padding-top: 10px; // Reduce espacio superior
-  }
-  
-  // Ajustes por tamaño de pantalla
-  @media (max-width: 768px) {
-    p-avatar {
-      max-width: 90px;
-    }
-  }
-  
-  @media (min-width: 1920px) {
-    p-avatar {
-      max-width: 130px;
-    }
-  }
-  
-  @media (min-width: 3840px) {
-    p-avatar {
-      max-width: 150px;
-    }
-  }
-  
-  
-  p-avatar {
-    width: 100%;
-    max-width: 120px;
-    height: auto;
-  
-    img {
-      width: 100% !important;
-      height: auto !important;
-      object-fit: contain;
-    }
-  }
-  
-  // Ajustes por tamaño de pantalla
-  @media (max-width: 768px) {
-    p-avatar {
-      max-width: 100px;
-    }
-  }
-  
-  @media (min-width: 1920px) {
-    p-avatar {
-      max-width: 140px;
-    }
-  }
-  
-  @media (min-width: 3840px) {
-    p-avatar {
-      max-width: 160px;
-    }
-  }
-  
-
-  &.open {
-    transform: translateX(0);
-  }
-
-  &.closed {
-    transform: translateX(-100%);
-  }
-
-  @media (max-width: 768px) {
-    transform: translateX(-100%);
-    width: 220px;
-    padding-top: 60px;
-    align-items: flex-start;
-  }
 }
 
-.content {
-  margin-left: 260px;
-  flex: 1;
-  padding: 20px;
-  padding-top: 70px;
-  transition: margin-left 0.3s ease-in-out;
-
-  @media (max-width: 768px) {
-    margin-left: 0;
-  }
+.sidebar.closed {
+  transform: translateX(-100%); /* Hace que el sidebar se desplace fuera de la pantalla cuando se cierra */
 }
 
-.sidebar-toggle {
-  position: absolute;
-  top: 10px;
-  left: 100%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #198754, #157347);
-  color: white;
-  border: none;
-  padding: 12px;
-  cursor: pointer;
-  display: none;
-  align-items: center;
+.logo-container {
+  width: 100%;
+  display: flex;
   justify-content: center;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  transition: background 0.3s, transform 0.2s;
-  z-index: 1100;
+  padding: 0;
+  margin-bottom: 5px; /* Reduce el espacio entre logo y opciones */
+  
+  img {
+    max-width: 160px;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 
-  &:hover {
-    background: linear-gradient(135deg, #157347, #115e38);
-    transform: translateX(-50%) scale(1.1);
+    &:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
   }
-
-  @media (max-width: 768px) {
-    display: flex;
-    left: calc(100% + 5px);
-    top: 10px;
-  }
-}
-
-.sidebar.closed ~ .sidebar-toggle {
-  left: calc(100% + 35px);
 }
 
 .sidebar ul {
   list-style: none;
   padding: 0;
-  width: 100%;
+  margin-top: 5px; /* Mantiene las opciones más cerca del logo */
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
+  justify-content: flex-start;
+  gap: 8px; /* Reduce espacio entre opciones */
+  width: 100%;
+  flex: 1; /* Ajusta el crecimiento automático */
 }
 
 .sidebar li {
-  padding: 12px;
+  padding: 8px;
   display: flex;
   align-items: center;
   border-radius: 8px;
@@ -272,6 +85,34 @@
   width: 100%;
 }
 
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  margin: 5px 0; /* Ajustado para no empujar las opciones */
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: "";
+  flex-grow: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 10px;
+}
+
+.section-divider span {
+  font-size: 0.75rem;
+  color: #aaa;
+  text-transform: uppercase;
+  background: #23262e;
+  padding: 0 10px;
+  z-index: 1;
+}
+
+/* Modo Oscuro */
 .sidebar label {
   display: flex;
   align-items: center;
@@ -285,24 +126,27 @@
   text-align: center;
 }
 
+.p-toggleswitch {
+  transform: scale(1.1);
+}
 
+/* Botón Añadir Pregunta */
 .add-question-btn {
-  margin-top: auto;
+  margin-top: auto; /* Se mantiene abajo */
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  padding-top: 10px;
   width: 100%;
 
   ::ng-deep .p-button {
     width: 100%;
     display: flex;
-    justify-content: flex-start; 
+    justify-content: flex-start;
     background: #198754;
     border: none;
     font-weight: bold;
     padding: 0.75rem 1.25rem;
     font-size: 1rem;
-    white-space: nowrap; 
     transition: all 0.3s ease;
 
     &:hover {
@@ -316,45 +160,89 @@
   }
 }
 
-.p-toggleswitch {
-  transform: scale(1.1);
-}
-
-.p-icon {
-  font-size: 1.5rem;
-  color: #17a2b8;
-}
-
+/* Sidebar Responsive */
 @media (max-width: 768px) {
-  .sidebar a {
-    flex-direction: row;
-    text-align: left;
+  .logo-container img {
+    max-width: 120px;
   }
 
-  .sidebar li {
-    justify-content: flex-start;
+  .sidebar ul {
+    gap: 6px; /* Menos espacio en móviles */
   }
 
-  .p-icon {
-    font-size: 2rem;
-  }
-
-  .add-question-btn {
-    justify-content: flex-start;
-
-    ::ng-deep .p-button {
-      width: 100%;
-    }
+  /* Solo mostrar el botón de toggle en pantallas móviles */
+  .sidebar-toggle {
+    display: flex; /* Mostrar el botón */
   }
 }
 
-/* Modo oscuro */
-html.custom-dark-mode {
-  background: #121212 !important;
-  color: #ffffff;
+@media (min-width: 769px) {
+  /* Ocultar el botón de toggle en pantallas más grandes (desktop) */
+  .sidebar-toggle {
+    display: none;
+  }
 }
 
-body {
-  transition: background 0.3s ease;
+@media (min-width: 1920px) {
+  .logo-container img {
+    max-width: 180px;
+  }
 }
 
+@media (min-width: 3840px) {
+  .logo-container img {
+    max-width: 200px;
+  }
+}
+
+.content {
+  margin-left: 260px;
+  flex: 1;
+  padding: 20px;
+  padding-top: 70px;
+  transition: margin-left 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+  }
+}
+
+/* Sidebar Toggle */
+.sidebar-toggle {
+  position: absolute;
+  top: 10px;
+  left: 100%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #198754, #157347);
+  color: white;
+  border: none;
+  padding: 12px;
+  cursor: pointer;
+  display: none; /* Inicialmente oculto */
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, transform 0.2s;
+  z-index: 1100;
+
+  &:hover {
+    background: linear-gradient(135deg, #157347, #115e38);
+    transform: translateX(-50%) scale(1.1);
+  }
+
+  @media (max-width: 768px) {
+    display: flex; /* Mostrar el botón solo en móviles */
+    left: calc(100% + 5px);
+    top: 10px;
+  }
+}
+
+/* Mostrar el botón de toggle solo cuando el sidebar está cerrado */
+.sidebar.closed ~ .sidebar-toggle {
+  display: block;
+}
+
+/* Sidebar Toggle Action - Añadir clase "closed" en JS para manejar la apertura y cierre */
