@@ -5,6 +5,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
+import { MenubarComponent } from '../menubar/menubar.component';
 
 @Component({
   selector: 'app-sidebar',
@@ -16,7 +17,8 @@ import { AvatarModule } from 'primeng/avatar';
     ToggleSwitch,
     FormsModule,
     ButtonModule,
-    AvatarModule
+    AvatarModule,
+    MenubarComponent
   ],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']

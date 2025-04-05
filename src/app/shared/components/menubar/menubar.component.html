@@ -1,0 +1,22 @@
+<div class="menubar-container">
+  <div class="search-wrapper">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        placeholder="Busca una pregunta..."
+        [(ngModel)]="searchQuery"
+      />
+    </span>
+  </div>
+
+  <p-button class="menubar-container__buttonLogin" label="Login" severity="success" />
+
+  <button
+    pButton
+    icon="pi pi-ellipsis-h"
+    class="menu-icon"
+    type="button"
+  ></button>
+</div>
