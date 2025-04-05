@@ -1,23 +1,31 @@
-import { CommonModule } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, HostListener, Inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 
-
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterOutlet,CommonModule, RouterLink, ToggleSwitch, FormsModule, ButtonModule, AvatarModule],
   standalone: true,
+  imports: [
+    RouterOutlet,
+    CommonModule,
+    RouterLink,
+    ToggleSwitch,
+    FormsModule,
+    ButtonModule,
+    AvatarModule
+  ],
   templateUrl: './sidebar.component.html',
-  styleUrl: './sidebar.component.scss'
+  styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
   isOpen = true;
   isMobile = false;
   checked: boolean = true;
+  private resizeListener: (() => void) | null = null; // Corrección aquí
 
   menuItems = [
     { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-book' },
@@ -27,18 +35,30 @@ export class SidebarComponent {
     { label: 'Logros', route: 'logros', icon: 'pi-trophy' }
   ];
 
-  ngOnInit():void{
-    this.toggleDarkMode();
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.checkViewport();
+      this.toggleDarkMode();
+      
+      // Usamos arrow function para mantener el contexto de 'this'
+      this.resizeListener = () => this.checkViewport();
+      window.addEventListener('resize', this.resizeListener);
+    }
   }
 
-  constructor() {
-    this.checkViewport();
+  ngOnDestroy(): void {
+    if (isPlatformBrowser(this.platformId) && this.resizeListener) {
+      window.removeEventListener('resize', this.resizeListener);
+    }
   }
 
-  @HostListener('window:resize')
   checkViewport() {
-    this.isMobile = window.innerWidth <= 768;
-    this.isOpen = !this.isMobile;
+    if (isPlatformBrowser(this.platformId)) {
+      this.isMobile = window.innerWidth <= 768;
+      this.isOpen = !this.isMobile;
+    }
   }
 
   toggleSidebar() {
@@ -46,20 +66,17 @@ export class SidebarComponent {
   }
 
   closeSidebar() {
-    if (this.isMobile) this.isOpen = false;
-  }
-
-  // Para cambiar al modo dark
-
-  toggleDarkMode() {
-    const element = document.querySelector('html');
-    if (element !== null) {
-      element.classList.toggle('custom-dark-mode');
+    if (this.isMobile) {
+      this.isOpen = false;
     }
   }
 
-  
-
-  
-  
+  toggleDarkMode() {
+    if (isPlatformBrowser(this.platformId)) {
+      const element = document.querySelector('html');
+      if (element !== null) {
+        element.classList.toggle('custom-dark-mode');
+      }
+    }
+  }
 }

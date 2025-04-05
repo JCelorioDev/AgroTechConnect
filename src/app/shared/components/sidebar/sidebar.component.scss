@@ -212,8 +212,8 @@
   position: absolute;
   top: 10px;
   left: 100%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #198754, #157347);
+  transform: translateX(-60%);
+  background: linear-gradient(135deg, #25282E, #25282E);
   color: white;
   border: none;
   padding: 12px;
@@ -229,7 +229,7 @@
   z-index: 1100;
 
   &:hover {
-    background: linear-gradient(135deg, #157347, #115e38);
+    background: linear-gradient(135deg, #22262e, #25282E);
     transform: translateX(-50%) scale(1.1);
   }
 
