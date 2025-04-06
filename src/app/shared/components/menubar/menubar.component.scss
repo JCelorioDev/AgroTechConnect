@@ -77,6 +77,14 @@ $sidebar-width: 250px;
   }
 }
 
+@media (min-width: 800px){
+  .menubar-container__buttonLogin, .menu-icon{
+    position: relative;
+    left: 1rem;
+    margin-left: 1rem;
+  }
+}
+
 /* Responsive tablets */
 @media (max-width: 1024px) {
   $sidebar-width: 70px;
@@ -108,7 +116,7 @@ $sidebar-width: 250px;
 
     .p-input-icon-left {
       width: 100%;
-      max-width: 400px; // Tamaño máximo del input
+      max-width: 400px;
 
       input {
         padding: 10px 10px 10px 36px;
@@ -124,11 +132,11 @@ $sidebar-width: 250px;
 
   @media (max-width: 768px) {
     .search-wrapper {
-      justify-content: center; // 👉 En móvil se centra
+      justify-content: center;
       padding-right: 0;
 
       .p-input-icon-left {
-        max-width: 220px; // Más pequeño en pantallas chicas
+        max-width: 220px;
       }
     }
   }
@@ -140,4 +148,68 @@ $sidebar-width: 250px;
   }
 }
 
+:host ::ng-deep {
+  .p-dialog {
+      background: #25282E;
+      border: none;
+
+      .organic-dialog {
+          font-family: 'Arial', sans-serif;
+
+          .organic-title {
+              font-size: 1rem;
+              font-weight: 400;
+              color: #f1f1f1;
+              padding-left: .4rem;
+              letter-spacing: 0.05rem;
+              margin-bottom: 0;
+          }
+
+          .organic-subtext {
+              font-size: 1rem;
+              font-weight: 100;
+              color: #4CAF50;
+              font-style: italic;
+              margin-top: 0.5rem !important;
+          }
+
+          .organic-dialog__text {
+            background-color: #6a6a6a27;
+            cursor: pointer;
+            height: 2.5rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+            margin-bottom: 0.5rem;
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            .organic-title, .organic-subtext {
+              margin: 0;
+              line-height: 1;
+              position: relative;
+              top: -3px;
+            }
+
+            .organic-dialog__text__svgunique{
+              position: relative;
+              top: .4rem;
+            }
+          }
+      }
+
+      .p-dialog-header, .p-dialog-footer {
+          display: none;
+      }
+  }
+
+  .p-dialog-mask {
+      backdrop-filter: blur(2px);
+  }
+}
 
