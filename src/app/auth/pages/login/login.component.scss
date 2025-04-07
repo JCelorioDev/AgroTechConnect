@@ -1,0 +1,189 @@
+:host ::ng-deep {
+  .p-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: auto;
+
+    .login-modal {
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .logo-container {
+        margin-bottom: 1rem;
+
+        .logo {
+          width: 120px;
+        }
+      }
+
+      .login-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .login-subtext {
+        font-size: 0.8rem;
+        text-align: center;
+        color: #bbb;
+        margin-bottom: 1.5rem;
+
+        a {
+          color: #4caf50;
+          text-decoration: none;
+        }
+      }
+
+      .social-btn {
+        width: 100%;
+        margin-bottom: 0.8rem;
+        justify-content: start;
+        padding-left: 1rem;
+        font-weight: 500;
+        background-color: #2f3335 !important;
+        border: #2FF77B solid 1px !important;
+
+        &.google {
+          border: 1px solid #4caf50;
+          color: #fff;
+          background: transparent;
+
+          .pi {
+            color: #db4437;
+            margin-right: 0.5rem;
+          }
+        }
+
+        &.facebook {
+          border: 1px solid #4caf50;
+          color: #fff;
+          background: transparent;
+
+          .pi {
+            color: #1877f2;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 1rem 0;
+
+        &::before,
+        &::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #4caf50;
+        }
+
+        .divider-text {
+          margin: 0 1rem;
+          color: #aaa;
+          font-size: 0.85rem;
+        }
+      }
+
+      .input-group {
+        width: 100%;
+        margin-bottom: 1rem;
+
+        .p-float-label input {
+          background-color: transparent;
+          border: 1px solid #4caf50;
+          color: #fff;
+
+          &:focus {
+            border-color: #81c784;
+          }
+        }
+
+        label {
+          color: #bbb;
+        }
+      }
+
+      .login-footer {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+        color: #bbb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        a {
+          color: #4caf50;
+          margin: 0.2rem 0;
+          text-decoration: none;
+        }
+      }
+
+    }
+  }
+}
+
+:host ::ng-deep {
+  .input-group {
+    margin-bottom: 1.2rem;
+
+    .p-float-label {
+      width: 100%;
+
+      input.p-inputtext {
+        width: 100%;
+        padding: 1rem;
+        background-color: transparent;
+        border: 1px solid #4caf50;
+        border-radius: 6px;
+        color: #fff;
+        transition: all 0.3s ease;
+
+        &:focus {
+          border-color: #81c784;
+          box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+      }
+
+      label {
+        color: #bbb;
+        font-size: 0.9rem;
+        left: 1rem;
+        top: -0.6rem;
+        background-color: #1f1f1f; // el color del fondo del modal
+        padding: 0 0.3rem;
+        transition: color 0.3s ease;
+
+        // si quieres que el label cambie de color cuando el input está enfocado
+        input:focus ~ & {
+          color: #4caf50;
+        }
+      }
+    }
+  }
+}
+
+.login-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+
+  /* Scroll personalizado solo aquí */
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}

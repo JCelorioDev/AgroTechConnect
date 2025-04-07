@@ -1,0 +1,46 @@
+<p-dialog (onHide)="onDialogHide()" header="Header" [modal]="true" [position]="'bottom'" [dismissableMask]="true" [(visible)]="visible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+<div class="login-modal">
+
+  <!-- Título -->
+  <h2 class="login-title">Iniciar sesión</h2>
+  <p class="login-subtext">
+    Al continuar, aceptas nuestro <a href="#">Acuerdo del usuario</a> y confirmas que has entendido
+    <a href="#">políticas de seguridad</a>.
+  </p>
+
+  <!-- Botón Google -->
+  <button pButton class="social-btn google" label="Continuar con Google" icon="pi pi-google"></button>
+
+  <!-- Botón Facebook -->
+  <button pButton class="social-btn facebook" label="Continuar con Facebook" icon="pi pi-facebook"></button>
+
+  <!-- Separador -->
+  <div class="divider">
+    <span class="divider-text">o</span>
+  </div>
+
+  <!-- Inputs -->
+  <div class="input-group">
+    <span class="p-float-label">
+      <input id="email" type="text" pInputText />
+      <label for="email">Correo electrónico/Nombre de usuario</label>
+    </span>
+  </div>
+
+  <div class="input-group">
+    <span class="p-float-label">
+      <input id="password" type="password" pInputText />
+      <label for="password">Contraseña</label>
+    </span>
+  </div>
+
+  <p-button label="INGRESAR" />
+
+  <!-- Enlaces -->
+  <div class="login-footer">
+    <a href="#">¿Has olvidado tu contraseña?</a>
+    <a href="#">¿Es tu primera vez?</a>
+  </div>
+</div>
+
+</p-dialog>

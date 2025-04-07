@@ -173,6 +173,14 @@ $sidebar-width: 250px;
               margin-top: 0.5rem !important;
           }
 
+          .organic-text{
+            font-size: 1rem;
+            font-weight: 100;
+            color: #ca2121;
+            font-style: italic;
+            margin-top: 0.5rem !important;
+          }
+
           .organic-dialog__text {
             background-color: #6a6a6a27;
             cursor: pointer;
@@ -189,7 +197,7 @@ $sidebar-width: 250px;
               margin-bottom: 0;
             }
 
-            .organic-title, .organic-subtext {
+            .organic-title, .organic-subtext, .organic-text {
               margin: 0;
               line-height: 1;
               position: relative;

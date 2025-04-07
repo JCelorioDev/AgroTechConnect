@@ -3,6 +3,7 @@ import { PublicationComponent } from "./pages/publication/publication.component"
 import { SidebarComponent } from "../shared/components/sidebar/sidebar.component";
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
+import { LoginComponent } from "../auth/pages/login/login.component";
 
 
 export default [
