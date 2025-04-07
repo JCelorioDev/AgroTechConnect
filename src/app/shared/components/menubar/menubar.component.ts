@@ -24,6 +24,10 @@ export class MenubarComponent {
   private readonly router = inject(Router);
   public isVisibleLogin:boolean = false;
 
+  get getLocalStorageToken():any{
+    return localStorage.getItem('userLogin')
+  }
+
 
 
 
@@ -36,6 +40,12 @@ export class MenubarComponent {
   goLogin(open:any):void{
     this.isVisibleLogin = open;
     console.log(this.isVisibleLogin);
+  }
+
+  // Cerrar sesión
+
+  logout():void{
+    
   }
 
 }
