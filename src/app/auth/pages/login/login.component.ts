@@ -6,10 +6,11 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
+import { RegisterComponent } from "../register/register.component";
 
 @Component({
   selector: 'auth-login',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule, RegisterComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -22,6 +23,8 @@ export class LoginComponent {
   public formLogin!:FormGroup;
   private formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  public isVisibleRegister:boolean = false;
+  
 
   @Output() visibleModal = new EventEmitter<boolean>();
 
@@ -46,6 +49,12 @@ export class LoginComponent {
     this.visibleModal.emit(false);
   }
 
+  // Mostrar el componente del register (solo si no esta autenticado)
+
+  goRegister(open = true):void{
+    this.isVisibleRegister = open;
+  }
+
   // Login (Vía correo electrónico/contraseña)
 
   loginwithEmailandPassword():void{
@@ -65,4 +74,5 @@ export class LoginComponent {
       }
     })
   }
+
 }

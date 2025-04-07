@@ -1,5 +1,7 @@
 @if(isVisibleLogin){
   <auth-login (visibleModal)="goLogin($event)"></auth-login>
+}@else if (isVisibleRegister){
+  <auth-register (visibleModalRegister)="goRegister($event)"></auth-register>
 }
 
 <p-dialog [modal]="true" [(visible)]="visible" [position]="'center'" [style]="{ width: '25rem' }" [dismissableMask]="true"

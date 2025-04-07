@@ -1,0 +1,172 @@
+:host ::ng-deep {
+  .p-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: auto;
+
+
+    .login-modal {
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-height: 90vh;
+      overflow: none;
+
+      // Scroll personalizado
+      &::-webkit-scrollbar {
+        width: 4px;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+      }
+
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+
+      .logo-container {
+        margin-bottom: 1rem;
+
+        .logo {
+          width: 120px;
+        }
+      }
+
+      .login-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+      }
+
+      .login-subtext {
+        font-size: 0.8rem;
+        text-align: center;
+        color: #bbb;
+        margin-bottom: 1.5rem;
+
+        a {
+          color: #4caf50;
+          text-decoration: none;
+        }
+      }
+
+      .divider {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin: 1rem 0;
+
+        &::before,
+        &::after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: #4caf50;
+        }
+
+        .divider-text {
+          margin: 0 1rem;
+          color: #aaa;
+          font-size: 0.85rem;
+        }
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+
+        .input-group {
+          width: 100%;
+          margin-bottom: 1rem;
+
+          .error-message {
+            color: #ebebeb; 
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            line-height: 1.5;
+          }
+          
+          .requirements-list {
+            padding-left: 1.25rem;
+            margin: 0.5rem 0 0 0;
+          }
+          
+          .requirements-list li {
+            margin-bottom: 0.25rem;
+          }
+
+          .p-float-label {
+            width: 100%;
+
+            input.p-inputtext {
+              width: 100%;
+              padding: 1rem;
+              background-color: transparent;
+              border: 1px solid #4caf50;
+              border-radius: 6px;
+              color: #fff;
+              transition: all 0.3s ease;
+
+              &:focus {
+                border-color: #81c784;
+                box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+              }
+            }
+
+            label {
+              color: #bbb;
+              font-size: 0.9rem;
+              left: 1rem;
+              top: -0.6rem;
+              background-color: #1f1f1f;
+              padding: 0 0.3rem;
+              transition: color 0.3s ease;
+
+              input:focus ~ & {
+                color: #4caf50;
+              }
+            }
+          }
+
+          // Mensaje de validación
+          div {
+            color: #ffffff;
+            font-size: 0.75rem;
+            margin-top: 0.3rem;
+            padding-left: 0.2rem;
+          }
+        }
+
+        // Botón INGRESAR centrado
+        p-button {
+          align-self: center;
+          margin-top: 1rem;
+        }
+      }
+
+      .login-footer {
+        font-size: 0.8rem;
+        margin-top: 1rem;
+        color: #bbb;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        a {
+          color: #4caf50;
+          margin: 0.2rem 0;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}
+
+

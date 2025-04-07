@@ -8,12 +8,13 @@ import { Dialog } from 'primeng/dialog';
 import { Router } from '@angular/router';
 import { LoginComponent } from '../../../auth/pages/login/login.component';
 import { AuthService } from '../../../core/services/Auth/auth.service';
+import { RegisterComponent } from '../../../auth/pages/register/register.component';
 
 
 
 @Component({
   selector: 'shared-menubar',
-  imports: [InputTextModule, ButtonModule, TooltipModule, CommonModule, FormsModule, Dialog, LoginComponent],
+  imports: [InputTextModule, ButtonModule, TooltipModule, CommonModule, FormsModule, Dialog, LoginComponent, RegisterComponent],
   standalone: true,
   templateUrl: './menubar.component.html',
   styleUrl: './menubar.component.scss'
@@ -24,6 +25,7 @@ export class MenubarComponent {
   public visible: boolean = false;
   private readonly router = inject(Router);
   public isVisibleLogin:boolean = false;
+  public isVisibleRegister:boolean = false;
   private readonly authService = inject(AuthService);
 
   get getLocalStorageToken():any{
@@ -37,11 +39,16 @@ export class MenubarComponent {
     this.visible = true;
   }
 
-  // Mostrar el componente del login solo si no esta autenticado
+  // Mostrar el componente del login (solo si no esta autenticado)
 
   goLogin(open:any):void{
     this.isVisibleLogin = open;
-    console.log(this.isVisibleLogin);
+  }
+
+  // Mostrar el componente del register (solo si no esta autenticado)
+
+  goRegister(open:any):void{
+    this.isVisibleRegister = open;
   }
 
   // Cerrar sesión
