@@ -5,6 +5,7 @@ import { Dialog } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
+import { AuthService } from '../../../core/services/Auth/auth.service';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class RegisterComponent {
   public formRegister!:FormGroup;
   private formBuilder = inject(FormBuilder);
   @Output() visibleModalRegister = new EventEmitter<boolean>();
+  private readonly authService = inject(AuthService);
 
   constructor(){
     this.formRegister = this.formBuilder.group({
@@ -52,6 +54,17 @@ export class RegisterComponent {
     if (this.formRegister.invalid) {
       this.formRegister.markAllAsTouched(); return ;
     }
+
+    this.authService.registerwithEmailandPassword(this.formRegister.value).subscribe({
+      next: (s) => {
+        this.onDialogHide();
+        localStorage.setItem('tokenVerificationEmail', s.data.token);
+        console.log('Usuario registrado correctamente');
+      },
+      error: (err) => {
+
+      }
+    })
   }
 
 
