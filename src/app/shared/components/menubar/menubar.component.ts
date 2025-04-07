@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
 import { Router } from '@angular/router';
 import { LoginComponent } from '../../../auth/pages/login/login.component';
+import { AuthService } from '../../../core/services/Auth/auth.service';
 
 
 
@@ -23,6 +24,7 @@ export class MenubarComponent {
   public visible: boolean = false;
   private readonly router = inject(Router);
   public isVisibleLogin:boolean = false;
+  private readonly authService = inject(AuthService);
 
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
@@ -45,7 +47,15 @@ export class MenubarComponent {
   // Cerrar sesión
 
   logout():void{
-    
+    this.authService.logout().subscribe({
+      next: (s) => {
+        localStorage.removeItem('userLogin');
+        this.visible = false;
+      },
+      error: (err) => {
+
+      }
+    })
   }
 
 }

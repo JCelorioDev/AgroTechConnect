@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { LoginResponseI } from '../../../auth/models/auth/loginResponseI.interface';
 import { LoginRequestI } from '../../../auth/models/auth/loginRequestI.interface';
 import { environment } from '../../../../environments/environment';
+import { LogoutResponseI } from '../../../auth/models/auth/logoutResponseI.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -25,5 +26,9 @@ export class AuthService {
 
   // Cerrar sesión
 
+  logout():Observable<LogoutResponseI>{
+    let apiBaseUrl = environment.apiBaseUrl;
+    return this.httpClient.post<LogoutResponseI>(`${apiBaseUrl}auth/logout`, null)
+  }
 
 }
