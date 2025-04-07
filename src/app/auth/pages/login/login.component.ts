@@ -7,6 +7,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from "../register/register.component";
+import { LoginSocialNetwork } from '../../services/auth/login-socialnetworks.service';
 
 @Component({
   selector: 'auth-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   public formLogin!:FormGroup;
   private formBuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly loginSocialNetworks = inject(LoginSocialNetwork);
   public isVisibleRegister:boolean = false;
   
 
@@ -74,5 +76,42 @@ export class LoginComponent {
       }
     })
   }
+
+    // Login (Vía Facebook)
+
+    async loginWithFacebook(): Promise<void> {
+      try {
+        const res = await this.loginSocialNetworks.loginWithFacebook();
+        this.onDialogHide();
+        console.log('¡Éxito!', res);
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    }
+  
+    
+    // Login (Vía Facebook)
+
+    async loginWithGoogle(): Promise<void> {
+      try {
+        const response = await this.loginSocialNetworks.loginWithGoogle().toPromise();
+        this.onDialogHide();
+  
+        const firebaseUser = response?.firebaseUser;
+        const backendData = response?.backendData;
+
+        let jsonData = {
+          ...firebaseUser,
+          ...backendData
+        }
+  
+
+        localStorage.setItem('userLogin', JSON.stringify(jsonData));
+
+
+      } catch (err) {
+        console.error('Error en login con Google:', err);
+      }
+    }
 
 }

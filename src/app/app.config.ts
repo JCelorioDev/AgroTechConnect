@@ -7,6 +7,16 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { tokenInterceptor } from './core/interceptors/interceptor.service';
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCYQsMe6DNRnXjEbFZ8cy10K7Bz66Qezl8", 
+  authDomain: "auth-login-ionic.firebaseapp.com",
+  projectId: "auth-login-ionic", 
+};
+
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideClientHydration(withEventReplay()),  providePrimeNG({
@@ -16,5 +26,6 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: false 
         }
     }
-}), provideHttpClient(), provideAnimationsAsync(), provideHttpClient(withInterceptors([tokenInterceptor]))]
+  }), provideHttpClient(), provideAnimationsAsync(), provideHttpClient(withInterceptors([tokenInterceptor])), provideFirebaseApp(() => initializeApp(firebaseConfig)),
+  provideAuth(() => getAuth())]
 };
