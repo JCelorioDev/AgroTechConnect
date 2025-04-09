@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { AuthService } from '../../../core/services/Auth/auth.service';
 
 
 @Component({
@@ -10,12 +11,18 @@ import { ButtonModule } from 'primeng/button';
 })
 export class PublicationComponent {
 
+  public readonly authService = inject(AuthService);
+
 
   constructor() {}
 
 
   prueba(){
     console.log('prueba');
+  }
+
+  ngOnInit():void{
+
   }
 
 

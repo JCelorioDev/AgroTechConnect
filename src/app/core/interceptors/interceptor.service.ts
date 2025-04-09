@@ -19,12 +19,14 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token.token}`);
     const reqClone = req.clone({ headers });
     return next(reqClone);
-  }else{
+  }else if (token.data.token){
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token.data.token}`);
+    const reqClone = req.clone({ headers });
+    return next(reqClone);
+  } else {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token.data.token}`);
     const reqClone = req.clone({ headers });
     return next(reqClone);
   }
 
-
-  return next(req);
 };

@@ -6,6 +6,9 @@ import { from, map, switchMap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoginSocialNetwork {
+
+
+
   constructor(private auth: Auth, private http: HttpClient) {}
 
   async loginWithFacebook() {
@@ -37,4 +40,7 @@ export class LoginSocialNetwork {
       })
     );
   }
+
+
+
 }

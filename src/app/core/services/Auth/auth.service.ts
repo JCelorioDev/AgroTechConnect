@@ -13,6 +13,8 @@ import { RegisterRequestI } from '../../../auth/models/auth/registerRequestI.int
 })
 export class AuthService {
 
+  private isEmailVerified = false;
+
   private readonly httpClient = inject(HttpClient);
   
   constructor() { }
@@ -40,5 +42,18 @@ export class AuthService {
     let apiBaseUrl = environment.apiBaseUrl;
     return this.httpClient.post<LogoutResponseI>(`${apiBaseUrl}auth/logout`, null)
   }
+
+  setEmailVerified(status: boolean) {
+    this.isEmailVerified = status;
+  }
+
+  getEmailVerified(): boolean {
+    return this.isEmailVerified;
+  }
+
+  verificationEmail(id:string, hash:string, expires:string, signature:string){
+    return this.httpClient.get(`${environment.apiBaseUrl}email/verify/${id}/${hash}?expires=${expires}&signature=${signature}`)
+  }
+
 
 }

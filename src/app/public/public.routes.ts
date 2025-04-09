@@ -3,7 +3,7 @@ import { PublicationComponent } from "./pages/publication/publication.component"
 import { SidebarComponent } from "../shared/components/sidebar/sidebar.component";
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
-import { LoginComponent } from "../auth/pages/login/login.component";
+import { VerifyEmailComponent } from "../shared/components/verify-email/verify-email.component";
 
 
 export default [
@@ -23,6 +23,10 @@ export default [
       {
         path: 'preguntas',
         component: PreguntasComponent
+      },
+      {
+        path: 'email/verify',
+        component: VerifyEmailComponent
       },
       ...privateRoutes
     ]
