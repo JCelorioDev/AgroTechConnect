@@ -24,7 +24,7 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
     const reqClone = req.clone({ headers });
     return next(reqClone);
   } else {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token.data.token}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('tokenVerificationEmail')}`);
     const reqClone = req.clone({ headers });
     return next(reqClone);
   }

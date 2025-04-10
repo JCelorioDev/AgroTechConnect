@@ -7,6 +7,8 @@ import { environment } from '../../../../environments/environment';
 import { LogoutResponseI } from '../../../auth/models/auth/logoutResponseI.interface';
 import { RegisterResponseI } from '../../../auth/models/auth/registerResponseI.interface';
 import { RegisterRequestI } from '../../../auth/models/auth/registerRequestI.interface';
+import { ForgotPasswordComponent } from '../../../auth/pages/forgot-password/forgot-password.component';
+import { ForgotPasswordRequestI } from '../../../auth/models/auth/forgotPasswordRequest.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +18,7 @@ export class AuthService {
   private isEmailVerified = false;
 
   private readonly httpClient = inject(HttpClient);
-  
+
   constructor() { }
 
 
@@ -51,8 +53,14 @@ export class AuthService {
     return this.isEmailVerified;
   }
 
-  verificationEmail(id:string, hash:string, expires:string, signature:string){
+  verificationEmail(id:string = '', hash:string = '', expires:string = '', signature:string = ''){
     return this.httpClient.get(`${environment.apiBaseUrl}email/verify/${id}/${hash}?expires=${expires}&signature=${signature}`)
+  }
+
+  // Recuperación de correo electrónico
+
+  forgotPassword(FormForgotPassword:ForgotPasswordRequestI):Observable<ForgotPasswordComponent>{
+    return this.httpClient.post<ForgotPasswordComponent>(`${environment.apiBaseUrl}password/forgot`, FormForgotPassword)
   }
 
 

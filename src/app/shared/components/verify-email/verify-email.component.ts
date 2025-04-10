@@ -15,28 +15,34 @@ export class VerifyEmailComponent {
   private authService = inject(AuthService);
   isVerified = false;
 
-  ngOnInit():void{
-    this.route.queryParams.subscribe(params => {
-      const { id, hash, expires, signature } = params;
-
-      this.authService.verificationEmail(id, hash, expires, signature).subscribe({
-        next: (s) => {
-          setTimeout(() => {
+  ngOnInit(): void {
+    this.route.params.subscribe(params => {
+      const id = params['id'];
+      const hash = params['hash'];
+    
+      this.route.queryParams.subscribe(qParams => {
+        const expires = qParams['expires'];
+        const signature = qParams['signature'];
+    
+        this.authService.verificationEmail(id, hash, expires, signature).subscribe({
+          next: (res) => {
             this.authService.setEmailVerified(true);
             this.isVerified = true;
             this.router.navigate(['/menu/publicaciones'], {
-              queryParams: { verified: true } 
+              queryParams: { verified: true }
             });
-          }, 2000);
-        }, error : (err) => {
+          },
+          error: (err) => {
             this.authService.setEmailVerified(false);
             this.isVerified = false;
             this.router.navigate(['/menu/publicaciones'], {
-              queryParams: { verified: false } 
+              queryParams: { verified: false }
             });
-        }
-      })
-
+          }
+        });
+      });
     });
+
   }
+  
 }

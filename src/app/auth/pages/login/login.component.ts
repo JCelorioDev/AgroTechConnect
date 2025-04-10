@@ -8,10 +8,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from "../register/register.component";
 import { LoginSocialNetwork } from '../../services/auth/login-socialnetworks.service';
+import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 
 @Component({
   selector: 'auth-login',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule, RegisterComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule, RegisterComponent, ForgotPasswordComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -26,9 +27,11 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly loginSocialNetworks = inject(LoginSocialNetwork);
   public isVisibleRegister:boolean = false;
-  
+  public isVisiblePasswordForgot:boolean = false;
+
 
   @Output() visibleModal = new EventEmitter<boolean>();
+
 
   constructor(){
     this.formLogin = this.formBuilder.group({
@@ -56,6 +59,13 @@ export class LoginComponent {
   goRegister(open = true):void{
     this.isVisibleRegister = open;
   }
+
+  // Mostrar el componente del recuperación de contraseña (solo si no est aautenticado)
+
+  goForgotPassword(open = true):void{
+    this.isVisiblePasswordForgot = open;
+  }
+  
 
   // Login (Vía correo electrónico/contraseña)
 
@@ -88,15 +98,15 @@ export class LoginComponent {
         console.error('Error:', err);
       }
     }
-  
-    
+
+
     // Login (Vía Facebook)
 
     async loginWithGoogle(): Promise<void> {
       try {
         const response = await this.loginSocialNetworks.loginWithGoogle().toPromise();
         this.onDialogHide();
-  
+
         const firebaseUser = response?.firebaseUser;
         const backendData = response?.backendData;
 
@@ -104,7 +114,7 @@ export class LoginComponent {
           ...firebaseUser,
           ...backendData
         }
-  
+
 
         localStorage.setItem('userLogin', JSON.stringify(jsonData));
 

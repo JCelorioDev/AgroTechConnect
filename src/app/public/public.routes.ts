@@ -4,6 +4,7 @@ import { SidebarComponent } from "../shared/components/sidebar/sidebar.component
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
 import { VerifyEmailComponent } from "../shared/components/verify-email/verify-email.component";
+import { PasswordRecoveryComponent } from "../auth/pages/password-recovery/password-recovery.component";
 
 
 export default [
@@ -25,8 +26,12 @@ export default [
         component: PreguntasComponent
       },
       {
-        path: 'email/verify',
+        path: 'email/verify/:id/:hash',
         component: VerifyEmailComponent
+      },
+      {
+        path: 'reset-password',
+        component: PasswordRecoveryComponent
       },
       ...privateRoutes
     ]
