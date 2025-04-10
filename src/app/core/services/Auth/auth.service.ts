@@ -16,6 +16,7 @@ import { ForgotPasswordRequestI } from '../../../auth/models/auth/forgotPassword
 export class AuthService {
 
   private isEmailVerified = false;
+  private isVisibleResetPassword = false;
 
   private readonly httpClient = inject(HttpClient);
 
@@ -63,5 +64,18 @@ export class AuthService {
     return this.httpClient.post<ForgotPasswordComponent>(`${environment.apiBaseUrl}password/forgot`, FormForgotPassword)
   }
 
+  // Resetear contraseña
+
+  resetPassword(FormResetPassword:any){
+    return this.httpClient.post(`${environment.apiBaseUrl}password/reset`, FormResetPassword)
+  }
+
+  setstatusPassword(data:boolean):void{
+    this.isVisibleResetPassword = true;
+  }
+
+  get getstatusPassword():boolean{
+    return this.isVisibleResetPassword
+  }
 
 }

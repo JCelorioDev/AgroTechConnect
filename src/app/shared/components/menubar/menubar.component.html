@@ -1,4 +1,4 @@
-@if(isVisibleLogin){
+@if(isVisibleLogin || getstatusVisibleResetPassword){
   <auth-login (visibleModal)="goLogin($event)"></auth-login>
 }@else if (isVisibleRegister){
   <auth-register (visibleModalRegister)="goRegister($event)"></auth-register>

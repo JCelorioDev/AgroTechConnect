@@ -65,4 +65,8 @@ export class MenubarComponent {
     })
   }
 
+  get getstatusVisibleResetPassword():boolean{
+    return this.authService.getstatusPassword
+  }
+
 }
