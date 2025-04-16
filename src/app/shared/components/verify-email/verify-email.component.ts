@@ -10,39 +10,44 @@ import { environment } from '../../../../environments/environment';
   styleUrl: './verify-email.component.scss'
 })
 export class VerifyEmailComponent {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private authService = inject(AuthService);
-  isVerified = false;
+  loading = true;
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const id = params['id'];
-      const hash = params['hash'];
-    
-      this.route.queryParams.subscribe(qParams => {
-        const expires = qParams['expires'];
-        const signature = qParams['signature'];
-    
-        this.authService.verificationEmail(id, hash, expires, signature).subscribe({
-          next: (res) => {
-            this.authService.setEmailVerified(true);
-            this.isVerified = true;
-            this.router.navigate(['/menu/publicaciones'], {
-              queryParams: { verified: true }
-            });
-          },
-          error: (err) => {
-            this.authService.setEmailVerified(false);
-            this.isVerified = false;
-            this.router.navigate(['/menu/publicaciones'], {
-              queryParams: { verified: false }
-            });
-          }
-        });
-      });
-    });
-
+    this.verifyEmail();
   }
-  
+
+  private verifyEmail(): void {
+    // Obtener todos los query parameters
+    const queryParams = this.route.snapshot.queryParams;
+    
+    console.log('Parámetros recibidos:', queryParams); // Para depuración
+
+    const { id, hash, expires, signature } = queryParams;
+
+    if (!id || !hash || !expires || !signature) {
+      console.error('Parámetros faltantes:', { id, hash, expires, signature });
+      this.router.navigate(['/error'], { 
+        queryParams: { error: 'missing_parameters' } 
+      });
+      return;
+    }
+
+    this.authService.verificationEmail(id, hash, expires, signature).subscribe({
+      next: () => {
+        this.router.navigate(['/verification-success']);
+      },
+      error: (err) => {
+        console.error('Error en verificación:', err);
+        this.router.navigate(['/error'], { 
+          queryParams: { error: 'verification_failed' } 
+        });
+      }
+    });
+  }
 }

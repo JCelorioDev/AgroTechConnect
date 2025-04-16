@@ -26,7 +26,7 @@ export default [
         component: PreguntasComponent
       },
       {
-        path: 'email/verify/:id/:hash',
+        path: 'email/verify',
         component: VerifyEmailComponent
       },
       {

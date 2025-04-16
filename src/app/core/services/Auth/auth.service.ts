@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { LoginResponseI } from '../../../auth/models/auth/loginResponseI.interface';
@@ -54,8 +54,30 @@ export class AuthService {
     return this.isEmailVerified;
   }
 
-  verificationEmail(id:string = '', hash:string = '', expires:string = '', signature:string = ''){
-    return this.httpClient.get(`${environment.apiBaseUrl}email/verify/${id}/${hash}?expires=${expires}&signature=${signature}`)
+  verificationEmail(id: string, hash: string, expires: string, signature: string) {
+
+    const token = localStorage.getItem('tokenVerificationEmail');
+    
+
+    const encodedId = encodeURIComponent(id);
+    const encodedHash = encodeURIComponent(hash);
+    const encodedExpires = encodeURIComponent(expires);
+    const encodedSignature = encodeURIComponent(signature);
+  
+    // 4. Configurar los headers con el token
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Cache-Control': 'no-cache'
+
+    });
+
+    console.log(encodedSignature);
+  
+
+    return this.httpClient.get(
+      `${environment.apiBaseUrl}email/verify/${encodedId}/${encodedHash}?expires=${encodedExpires}&signature=${encodedSignature}`,
+      { headers }  // Envía los headers configurados
+    );
   }
 
   // Recuperación de correo electrónico
