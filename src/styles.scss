@@ -22,6 +22,34 @@ html.custom-dark-mode .p-button {
   border: 1px solid #555 !important;
 }
 
+html.custom-dark-mode {
+  .swal2-container {
+    backdrop-filter: blur(2px) brightness(1.2);
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .swal2-popup {
+    background: rgb(32, 33, 43);
+    color: #e2e8f0;
+    font-family: "Orbitron Variable", sans-serif;
+    border-radius: 2%;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
+
+    .swal2-title, .swal2-content {
+      color: inherit;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .swal2-icon--warning {
+      color: #3b362f;
+      border-color: rgba(246, 173, 85, 0.3);
+      background-color: rgba(246, 173, 85, 0.1);
+    }
+  }
+}
 
 ::-webkit-scrollbar {
   width: 6px;

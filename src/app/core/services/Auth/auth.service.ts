@@ -50,20 +50,20 @@ export class AuthService {
     this.isEmailVerified = status;
   }
 
-  getEmailVerified(): boolean {
+  get getEmailVerified(): boolean {
     return this.isEmailVerified;
   }
 
   verificationEmail(id: string, hash: string, expires: string, signature: string) {
 
     const token = localStorage.getItem('tokenVerificationEmail');
-    
+
 
     const encodedId = encodeURIComponent(id);
     const encodedHash = encodeURIComponent(hash);
     const encodedExpires = encodeURIComponent(expires);
     const encodedSignature = encodeURIComponent(signature);
-  
+
     // 4. Configurar los headers con el token
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
@@ -72,7 +72,7 @@ export class AuthService {
     });
 
     console.log(encodedSignature);
-  
+
 
     return this.httpClient.get(
       `${environment.apiBaseUrl}email/verify/${encodedId}/${encodedHash}?expires=${encodedExpires}&signature=${encodedSignature}`,

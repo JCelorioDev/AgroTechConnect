@@ -2,6 +2,8 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { environment } from '../../../../environments/environment';
+import Swal from 'sweetalert2';
+
 
 @Component({
   selector: 'app-verify-email',
@@ -25,28 +27,31 @@ export class VerifyEmailComponent {
   private verifyEmail(): void {
     // Obtener todos los query parameters
     const queryParams = this.route.snapshot.queryParams;
-    
+
     console.log('Parámetros recibidos:', queryParams); // Para depuración
 
     const { id, hash, expires, signature } = queryParams;
 
     if (!id || !hash || !expires || !signature) {
-      console.error('Parámetros faltantes:', { id, hash, expires, signature });
-      this.router.navigate(['/error'], { 
-        queryParams: { error: 'missing_parameters' } 
+      Swal.fire({
+        title: "Aviso",
+        text: "Parámetros faltantes para la verificación de correo.",
+        icon: "warning",
+        customClass: {
+          popup: 'custom-swal-dark'  
+        }
       });
-      return;
+      this.router.navigate(['menu/publicaciones'])
     }
 
     this.authService.verificationEmail(id, hash, expires, signature).subscribe({
       next: () => {
-        this.router.navigate(['/verification-success']);
+        this.router.navigate(['menu/publicaciones']);
+        this.authService.setEmailVerified(true);
+        localStorage.removeItem('tokenVerificationEmail');
       },
       error: (err) => {
         console.error('Error en verificación:', err);
-        this.router.navigate(['/error'], { 
-          queryParams: { error: 'verification_failed' } 
-        });
       }
     });
   }
