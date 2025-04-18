@@ -5,6 +5,7 @@ import { Dialog } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'auth-forgot-password',
@@ -35,9 +36,38 @@ export class ForgotPasswordComponent {
   // Recuperación de contraseña
 
   forgotPassword():void{
+    if (this.formForgotPassword.invalid) {
+      this.formForgotPassword.markAllAsTouched(); return;  
+    }
+
+    this.onDialogHide();
     this.authService.forgotPassword(this.formForgotPassword.value).subscribe({
       next: (s) => {
-        console.log(s)
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: true,
+          confirmButtonText: "OK",
+          timer: 1500,
+          customClass: {
+            popup: 'custom-dark-mode',
+            confirmButton: 'btn-confirm' 
+          },
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        
+        Toast.fire({
+          icon: "success",
+          title: "Verificación enviada exitosamente a su correo electrónico."
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.visible2 = false;
+          }
+        });   
       },
       error: (err) => {
         

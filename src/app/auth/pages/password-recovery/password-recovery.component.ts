@@ -1,15 +1,16 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
 import { AuthService } from '../../../core/services/Auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-password-recovery',
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, ReactiveFormsModule, RouterLink],
   standalone: true,
   templateUrl: './password-recovery.component.html',
   styleUrl: './password-recovery.component.scss'
@@ -68,7 +69,14 @@ export class PasswordRecoveryComponent {
         this.authService.setstatusPassword(true);
       },
       error: (err) => {
-        console.log('ocurrio un error inesperado')
+        Swal.fire({
+          title: "Aviso",
+          text: err.statusText,
+          icon: "warning",
+          customClass: {
+            popup: 'custom-swal-dark'  
+          }
+        });
       }
     })
   }

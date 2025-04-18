@@ -3,7 +3,7 @@ import { PublicationComponent } from "./pages/publication/publication.component"
 import { SidebarComponent } from "../shared/components/sidebar/sidebar.component";
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
-import { PasswordRecoveryComponent } from "../auth/pages/password-recovery/password-recovery.component";
+
 
 
 export default [
@@ -23,10 +23,6 @@ export default [
       {
         path: 'preguntas',
         component: PreguntasComponent
-      },
-      {
-        path: 'reset-password',
-        component: PasswordRecoveryComponent
       },
       ...privateRoutes
     ]
