@@ -9,8 +9,7 @@ import { Router } from '@angular/router';
 import { LoginComponent } from '../../../auth/pages/login/login.component';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from '../../../auth/pages/register/register.component';
-
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'shared-menubar',
@@ -30,6 +29,13 @@ export class MenubarComponent {
 
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
+  }
+
+  ngOnInit():void{
+    // Si el correo esta verificado se activará el método
+    if (this.authService.getEmailVerified) {
+      this.isEmailVerify();
+    }
   }
 
 
@@ -67,6 +73,30 @@ export class MenubarComponent {
 
   get getstatusVisibleResetPassword():boolean{
     return this.authService.getstatusPassword
+  }
+
+  // Verificar si el usuario ya esta con el correo verificado
+
+  isEmailVerify():void{
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 1500,
+      customClass: {
+        popup: 'custom-dark-mode'
+      },
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+    Toast.fire({
+      icon: "success",
+      title: "¡Su correo electrónico se validó correctamente!"
+    });
+
   }
 
 }

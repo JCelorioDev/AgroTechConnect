@@ -24,7 +24,6 @@ html.custom-dark-mode .p-button {
 
 html.custom-dark-mode {
   .swal2-container {
-    backdrop-filter: blur(2px) brightness(1.2);
     background: rgba(0, 0, 0, 0.5);
   }
 
@@ -44,12 +43,15 @@ html.custom-dark-mode {
     }
 
     .swal2-icon--warning {
-      color: #3b362f;
+      color: #ec8a12;
       border-color: rgba(246, 173, 85, 0.3);
       background-color: rgba(246, 173, 85, 0.1);
     }
   }
 }
+
+
+
 
 ::-webkit-scrollbar {
   width: 6px;

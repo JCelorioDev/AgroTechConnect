@@ -11,7 +11,6 @@ import { AuthService } from '../../../core/services/Auth/auth.service';
 })
 export class PublicationComponent {
 
-  public readonly authService = inject(AuthService);
 
 
   constructor() {}

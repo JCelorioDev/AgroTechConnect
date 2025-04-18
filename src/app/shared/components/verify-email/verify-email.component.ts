@@ -46,8 +46,7 @@ export class VerifyEmailComponent {
 
     this.authService.verificationEmail(id, hash, expires, signature).subscribe({
       next: () => {
-        this.router.navigate(['menu/publicaciones']);
-        this.authService.setEmailVerified(true);
+
         localStorage.removeItem('tokenVerificationEmail');
       },
       error: (err) => {
