@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from "../register/register.component";
 import { LoginSocialNetwork } from '../../services/auth/login-socialnetworks.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'auth-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
 
   public formLogin!:FormGroup;
   private formBuilder = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  public readonly authService = inject(AuthService);
   private readonly loginSocialNetworks = inject(LoginSocialNetwork);
   public isVisibleRegister:boolean = false;
   public isVisiblePasswordForgot:boolean = false;
@@ -46,7 +47,10 @@ export class LoginComponent {
   }
 
   ngOnInit():void{
-
+    if (localStorage.getItem('tokenVerificationEmail')) {
+      this.isVerifyEmail();
+      this.onDialogHide();
+    }
   }
 
   onDialogHide() {
@@ -122,6 +126,25 @@ export class LoginComponent {
       } catch (err) {
         console.error('Error en login con Google:', err);
       }
+    }
+
+    // En caso que ya este registrado y tenga pendiente la verificacion de correo
+
+    isVerifyEmail():void{
+      Swal.fire({
+        title: "Atención",
+        text: "Verifica tu correo electrónico, revisa tu bandeja",
+        icon: "warning",
+        showCancelButton: false,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "OK"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.visible = true;
+          this.visibleModal.emit(true);
+        }
+      });
     }
 
 }

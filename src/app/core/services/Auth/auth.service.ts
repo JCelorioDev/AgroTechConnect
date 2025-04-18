@@ -17,6 +17,7 @@ export class AuthService {
 
   private isEmailVerified = false;
   private isVisibleResetPassword = false;
+  
 
   private readonly httpClient = inject(HttpClient);
 
@@ -70,9 +71,6 @@ export class AuthService {
       'Cache-Control': 'no-cache'
 
     });
-
-    console.log(encodedSignature);
-
 
     return this.httpClient.get(
       `${environment.apiBaseUrl}email/verify/${encodedId}/${encodedHash}?expires=${encodedExpires}&signature=${encodedSignature}`,

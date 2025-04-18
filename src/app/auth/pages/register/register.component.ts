@@ -59,7 +59,6 @@ export class RegisterComponent {
       next: (s) => {
         this.onDialogHide();
         localStorage.setItem('tokenVerificationEmail', s.data.token);
-        console.log('Usuario registrado correctamente');
       },
       error: (err) => {
 

@@ -9,6 +9,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { tokenInterceptor } from './core/interceptors/interceptor.service';
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import { provideLottieOptions } from 'ngx-lottie';
 
 
 const firebaseConfig = {
@@ -27,5 +28,7 @@ export const appConfig: ApplicationConfig = {
         }
     }
   }), provideHttpClient(), provideAnimationsAsync(), provideHttpClient(withInterceptors([tokenInterceptor])), provideFirebaseApp(() => initializeApp(firebaseConfig)),
-  provideAuth(() => getAuth())]
+  provideAuth(() => getAuth()), provideLottieOptions({
+    player: () => import('lottie-web'),
+  })]
 };
