@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'auth-forgot-password',
@@ -19,6 +20,7 @@ export class ForgotPasswordComponent {
   public formForgotPassword!:FormGroup;
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   @Output() visibleModalForgotPassword = new EventEmitter<boolean>();
 
@@ -43,34 +45,25 @@ export class ForgotPasswordComponent {
     this.onDialogHide();
     this.authService.forgotPassword(this.formForgotPassword.value).subscribe({
       next: (s) => {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: true,
-          confirmButtonText: "OK",
-          timer: 1500,
+        Swal.fire({
+          title: "Aviso",
+          text: "¡Verificación enviada exitosamente a su correo electrónico! 😎🥳",
+          icon: "success",
           customClass: {
-            popup: 'custom-dark-mode',
-            confirmButton: 'btn-confirm' 
-          },
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
+            popup: 'custom-swal-dark'  
           }
         });
-        
-        Toast.fire({
-          icon: "success",
-          title: "Verificación enviada exitosamente a su correo electrónico."
-        }).then((result) => {
-          if (result.isConfirmed) {
-            this.visible2 = false;
-          }
-        });   
       },
       error: (err) => {
-        
+        Swal.fire({
+          title: "Aviso",
+          text: err.statusText,
+          icon: "error",
+          customClass: {
+            popup: 'custom-swal-dark'  
+          }
+        });
+
       }
     })
   }
