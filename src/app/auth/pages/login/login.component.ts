@@ -10,6 +10,7 @@ import { RegisterComponent } from "../register/register.component";
 import { LoginSocialNetwork } from '../../services/authwithSocialNetworks/loginSocialNetwork.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../../shared/alerts/alert.service';
 
 @Component({
   selector: 'auth-login',
@@ -30,6 +31,7 @@ export class LoginComponent {
   public isVisibleRegister:boolean = false;
   public isVisiblePasswordForgot:boolean = false;
   public isLoadingLogin:boolean = false;
+  private readonly alertService = inject(AlertService);
 
   @Output() visibleModal = new EventEmitter<boolean>();
 
@@ -90,24 +92,8 @@ export class LoginComponent {
         console.log(s);
       },
       error: (err) => {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "bottom-end",
-            showConfirmButton: false,
-            timer: 1500,
-            customClass: {
-              popup: 'custom-dark-mode'
-            },
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            }
-          });
-          Toast.fire({
-            icon: "error",
-            title: err.statusText
-          });
+        this.isLoadingLogin = false;
+        this.alertService.miniAlert(err.statusText, 'error', 1500);
         }
     })
   }
@@ -136,10 +122,8 @@ export class LoginComponent {
         setTimeout(() => {
           this.isLoadingLogin = false;
         }, 1500)
+        
         this.onDialogHide();
-
-
-
         const firebaseUser = response?.firebaseUser;
         const backendData = response?.backendData;
 
@@ -154,44 +138,17 @@ export class LoginComponent {
 
       } catch (err:any) {
         this.isLoadingLogin = false;
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "bottom-end",
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: {
-            popup: 'custom-dark-mode'
-          },
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "error",
-          title: err.statusText
-        });
+        this.alertService.miniAlert(err.statusText, 'error', 1500);
       }
     }
 
     // En caso que ya este registrado y tenga pendiente la verificacion de correo
 
     isVerifyEmail():void{
-      Swal.fire({
-        title: "Atención",
-        text: "Verifica tu correo electrónico, revisa tu bandeja",
-        icon: "warning",
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "OK"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.visible = true;
-          this.visibleModal.emit(true);
-        }
-      });
+      this.alertService.alertDefault('Verifica tu correo electrónico, revisa tu bandeja', 'warning', 0 ,  () => {
+        this.visible = true;
+        this.visibleModal.emit(true);
+      })
     }
 
 }
