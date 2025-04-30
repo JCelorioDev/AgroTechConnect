@@ -90,10 +90,25 @@ export class LoginComponent {
         console.log(s);
       },
       error: (err) => {
-        if (err.statusCode === 404) {
-          console.log('Usuario no encontrado.')
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "bottom-end",
+            showConfirmButton: false,
+            timer: 1500,
+            customClass: {
+              popup: 'custom-dark-mode'
+            },
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            }
+          });
+          Toast.fire({
+            icon: "error",
+            title: err.statusText
+          });
         }
-      }
     })
   }
 
@@ -137,8 +152,26 @@ export class LoginComponent {
         localStorage.setItem('userLogin', JSON.stringify(jsonData));
 
 
-      } catch (err) {
-        console.error('Error en login con Google:', err);
+      } catch (err:any) {
+        this.isLoadingLogin = false;
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "bottom-end",
+          showConfirmButton: false,
+          timer: 1500,
+          customClass: {
+            popup: 'custom-dark-mode'
+          },
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "error",
+          title: err.statusText
+        });
       }
     }
 
