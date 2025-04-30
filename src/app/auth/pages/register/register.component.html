@@ -1,3 +1,13 @@
+@if(isLoadingRegister){
+  <div class="loading-overlay">
+    <img 
+      src="anim/spinning_loading-bards_anim.svg" 
+      alt="Loading..." 
+      class="responsive-spinner"
+    >
+  </div>
+}
+
 <p-dialog (onHide)="onDialogHide()" header="Header" [modal]="true" [position]="'bottom'" [dismissableMask]="true" [(visible)]="visible" [style]="{ width: '50rem' }" [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
     <div class="login-modal">
     

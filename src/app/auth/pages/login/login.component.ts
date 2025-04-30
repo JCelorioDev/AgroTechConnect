@@ -7,7 +7,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from "../register/register.component";
-import { LoginSocialNetwork } from '../../services/auth/login-socialnetworks.service';
+import { LoginSocialNetwork } from '../../services/authwithSocialNetworks/loginSocialNetwork.service';
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 import Swal from 'sweetalert2';
 

@@ -24,6 +24,7 @@ html.custom-dark-mode .p-button {
 
 html.custom-dark-mode {
   .swal2-container {
+    z-index: 5000;
     background: rgba(0, 0, 0, 0.5);
   }
 

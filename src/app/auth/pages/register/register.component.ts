@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
 import { AuthService } from '../../../core/services/Auth/auth.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class RegisterComponent {
   private formBuilder = inject(FormBuilder);
   @Output() visibleModalRegister = new EventEmitter<boolean>();
   private readonly authService = inject(AuthService);
+  public isLoadingRegister:boolean = false;
 
   constructor(){
     this.formRegister = this.formBuilder.group({
@@ -55,10 +57,31 @@ export class RegisterComponent {
       this.formRegister.markAllAsTouched(); return ;
     }
 
+    this.isLoadingRegister = true;
+
     this.authService.registerwithEmailandPassword(this.formRegister.value).subscribe({
       next: (s) => {
         this.onDialogHide();
         localStorage.setItem('tokenVerificationEmail', s.data.token);
+        this.isLoadingRegister = false;
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "bottom-end",
+          showConfirmButton: false,
+          timer: 1500,
+          customClass: {
+            popup: 'custom-dark-mode'
+          },
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          }
+        });
+        Toast.fire({
+          icon: "warning",
+          title: "Verifica tu correo electrónico, revisa la bandeja de correo."
+        });
       },
       error: (err) => {
 

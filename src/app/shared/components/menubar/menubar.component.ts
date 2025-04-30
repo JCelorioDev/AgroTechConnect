@@ -82,7 +82,7 @@ export class MenubarComponent {
       toast: true,
       position: "top-end",
       showConfirmButton: false,
-      timer: 1500,
+      timer: 3500,
       customClass: {
         popup: 'custom-dark-mode'
       },
@@ -94,7 +94,7 @@ export class MenubarComponent {
     });
     Toast.fire({
       icon: "success",
-      title: "¡Su correo electrónico se validó correctamente!"
+      title: "¡Su correo electrónico se validó correctamente! 😎🥳"
     });
 
   }
