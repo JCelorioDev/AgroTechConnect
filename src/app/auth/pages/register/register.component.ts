@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../../shared/alerts/alert.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class RegisterComponent {
   private formBuilder = inject(FormBuilder);
   @Output() visibleModalRegister = new EventEmitter<boolean>();
   private readonly authService = inject(AuthService);
+  private readonly alertSevice = inject(AlertService);
   public isLoadingRegister:boolean = false;
 
   constructor(){
@@ -64,48 +66,12 @@ export class RegisterComponent {
         this.onDialogHide();
         localStorage.setItem('tokenVerificationEmail', s.data.token);
         this.isLoadingRegister = false;
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "bottom-end",
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: {
-            popup: 'custom-dark-mode'
-          },
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "warning",
-          title: "Verifica tu correo electrónico, revisa la bandeja de correo."
-        });
+        this.alertSevice.miniAlert('Verifica tu correo electrónico, revisa la bandeja de correo.', 'warning', 1500);
       },
       error: (err) => {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "bottom-end",
-          showConfirmButton: false,
-          timer: 1500,
-          customClass: {
-            popup: 'custom-dark-mode'
-          },
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          }
-        });
-        Toast.fire({
-          icon: "error",
-          title: err.statusText
-        });
+        this.alertSevice.miniAlert(err.statusText, 'error', 1500);
       }
     })
   }
-
-
 
 }
