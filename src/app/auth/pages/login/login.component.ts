@@ -29,7 +29,7 @@ export class LoginComponent {
   private readonly loginSocialNetworks = inject(LoginSocialNetwork);
   public isVisibleRegister:boolean = false;
   public isVisiblePasswordForgot:boolean = false;
-
+  public isLoadingLogin:boolean = false;
 
   @Output() visibleModal = new EventEmitter<boolean>();
 
@@ -78,10 +78,16 @@ export class LoginComponent {
       this.formLogin.markAllAsTouched(); return ;
     }
 
+
+    this.isLoadingLogin = true;
+    
+
     this.authService.loginwithEmailandPassword(this.formLogin.value).subscribe({
       next: (s) => {
         localStorage.setItem('userLogin', JSON.stringify(s.data));
+        this.isLoadingLogin = false;
         this.onDialogHide();
+        console.log(s);
       },
       error: (err) => {
         if (err.statusCode === 404) {
@@ -108,8 +114,16 @@ export class LoginComponent {
 
     async loginWithGoogle(): Promise<void> {
       try {
+        this.isLoadingLogin = true;
+        
         const response = await this.loginSocialNetworks.loginWithGoogle().toPromise();
+
+        setTimeout(() => {
+          this.isLoadingLogin = false;
+        }, 1500)
         this.onDialogHide();
+
+
 
         const firebaseUser = response?.firebaseUser;
         const backendData = response?.backendData;
@@ -119,7 +133,7 @@ export class LoginComponent {
           ...backendData
         }
 
-
+        console.log(jsonData);
         localStorage.setItem('userLogin', JSON.stringify(jsonData));
 
 

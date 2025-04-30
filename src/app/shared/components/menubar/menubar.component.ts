@@ -26,6 +26,7 @@ export class MenubarComponent {
   public isVisibleLogin:boolean = false;
   public isVisibleRegister:boolean = false;
   private readonly authService = inject(AuthService);
+  public isLoadingLogout:boolean = false;
 
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
@@ -60,9 +61,11 @@ export class MenubarComponent {
   // Cerrar sesión
 
   logout():void{
+    this.isLoadingLogout = true;
     this.authService.logout().subscribe({
       next: (s) => {
         localStorage.removeItem('userLogin');
+        this.isLoadingLogout = false;
         this.visible = false;
       },
       error: (err) => {
