@@ -86,14 +86,20 @@ export class LoginComponent {
 
     this.authService.loginwithEmailandPassword(this.formLogin.value).subscribe({
       next: (s) => {
-        localStorage.setItem('userLogin', JSON.stringify(s.data));
         this.isLoadingLogin = false;
         this.onDialogHide();
-        console.log(s);
+
+        if(s.data.email_verified_at){
+          localStorage.setItem('userLogin', JSON.stringify(s.data));
+          console.log(s); return ;
+        }
+
+        this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 2500);
       },
       error: (err) => {
+        console.log(err);
         this.isLoadingLogin = false;
-        this.alertService.miniAlert(err.statusText, 'error', 1500);
+        this.alertService.miniAlert(err.error.message, 'error', 1500);
         }
     })
   }
@@ -138,7 +144,7 @@ export class LoginComponent {
 
       } catch (err:any) {
         this.isLoadingLogin = false;
-        this.alertService.miniAlert(err.statusText, 'error', 1500);
+        this.alertService.miniAlert(err.error.message, 'error', 1500);
       }
     }
 

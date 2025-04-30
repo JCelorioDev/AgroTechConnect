@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { AlertService } from '../../../shared/alerts/alert.service';
 
 @Component({
   selector: 'auth-forgot-password',
@@ -21,6 +22,7 @@ export class ForgotPasswordComponent {
   private formBuilder = inject(FormBuilder);
   private authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(AlertService);
 
   @Output() visibleModalForgotPassword = new EventEmitter<boolean>();
 
@@ -45,25 +47,10 @@ export class ForgotPasswordComponent {
     this.onDialogHide();
     this.authService.forgotPassword(this.formForgotPassword.value).subscribe({
       next: (s) => {
-        Swal.fire({
-          title: "Aviso",
-          text: "¡Verificación enviada exitosamente a su correo electrónico! 😎🥳",
-          icon: "success",
-          customClass: {
-            popup: 'custom-swal-dark'  
-          }
-        });
+        this.toastService.miniAlert('¡Verificación enviada exitosamente a su correo electrónico! 😎🥳', 'success', 2500);
       },
       error: (err) => {
-        Swal.fire({
-          title: "Aviso",
-          text: err.statusText,
-          icon: "error",
-          customClass: {
-            popup: 'custom-swal-dark'  
-          }
-        });
-
+        this.toastService.miniAlert(err.error.message, 'error', 2500);
       }
     })
   }
