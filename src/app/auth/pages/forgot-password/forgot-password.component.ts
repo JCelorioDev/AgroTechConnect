@@ -47,7 +47,7 @@ export class ForgotPasswordComponent {
     this.onDialogHide();
     this.authService.forgotPassword(this.formForgotPassword.value).subscribe({
       next: (s) => {
-        this.toastService.miniAlert('¡Verificación enviada exitosamente a su correo electrónico! 😎🥳', 'success', 2500);
+        this.toastService.miniAlert('¡Verificación enviada exitosamente a su correo electrónico!', 'success', 2500);
       },
       error: (err) => {
         this.toastService.miniAlert(err.error.message, 'error', 2500);

@@ -10,6 +10,7 @@ import { LoginComponent } from '../../../auth/pages/login/login.component';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import { RegisterComponent } from '../../../auth/pages/register/register.component';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../alerts/alert.service';
 
 @Component({
   selector: 'shared-menubar',
@@ -26,6 +27,7 @@ export class MenubarComponent {
   public isVisibleLogin:boolean = false;
   public isVisibleRegister:boolean = false;
   private readonly authService = inject(AuthService);
+  private readonly alertService = inject(AlertService);
   public isLoadingLogout:boolean = false;
 
   get getLocalStorageToken():any{
@@ -81,25 +83,7 @@ export class MenubarComponent {
   // Verificar si el usuario ya esta con el correo verificado
 
   isEmailVerify():void{
-    const Toast = Swal.mixin({
-      toast: true,
-      position: "top-end",
-      showConfirmButton: false,
-      timer: 3500,
-      customClass: {
-        popup: 'custom-dark-mode'
-      },
-      timerProgressBar: true,
-      didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-      }
-    });
-    Toast.fire({
-      icon: "success",
-      title: "¡Su correo electrónico se validó correctamente! 😎🥳"
-    });
-
+    this.alertService.miniAlert('¡Su correo electrónico se validó correctamente! 😎🥳', 'success', 3500);
   }
 
 

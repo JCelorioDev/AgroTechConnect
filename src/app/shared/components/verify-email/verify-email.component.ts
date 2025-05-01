@@ -4,6 +4,7 @@ import { AuthService } from '../../../core/services/Auth/auth.service';
 import { environment } from '../../../../environments/environment';
 import Swal from 'sweetalert2';
 import { LottieComponent, AnimationOptions } from 'ngx-lottie';
+import { AlertService } from '../../alerts/alert.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -17,6 +18,8 @@ export class VerifyEmailComponent {
   };
 
   loading = true;
+  private readonly alertService = inject(AlertService);
+  private isLoadingComponent:boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,15 +36,7 @@ export class VerifyEmailComponent {
     const { id, hash, expires, signature } = queryParams;
 
     if (!id || !hash || !expires || !signature) {
-      Swal.fire({
-        title: "Aviso",
-        text: "Parámetros faltantes para la verificación de correo.",
-        icon: "warning",
-        customClass: {
-          popup: 'custom-swal-dark'  
-        }
-      });
-
+      this.alertService.alertDefault('Parámetros faltantes para la verificación de correo.', 'error')
       this.router.navigate(['menu/publicaciones'])
     }
 
@@ -52,15 +47,7 @@ export class VerifyEmailComponent {
         localStorage.removeItem('tokenVerificationEmail');
       },
       error: (err) => {
-          Swal.fire({
-            title: "Aviso",
-            text: err.statusText,
-            icon: "warning",
-            customClass: {
-              popup: 'custom-swal-dark'  
-            }
-          });
-
+        this.alertService.alertDefault(err.error.message, 'warning', 0);
         this.router.navigate(['menu/publicaciones'])
       }
     });

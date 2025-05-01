@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
+import { AlertService } from '../../../shared/alerts/alert.service';
 
 @Component({
   selector: 'app-password-recovery',
@@ -26,6 +27,7 @@ export class PasswordRecoveryComponent {
   private readonly formbuilder = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly alertService = inject(AlertService);
 
   
   constructor() { 
@@ -69,14 +71,7 @@ export class PasswordRecoveryComponent {
         this.authService.setstatusPassword(true);
       },
       error: (err) => {
-        Swal.fire({
-          title: "Aviso",
-          text: err.statusText,
-          icon: "warning",
-          customClass: {
-            popup: 'custom-swal-dark'  
-          }
-        });
+        this.alertService.miniAlert(err.error.message, 'warning', 2500);
       }
     })
   }
