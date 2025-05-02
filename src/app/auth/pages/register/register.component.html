@@ -82,11 +82,19 @@
             <p *ngIf="formRegister.get('password')?.errors?.['required']">El campo es obligatorio.</p>
             <div *ngIf="formRegister.get('password')?.errors?.['pattern']" class="error-message">
               <strong>Requisitos de contraseña no cumplidos:</strong>
-              <ul class="requirements-list">
-                <li>Longitud entre 8 y 15 caracteres</li>
-                <li>Contener al menos un carácter especial ({{'@'}}, &, $, %)</li>
-                <li>Incluir mínimo una letra mayúscula (A-Z)</li>
-                <li>Contener al menos un número (0-9)</li>
+              <ul class="requirements-list" *ngIf="password.value">
+                <li *ngIf="!lengthValid" [class.valid]="lengthValid">
+                  Longitud entre 8 y 15 caracteres
+                </li>
+                <li *ngIf="!hasSpecialChar" [class.valid]="hasSpecialChar">
+                  Contener al menos un carácter especial ({{"@"}}$!%*?&)
+                </li>
+                <li *ngIf="!hasUpperCase" [class.valid]="hasUpperCase">
+                  Incluir mínimo una letra mayúscula (A-Z)
+                </li>
+                <li *ngIf="!hasNumber" [class.valid]="hasNumber">
+                  Contener al menos un número (0-9)
+                </li>
               </ul>
             </div>
           </div>

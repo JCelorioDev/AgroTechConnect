@@ -43,6 +43,28 @@ export class RegisterComponent {
     )
   }
 
+   // Métodos para verificar cada requisito de contraseña
+   get password() {
+    return this.formRegister.get('password') as FormControl;
+  }
+
+  get lengthValid() {
+    const value = this.password.value || '';
+    return value.length >= 8 && value.length <= 15;
+  }
+
+  get hasUpperCase() {
+    return /[A-Z]/.test(this.password.value || '');
+  }
+
+  get hasNumber() {
+    return /[0-9]/.test(this.password.value || '');
+  }
+
+  get hasSpecialChar() {
+    return /[@$!%*?&]/.test(this.password.value || '');
+  }
+
   ngOnInit():void{
     this.visible = true;
   }
