@@ -11,10 +11,12 @@ import { LoginSocialNetwork } from '../../services/authwithSocialNetworks/loginS
 import { ForgotPasswordComponent } from '../forgot-password/forgot-password.component';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
+import { PasswordModule } from 'primeng/password';
+
 
 @Component({
   selector: 'auth-login',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule, RegisterComponent, ForgotPasswordComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, CheckboxModule, InputTextModule, RegisterComponent, ForgotPasswordComponent, PasswordModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
@@ -94,12 +96,12 @@ export class LoginComponent {
           console.log(s); return ;
         }
 
-        this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 2500);
+        this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
       },
       error: (err) => {
         console.log(err);
         this.isLoadingLogin = false;
-        this.alertService.miniAlert(err.error.message, 'error', 1500);
+        this.alertService.miniAlert(err.error.message, 'error', 3000);
         }
     })
   }

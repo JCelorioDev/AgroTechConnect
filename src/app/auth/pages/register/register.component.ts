@@ -8,11 +8,12 @@ import { passwordMatchValidator } from '../../../core/validation/password repeat
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
+import { PasswordModule } from 'primeng/password';
 
 
 @Component({
   selector: 'auth-register',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, InputTextModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, InputTextModule, PasswordModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -67,10 +68,11 @@ export class RegisterComponent {
         this.onDialogHide();
         localStorage.setItem('tokenVerificationEmail', s.data.token);
         this.isLoadingRegister = false;
-        this.alertSevice.miniAlert('Verifica tu correo electrónico, revisa la bandeja de correo.', 'warning', 1500);
+        this.alertSevice.miniAlert('Verifica tu correo electrónico, revisa la bandeja de correo.', 'warning', 3000);
       },
       error: (err) => {
-        this.alertSevice.miniAlert(err.error.message, 'error', 1500);
+        this.isLoadingRegister = false;
+        this.alertSevice.miniAlert(err.error.message, 'error', 3000);
       }
     })
   }

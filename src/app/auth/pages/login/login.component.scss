@@ -125,7 +125,7 @@
           width: 100%;
           margin-bottom: 1rem;
 
-          .p-float-label {
+          .p-float-label, .p-password  {
             width: 100%;
 
             input.p-inputtext {
@@ -210,5 +210,4 @@
   height: auto;
   animation: spin 1s linear infinite;
 }
-
 

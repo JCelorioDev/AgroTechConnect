@@ -51,7 +51,12 @@
     
         <div class="input-group">
           <span class="p-float-label">
-            <input formControlName="password" id="password" type="password" pInputText />
+            <p-password 
+            formControlName="password" 
+            id="password" 
+            [toggleMask]="true" 
+            [feedback]="false"> 
+           </p-password>
             <label for="password">Contraseña</label>
           </span>
           <div *ngIf="formLogin.get('password')?.invalid && formLogin.get('password')?.touched">
