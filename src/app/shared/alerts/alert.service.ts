@@ -5,55 +5,74 @@ import Swal from 'sweetalert2';
   providedIn: 'root'
 })
 export class AlertService {
+  private toastQueue: {message: string, status: 'success' | 'error' | 'info' | 'warning', time: number}[] = [];
+  private isShowingToasts = false;
+  private readonly TOAST_OFFSET = 70; // Espacio entre toasts en píxeles
 
   constructor() { }
 
-  // Alertas mixis 
+  // Alertas mixin (toasts)
+  miniAlert(msj: string, statusAlert: 'success' | 'error' | 'info' | 'warning' = 'info', time: number): void {
+    this.toastQueue.push({message: msj, status: statusAlert, time: time});
+    this.processToastQueue();
+  }
 
-  miniAlert(msj: string, statusAlert: 'success' | 'error' | 'info' | 'warning' = 'info', time:number):void {
+  private processToastQueue() {
+    if (this.isShowingToasts || this.toastQueue.length === 0) {
+      return;
+    }
+
+    this.isShowingToasts = true;
+    const toast = this.toastQueue.shift()!;
+    const offset = (this.toastQueue.length + 1) * this.TOAST_OFFSET;
+
     const Toast = Swal.mixin({
       toast: true,
       position: 'bottom-end',
       showConfirmButton: false,
-      timer: time,
+      timer: toast.time,
       timerProgressBar: true,
       customClass: {
         popup: 'custom-dark-mode',
       },
-      didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
+      didOpen: (popup) => {
+        const element = popup as HTMLElement;
+        element.style.bottom = `${offset}px`;
+        element.style.right = '20px';
+        
+        popup.onmouseenter = Swal.stopTimer;
+        popup.onmouseleave = Swal.resumeTimer;
       },
+      didClose: () => {
+        this.isShowingToasts = false;
+        setTimeout(() => this.processToastQueue(), 100);
+      }
     });
 
     Toast.fire({
-      icon: statusAlert,
-      title: msj,
+      icon: toast.status,
+      title: toast.message,
     });
   }
 
   // Alertas por defecto
-
-  alertDefault(msj: string, statusAlert: 'success' | 'error' | 'info' | 'warning' = 'info', time?:number, onConfirm?: () => void):void{
-      Swal.fire({
-        title: "Atención",
-        text: msj,
-        icon: statusAlert,
-        showCancelButton: false,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "OK"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          if(onConfirm){
-            onConfirm();
-          }
-        }
-      });
-    }
+  alertDefault(msj: string, statusAlert: 'success' | 'error' | 'info' | 'warning' = 'info', time?: number, onConfirm?: () => void): void {
+    Swal.fire({
+      title: "Atención",
+      text: msj,
+      icon: statusAlert,
+      showCancelButton: false,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "OK"
+    }).then((result) => {
+      if (result.isConfirmed && onConfirm) {
+        onConfirm();
+      }
+    });
+  }
 
   // Alertas de validaciones 
-
   showValidationErrors(errorResponse: any): void {
     const errors = errorResponse.data;
     let errorMessages: string[] = [];
@@ -65,10 +84,11 @@ export class AlertService {
       }
     }
 
-    // Mostrar todos los mensajes en un solo SweetAlert
+    // Mostrar cada mensaje de error como un toast independiente
     if (errorMessages.length > 0) {
-      this.miniAlert(errorMessages.join('<br><br>'), 'error', 2500);
+      errorMessages.forEach(message => {
+        this.miniAlert(message, 'error', 2500);
+      });
     }
   }
-  
 }
