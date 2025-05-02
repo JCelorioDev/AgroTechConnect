@@ -102,7 +102,12 @@
 
         <div class="input-group">
           <span class="p-float-label">
-            <input formControlName="password_confirmation" id="password_confirmation" type="password" pInputText />
+            <p-password 
+            formControlName="password_confirmation" 
+            id="password_confirmation" 
+            [toggleMask]="true" 
+            [feedback]="false"> 
+            </p-password>
             <label for="password_confirmation">Repita la contraseña </label>
           </span>
           <div *ngIf="formRegister.get('password_confirmation')?.invalid && formRegister.get('password_confirmation')?.touched">

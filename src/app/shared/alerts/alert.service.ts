@@ -51,4 +51,24 @@ export class AlertService {
         }
       });
     }
+
+  // Alertas de validaciones 
+
+  showValidationErrors(errorResponse: any): void {
+    const errors = errorResponse.data;
+    let errorMessages: string[] = [];
+
+    // Recoger todos los mensajes de error
+    for (const field in errors) {
+      if (errors.hasOwnProperty(field)) {
+        errorMessages = errorMessages.concat(errors[field]);
+      }
+    }
+
+    // Mostrar todos los mensajes en un solo SweetAlert
+    if (errorMessages.length > 0) {
+      this.miniAlert(errorMessages.join('<br><br>'), 'error', 2500);
+    }
+  }
+  
 }

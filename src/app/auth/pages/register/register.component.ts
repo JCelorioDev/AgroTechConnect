@@ -43,28 +43,6 @@ export class RegisterComponent {
     )
   }
 
-   // Métodos para verificar cada requisito de contraseña
-   get password() {
-    return this.formRegister.get('password') as FormControl;
-  }
-
-  get lengthValid() {
-    const value = this.password.value || '';
-    return value.length >= 8 && value.length <= 15;
-  }
-
-  get hasUpperCase() {
-    return /[A-Z]/.test(this.password.value || '');
-  }
-
-  get hasNumber() {
-    return /[0-9]/.test(this.password.value || '');
-  }
-
-  get hasSpecialChar() {
-    return /[@$!%*?&]/.test(this.password.value || '');
-  }
-
   ngOnInit():void{
     this.visible = true;
   }
@@ -92,11 +70,41 @@ export class RegisterComponent {
         this.isLoadingRegister = false;
         this.alertSevice.miniAlert('Verifica tu correo electrónico, revisa la bandeja de correo.', 'warning', 3000);
       },
-      error: (err) => {
+      error: (err:any) => {
         this.isLoadingRegister = false;
-        this.alertSevice.miniAlert(err.error.message, 'error', 3000);
+
+        if (err.status === 422) {
+          this.alertSevice.showValidationErrors(err.error);
+        }else{
+          this.alertSevice.miniAlert(err.error.message, 'error', 3000);
+        }
+
       }
     })
   }
+
+     // Métodos para verificar cada requisito de contraseña
+   get password() {
+    return this.formRegister.get('password') as FormControl;
+  }
+
+  get lengthValid() {
+    const value = this.password.value || '';
+    return value.length >= 8 && value.length <= 15;
+  }
+
+  get hasUpperCase() {
+    return /[A-Z]/.test(this.password.value || '');
+  }
+
+  get hasNumber() {
+    return /[0-9]/.test(this.password.value || '');
+  }
+
+  get hasSpecialChar() {
+    return /[@$!%*?&]/.test(this.password.value || '');
+  }
+
+
 
 }
