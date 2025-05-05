@@ -63,18 +63,35 @@ export class MenubarComponent {
   // Cerrar sesión
 
   logout():void{
-    this.isLoadingLogout = true;
-    this.authService.logout().subscribe({
-      next: (s) => {
-        localStorage.removeItem('userLogin');
-        this.isLoadingLogout = false;
-        this.visible = false;
-        this.alertService.miniAlert('Se cerró sesión correctamente.', 'success', 2500);
-      },
-      error: (err) => {
-
+    Swal.fire({
+      title: "Estás seguro de cerrar sesión?",
+      text: "Luego no podrás revertir esta acción",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Si, deseo.",
+      cancelButtonText: "No, deseo."
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.isLoadingLogout = true;
+        this.authService.logout().subscribe({
+          next: (s) => {
+            localStorage.removeItem('userLogin');
+            this.isLoadingLogout = false;
+            Swal.fire({
+              title: "Aviso",
+              text: "Se cerró sesión correctamente.",
+              icon: "success"
+            });
+            this.visible = false;
+          },
+          error: (err) => {
+            this.isLoadingLogout = false;
+          }
+        })
       }
-    })
+    });
   }
 
   get getstatusVisibleResetPassword():boolean{
