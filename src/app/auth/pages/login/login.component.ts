@@ -92,6 +92,7 @@ export class LoginComponent {
         this.onDialogHide();
 
         if(s.data.email_verified_at){
+          this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
           localStorage.setItem('userLogin', JSON.stringify(s.data));
           console.log(s); return ;
         }

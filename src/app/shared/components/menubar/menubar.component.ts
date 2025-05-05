@@ -69,6 +69,7 @@ export class MenubarComponent {
         localStorage.removeItem('userLogin');
         this.isLoadingLogout = false;
         this.visible = false;
+        this.alertService.miniAlert('Se cerró sesión correctamente.', 'success', 2500);
       },
       error: (err) => {
 
