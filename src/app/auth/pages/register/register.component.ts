@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { PasswordModule } from 'primeng/password';
+import { AuthServiceUser } from '../../services/auth/authServiceUser.service';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class RegisterComponent {
   private formBuilder = inject(FormBuilder);
   @Output() visibleModalRegister = new EventEmitter<boolean>();
   private readonly authService = inject(AuthService);
+  public readonly authenticationService = inject(AuthServiceUser);
   private readonly alertSevice = inject(AlertService);
   public isLoadingRegister:boolean = false;
 
@@ -83,7 +85,7 @@ export class RegisterComponent {
     })
   }
 
-     // Métodos para verificar cada requisito de contraseña
+  // Métodos para verificar cada requisito de contraseña
    get password() {
     return this.formRegister.get('password') as FormControl;
   }
@@ -106,5 +108,21 @@ export class RegisterComponent {
   }
 
 
+  // Enviar correo de verificacion 
 
+  sendEmailVerification():void{
+    this.isLoadingRegister = true;
+    this.authenticationService.sendEmailVerification().subscribe({
+      next: (s) => {
+        this.alertSevice.miniAlert('Se envio de nuevo la verificación de correo, revise el buzón de correos.', 'info', 2500);
+        this.isLoadingRegister = false;
+      }, 
+      error: (err) => {
+        this.alertSevice.miniAlert(err.error.message, 'error', 3000);
+        this.isLoadingRegister = false;
+      }
+    })
+  }
+
+  
 }

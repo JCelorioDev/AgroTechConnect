@@ -122,6 +122,7 @@
     
       <!-- Enlaces -->
       <div class="login-footer">
+        <a *ngIf="authenticationService.showAlertnotverifyemail" style="cursor: pointer;" (click)="sendEmailVerification()">Volver a enviar la verificación de correo.</a>
         <a style="cursor: pointer;" (click)="onDialogHide()">¿Ya tienes una cuenta?</a>
       </div>
     </div>

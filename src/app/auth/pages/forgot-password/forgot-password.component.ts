@@ -23,6 +23,7 @@ export class ForgotPasswordComponent {
   private authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toastService = inject(AlertService);
+  public isLoadingForgotPassword!:boolean;
 
   @Output() visibleModalForgotPassword = new EventEmitter<boolean>();
 
@@ -44,13 +45,18 @@ export class ForgotPasswordComponent {
       this.formForgotPassword.markAllAsTouched(); return;  
     }
 
-    this.onDialogHide();
+    this.isLoadingForgotPassword = true;
+
+
     this.authService.forgotPassword(this.formForgotPassword.value).subscribe({
       next: (s) => {
+        this.onDialogHide();
         this.toastService.miniAlert('¡Verificación enviada exitosamente a su correo electrónico!', 'success', 2500);
+        this.isLoadingForgotPassword = false;
       },
       error: (err) => {
         this.toastService.miniAlert(err.error.message, 'error', 2500);
+        this.isLoadingForgotPassword = false;
       }
     })
   }

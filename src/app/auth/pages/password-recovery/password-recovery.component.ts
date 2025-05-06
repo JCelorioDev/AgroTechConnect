@@ -8,10 +8,12 @@ import { passwordMatchValidator } from '../../../core/validation/password repeat
 import { AuthService } from '../../../core/services/Auth/auth.service';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
+import { PasswordModule } from 'primeng/password';
+
 
 @Component({
   selector: 'app-password-recovery',
-  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, InputTextModule, ButtonModule, ReactiveFormsModule, RouterLink, PasswordModule],
   standalone: true,
   templateUrl: './password-recovery.component.html',
   styleUrl: './password-recovery.component.scss'
@@ -28,6 +30,7 @@ export class PasswordRecoveryComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly alertService = inject(AlertService);
+  public isLoadingRecoveryPassword:boolean = false;
 
   
   constructor() { 
@@ -64,16 +67,42 @@ export class PasswordRecoveryComponent {
       password_confirmation : this.formPasswordReset.value['password_confirmation']
     }
 
+    this.isLoadingRecoveryPassword = true;
+
   
     this.authService.resetPassword(requestData).subscribe({
       next: (s) => {
         this.router.navigate(['menu/publicaciones']);
         this.authService.setstatusPassword(true);
+        this.isLoadingRecoveryPassword = false;
       },
       error: (err) => {
         this.alertService.miniAlert(err.error.message, 'warning', 2500);
+        this.isLoadingRecoveryPassword = false;
       }
     })
+  }
+
+  // Métodos para verificar cada requisito de contraseña
+  get password() {
+    return this.formPasswordReset.get('password') as FormControl;
+  }
+
+  get lengthValid() {
+    const value = this.password.value || '';
+    return value.length >= 8 && value.length <= 15;
+  }
+
+  get hasUpperCase() {
+    return /[A-Z]/.test(this.password.value || '');
+  }
+
+  get hasNumber() {
+    return /[0-9]/.test(this.password.value || '');
+  }
+
+  get hasSpecialChar() {
+    return /[@$!%*?&]/.test(this.password.value || '');
   }
 
 }

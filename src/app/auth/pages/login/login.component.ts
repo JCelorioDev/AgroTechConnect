@@ -51,10 +51,13 @@ export class LoginComponent {
   }
 
   ngOnInit():void{
-    if (localStorage.getItem('tokenVerificationEmail')) {
+    /*
+      if (localStorage.getItem('tokenVerificationEmail')) {
       this.isVerifyEmail();
       this.onDialogHide();
-    }
+      }
+    */
+
   }
 
   onDialogHide() {
