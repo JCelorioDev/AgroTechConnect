@@ -25,7 +25,6 @@ html.custom-dark-mode .p-button {
 html.custom-dark-mode {
   .swal2-container {
     z-index: 5000;
-    background: rgba(0, 0, 0, 0.5);
   }
 
   .swal2-popup {
@@ -34,9 +33,7 @@ html.custom-dark-mode {
     font-family: "Orbitron Variable", sans-serif;
     border-radius: 2%;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
+
 
     .swal2-title, .swal2-content {
       color: inherit;

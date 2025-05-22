@@ -60,6 +60,7 @@ export class RegisterComponent {
 
   registerwithEmailandPassword(){
     if (this.formRegister.invalid) {
+      this.alertSevice.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formRegister.markAllAsTouched(); return ;
     }
 

@@ -82,6 +82,7 @@ export class LoginComponent {
 
   loginwithEmailandPassword():void{
     if (this.formLogin.invalid) {
+      this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formLogin.markAllAsTouched(); return ;
     }
 
