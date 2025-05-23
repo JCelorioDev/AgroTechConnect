@@ -9,6 +9,7 @@ import { RegisterResponseI } from '../../../auth/models/auth/registerResponseI.i
 import { RegisterRequestI } from '../../../auth/models/auth/registerRequestI.interface';
 import { ForgotPasswordComponent } from '../../../auth/pages/forgot-password/forgot-password.component';
 import { ForgotPasswordRequestI } from '../../../auth/models/auth/forgotPasswordRequest.interface';
+import { ProfileResponseI } from '../../../shared/models/profileResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +97,12 @@ export class AuthService {
 
   get getstatusPassword():boolean{
     return this.isVisibleResetPassword
+  }
+
+  // Visualizar el perfil del usuario por token
+
+  userProfile():Observable<ProfileResponseI>{
+    return this.httpClient.get<ProfileResponseI>(`${environment.apiBaseUrl}me/profile`)
   }
 
 }

@@ -3,6 +3,8 @@ import { PublicationComponent } from "./pages/publication/publication.component"
 import { SidebarComponent } from "../shared/components/sidebar/sidebar.component";
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
+import { noVerificationGuard } from "../core/guards/no-verification.guard";
+
 
 
 
@@ -18,7 +20,8 @@ export default [
     children: [
       {
         path: 'publicaciones',
-        component: PublicationComponent
+        component: PublicationComponent,
+        canActivate: [noVerificationGuard]
       },
       {
         path: 'preguntas',

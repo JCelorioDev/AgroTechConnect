@@ -12,6 +12,7 @@ import { ForgotPasswordComponent } from '../forgot-password/forgot-password.comp
 import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { PasswordModule } from 'primeng/password';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -30,6 +31,7 @@ export class LoginComponent {
   private formBuilder = inject(FormBuilder);
   public readonly authService = inject(AuthService);
   private readonly loginSocialNetworks = inject(LoginSocialNetwork);
+  private readonly router = inject(Router);
   public isVisibleRegister:boolean = false;
   public isVisiblePasswordForgot:boolean = false;
   public isLoadingLogin:boolean = false;
@@ -94,14 +96,13 @@ export class LoginComponent {
       next: (s) => {
         this.isLoadingLogin = false;
         this.onDialogHide();
+        this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
+        localStorage.setItem('userLogin', JSON.stringify(s.data)); 
 
-        if(s.data.email_verified_at){
-          this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
-          localStorage.setItem('userLogin', JSON.stringify(s.data));
-          console.log(s); return ;
+        if (!s.data.email_verified_at) {
+          this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
+          this.router.navigate(['no-verification']); 
         }
-
-        this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
       },
       error: (err) => {
         console.log(err);
