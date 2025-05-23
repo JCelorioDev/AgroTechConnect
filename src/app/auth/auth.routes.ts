@@ -3,6 +3,7 @@ import { LoginComponent } from "./pages/login/login.component";
 import { VerifyEmailComponent } from "../shared/components/verify-email/verify-email.component";
 import { PasswordRecoveryComponent } from "../auth/pages/password-recovery/password-recovery.component";
 import { NoVerificationComponent } from "../shared/pages/no-verification/no-verification.component";
+import { verificationGuard } from "../core/guards/verification.guard";
 
 
 export default [
@@ -20,6 +21,7 @@ export default [
   },
   {
     path: 'no-verification',
-    component: NoVerificationComponent
+    component: NoVerificationComponent,
+    canActivate: [verificationGuard]
   }
 ] as Routes

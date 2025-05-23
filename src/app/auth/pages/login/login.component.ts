@@ -105,9 +105,11 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        console.log(err);
         this.isLoadingLogin = false;
-        this.alertService.miniAlert(err.error.message, 'error', 3000);
+        if(!err.error.data){
+          this.alertService.miniAlert(err.error.message, 'warning', 2500);
+        }
+        this.alertService.showValidationErrors(err.error);
         }
     })
   }
