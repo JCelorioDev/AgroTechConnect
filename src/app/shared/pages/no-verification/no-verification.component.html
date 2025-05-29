@@ -1,5 +1,13 @@
-<div class="fondo-personalizado">
-    <div class="contenedor-verificacion">
-        Cuenta sin verificar, verifica tu cuenta para que puedas seguir usando las funcionalidades
+<p-toolbar class="header-toolbar">
+    <ng-template pTemplate="end">
+      <button pButton icon="pi pi-sign-out" class="btn-cerrar" label="Cerrar sesión" severity="danger" (click)="logout()"></button>
+    </ng-template>
+</p-toolbar>
+
+<div class="pantalla-verificacion">
+    <div class="tarjeta-verificacion">
+        <h2>Cuenta no verificada</h2>
+        <p>Verifica tu cuenta para seguir usando todas las funcionalidades.</p>
+        <button pButton type="button" label="Reenviar código de verificación" icon="pi pi-envelope" class="btn-verde" (click)="sendEmailVerification()"></button>
     </div>
 </div>

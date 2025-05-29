@@ -64,7 +64,7 @@ export class MenubarComponent {
 
   logout():void{
     Swal.fire({
-      title: "Estás seguro de cerrar sesión?",
+      title: "¿Estás seguro de cerrar sesión?",
       text: "Luego no podrás revertir esta acción",
       icon: "warning",
       showCancelButton: true,

@@ -106,11 +106,13 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoadingLogin = false;
-        if(!err.error.data){
+        console.log(err);
+        if(err.error.data.length == 0){
           this.alertService.miniAlert(err.error.message, 'warning', 2500);
+        }else{
+          this.alertService.showValidationErrors(err.error);
         }
-        this.alertService.showValidationErrors(err.error);
-        }
+      }
     })
   }
 

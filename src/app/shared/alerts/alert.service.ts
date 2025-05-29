@@ -72,6 +72,35 @@ export class AlertService {
     });
   }
 
+    // Alertas con dialogos
+    alertwithDialogs(
+      title: string,
+      msj: string,
+      statusAlert: 'success' | 'error' | 'info' | 'warning' = 'info',
+      time?: number,
+      onConfirm?: () => void,
+      txtButtonCancel: string = 'Cancelar',
+      txtButtonConfirm: string = 'Confirmar'
+    ): void {
+      Swal.fire({
+        title: title,
+        text: msj,
+        icon: statusAlert,
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: txtButtonConfirm,
+        cancelButtonText: txtButtonCancel,
+        allowOutsideClick: false,  
+        allowEscapeKey: false,     
+      }).then((result) => {
+        if (result.isConfirmed) {
+          onConfirm?.(); 
+        }
+      });
+    }
+    
+
   // Alertas de validaciones 
   showValidationErrors(errorResponse: any): void {
     const errors = errorResponse.data;
