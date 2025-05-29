@@ -35,7 +35,7 @@ export class PasswordRecoveryComponent {
   
   constructor() { 
     this.formPasswordReset = this.formbuilder.group({
-      password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/)]),
+      password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
       password_confirmation : new FormControl('', [Validators.required])
     }, {
       validators: passwordMatchValidator('password', 'password_confirmation')

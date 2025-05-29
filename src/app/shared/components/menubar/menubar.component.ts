@@ -29,12 +29,15 @@ export class MenubarComponent {
   private readonly authService = inject(AuthService);
   private readonly alertService = inject(AlertService);
   public isLoadingLogout:boolean = false;
+  private previousState: string | null = null;
+  private isLoggingOut = false; // ← Bandera para evitar falsos positivos
 
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
   }
 
   ngOnInit():void{
+    this.startWatchingUserLogin();
     // Si el correo esta verificado se activará el método
     if (this.authService.getEmailVerified) {
       this.isEmailVerify();
@@ -63,6 +66,7 @@ export class MenubarComponent {
   // Cerrar sesión
 
   logout():void{
+    this.isLoggingOut = true;
     Swal.fire({
       title: "¿Estás seguro de cerrar sesión?",
       text: "Luego no podrás revertir esta acción",
@@ -102,6 +106,26 @@ export class MenubarComponent {
 
   isEmailVerify():void{
     this.alertService.miniAlert('¡Su correo electrónico se validó correctamente! 😎🥳', 'success', 3500);
+  }
+
+
+  startWatchingUserLogin(): void {
+    setInterval(() => {
+      const current = localStorage.getItem('userLogin');
+      if (this.previousState && current !== this.previousState) {
+        if (!this.isLoggingOut) { // ← Solo si no es cierre de sesión válido
+          console.warn('⚠️ userLogin ha sido modificado o alterado.');
+          this.handleSuspiciousChange();
+        }
+      }
+      this.previousState = current;
+    }, 1000);
+  }
+
+  handleSuspiciousChange(): void {
+    alert('Tu sesión fue alterada. Se cerrará por seguridad.');
+    localStorage.removeItem('userLogin');
+    window.location.href = 'menu/publicaciones'; 
   }
 
 
