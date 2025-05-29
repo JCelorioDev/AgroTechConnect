@@ -6,10 +6,11 @@ import { AuthServiceUser } from '../../../auth/services/auth/authServiceUser.ser
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { isPlatformBrowser } from '@angular/common';
+import { LottieComponent, AnimationOptions } from 'ngx-lottie';
 
 @Component({
   selector: 'no-verification',
-  imports: [ButtonModule, ToolbarModule],
+  imports: [ButtonModule, ToolbarModule, LottieComponent],
   standalone: true,
   templateUrl: './no-verification.component.html',
   styleUrl: './no-verification.component.scss'
@@ -22,12 +23,19 @@ export class NoVerificationComponent {
   private readonly autenticationService = inject(AuthServiceUser);
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
+  public loading:boolean = false;
+
+  lottieOptions: AnimationOptions = {
+    path: 'anim/verifyemail_anim.json',
+  };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object){
     
   }
 
   ngOnInit(): void {
+    this.toggleDarkMode();
+    document.body.style.overflow = 'hidden';
     this.startWatchingUserLogin();
   }
 
@@ -54,6 +62,8 @@ export class NoVerificationComponent {
 
   logout(): void {
     this.isLoggingOut = true;
+
+
   
     this.alertService.alertwithDialogs(
       '¿Estás seguro de cerrar sesión?',
@@ -61,18 +71,21 @@ export class NoVerificationComponent {
       'info',
       3000,
       () => {
+        this.loading = true;
         this.authService.logout().subscribe({
           next: () => {
             this.alertService.miniAlert('La sesión se cerró correctamente.', 'success', 2500);
             this.router.navigate(['menu/publicaciones']);
             this.toggleDarkMode();
             localStorage.clear();
+            this.loading = false;
           },
           error: (err) => {
             this.router.navigate(['menu/publicaciones']);
             this.toggleDarkMode();
             this.alertService.miniAlert(err.error.mensaje, 'error', 2500);
             localStorage.clear();
+            this.loading = false;
           }
         });
       },
@@ -84,12 +97,15 @@ export class NoVerificationComponent {
 
   
   sendEmailVerification():void{
+    this.loading = true;
     this.autenticationService.sendEmailVerification().subscribe({
       next: (s) => {
         this.alertService.miniAlert('Se envio de nuevo la verificación de correo, revise el buzón de correos.', 'info', 2500);
+        this.loading = false;
       }, 
       error: (err) => {
         this.alertService.miniAlert(err.error.message, 'error', 3000);
+        this.loading = false;
       }
     })
   }

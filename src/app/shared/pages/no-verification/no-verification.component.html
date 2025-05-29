@@ -1,13 +1,47 @@
-<p-toolbar class="header-toolbar">
-    <ng-template pTemplate="end">
-      <button pButton icon="pi pi-sign-out" class="btn-cerrar" label="Cerrar sesión" severity="danger" (click)="logout()"></button>
-    </ng-template>
-</p-toolbar>
+@if(loading){
+  <div class="loading-overlay">
+    <img 
+      src="anim/spinning_loading-bards_anim.svg" 
+      alt="Loading..." 
+      class="responsive-spinner"
+    >
+  </div>
+}
 
-<div class="pantalla-verificacion">
-    <div class="tarjeta-verificacion">
-        <h2>Cuenta no verificada</h2>
-        <p>Verifica tu cuenta para seguir usando todas las funcionalidades.</p>
-        <button pButton type="button" label="Reenviar código de verificación" icon="pi pi-envelope" class="btn-verde" (click)="sendEmailVerification()"></button>
+<div class="contenedor-principal">
+    <div class="header-bar">
+      <button
+        pButton
+        icon="pi pi-sign-out"
+        label="Cerrar sesión"
+        class="btn-cerrar"
+        (click)="logout()"
+      ></button>
     </div>
-</div>
+  
+    <div class="pantalla-verificacion">
+      <div class="tarjeta-verificacion">
+        <!-- Animación LOTTIE FILE -->
+        <ng-lottie
+        width="200px"
+        height="200px"
+        [options]="lottieOptions"
+        ></ng-lottie>
+
+  
+        <h2>Cuenta no verificada</h2>
+        <p>
+          Verifica tu cuenta para seguir usando todas las funcionalidades.
+        </p>
+        <button
+          pButton
+          type="button"
+          label="Reenviar código de verificación"
+          icon="pi pi-envelope"
+          class="btn-verde"
+          (click)="sendEmailVerification()"
+        ></button>
+      </div>
+    </div>
+  </div>
+  

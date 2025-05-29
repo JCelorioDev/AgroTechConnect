@@ -4,20 +4,24 @@ import { VerifyEmailComponent } from "../shared/components/verify-email/verify-e
 import { PasswordRecoveryComponent } from "../auth/pages/password-recovery/password-recovery.component";
 import { NoVerificationComponent } from "../shared/pages/no-verification/no-verification.component";
 import { verificationGuard } from "../core/guards/verification.guard";
+import { noVerificationGuard } from "../core/guards/no-verification.guard";
 
 
 export default [
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [noVerificationGuard]
   },
   {
     path: 'email/verify',
-    component: VerifyEmailComponent
+    component: VerifyEmailComponent,
+    canActivate: [noVerificationGuard]
   },
   {
     path: 'reset-password',
-    component: PasswordRecoveryComponent
+    component: PasswordRecoveryComponent,
+    canActivate: [noVerificationGuard]
   },
   {
     path: 'no-verification',

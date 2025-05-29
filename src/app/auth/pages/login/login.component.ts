@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, Output, EventEmitter, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, Output, EventEmitter, inject, Inject, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -40,7 +40,7 @@ export class LoginComponent {
   @Output() visibleModal = new EventEmitter<boolean>();
 
 
-  constructor(){
+  constructor(@Inject(PLATFORM_ID) private platformId: Object){
     this.formLogin = this.formBuilder.group({
       email : new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
       password : new FormControl('', Validators.required)
@@ -102,6 +102,7 @@ export class LoginComponent {
         if (!s.data.email_verified_at) {
           this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
           this.router.navigate(['no-verification']); 
+          this.toggleDarkMode();
         }
       },
       error: (err) => {
@@ -167,6 +168,15 @@ export class LoginComponent {
         this.visible = true;
         this.visibleModal.emit(true);
       })
+    }
+
+    toggleDarkMode() {
+      if (isPlatformBrowser(this.platformId)) {
+        const element = document.querySelector('html');
+        if (element !== null) {
+          element.classList.toggle('custom-dark-mode');
+        }
+      }
     }
 
 }

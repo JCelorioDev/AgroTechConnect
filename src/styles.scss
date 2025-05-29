@@ -45,6 +45,13 @@ html.custom-dark-mode {
       border-color: rgba(246, 173, 85, 0.3);
       background-color: rgba(246, 173, 85, 0.1);
     }
+
+    .swal2-cancel {
+      background-color: #576870 !important;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
   }
 }
 

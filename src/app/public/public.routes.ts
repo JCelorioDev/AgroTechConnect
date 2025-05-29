@@ -17,11 +17,11 @@ export default [
   {
     path: 'menu',
     component: SidebarComponent,
+    canActivate: [noVerificationGuard],
     children: [
       {
         path: 'publicaciones',
-        component: PublicationComponent,
-        canActivate: [noVerificationGuard]
+        component: PublicationComponent
       },
       {
         path: 'preguntas',
