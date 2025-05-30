@@ -97,13 +97,13 @@ export class LoginComponent {
         this.isLoadingLogin = false;
         this.onDialogHide();
         localStorage.setItem('userLogin', JSON.stringify(s.data)); 
+        this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
 
         if (!s.data.email_verified_at) {
           this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
           this.router.navigate(['no-verification']); 
         }
 
-        this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
       },
       error: (err) => {
         this.isLoadingLogin = false;
@@ -177,6 +177,10 @@ export class LoginComponent {
           element.classList.toggle('custom-dark-mode');
         }
       }
+    }
+
+    get getisLoadingGoogle():boolean{
+      return this.loginSocialNetworks.getisLoadingGoogle;
     }
 
 }

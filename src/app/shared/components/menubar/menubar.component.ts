@@ -91,6 +91,8 @@ export class MenubarComponent {
             this.visible = false;
           },
           error: (err) => {
+            this.alertService.miniAlert(err.error.message, 'error', 2500);
+            localStorage.clear();
             this.isLoadingLogout = false;
           }
         })

@@ -95,7 +95,7 @@ export class NoVerificationComponent {
           },
           error: (err) => {
             this.router.navigate(['menu/publicaciones']);
-            this.alertService.miniAlert(err.error.mensaje, 'error', 2500);
+            this.alertService.miniAlert(err.error.message, 'error', 2500);
             localStorage.clear();
             this.loading = false;
           }
@@ -116,6 +116,8 @@ export class NoVerificationComponent {
         this.loading = false;
       }, 
       error: (err) => {
+        this.router.navigate(['menu/publicaciones']);
+        this.authService.setEmailVerified(true);
         this.alertService.miniAlert(err.error.message, 'error', 3000);
         this.loading = false;
       }

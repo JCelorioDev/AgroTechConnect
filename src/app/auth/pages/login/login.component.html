@@ -1,4 +1,4 @@
-@if(isLoadingLogin){
+@if(isLoadingLogin || getisLoadingGoogle){
   <div class="loading-overlay">
     <img 
       src="anim/spinning_loading-bards_anim.svg" 
@@ -21,8 +21,8 @@
       <!-- Título -->
       <h2 class="login-title">Iniciar sesión</h2>
       <p class="login-subtext">
-        Al continuar, aceptas nuestro <a href="#">Acuerdo del usuario</a> y confirmas que has entendido
-        <a href="#">políticas de seguridad</a>.
+        Al continuar, aceptas nuestro y confirmas que has entendido
+        <a target="_blank" href="documents/tyc/Copia de TÉRMINOS Y CONDICIONES.pdf">políticas de seguridad</a>.
       </p>
     
       <!-- Botón Google -->

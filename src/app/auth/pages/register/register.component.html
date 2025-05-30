@@ -13,10 +13,6 @@
     
       <!-- Título -->
       <h2 class="login-title">Registro</h2>
-      <p class="login-subtext">
-        Al continuar, aceptas nuestro <a href="#">Acuerdo del usuario</a> y confirmas que has entendido
-        <a href="#">políticas de seguridad</a>.
-      </p>
     
     
       <form (ngSubmit)="registerwithEmailandPassword()" [formGroup]="formRegister">
@@ -139,7 +135,6 @@
     
       <!-- Enlaces -->
       <div class="login-footer">
-        <a *ngIf="authenticationService.showAlertnotverifyemail" style="cursor: pointer;" (click)="sendEmailVerification()">Volver a enviar la verificación de correo.</a>
         <a style="cursor: pointer;" (click)="onDialogHide()">¿Ya tienes una cuenta?</a>
       </div>
     </div>
