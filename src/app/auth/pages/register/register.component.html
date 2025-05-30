@@ -115,6 +115,23 @@
             <p *ngIf="formRegister.get('password_confirmation')?.errors?.['passwordMismatch']">Las contraseñas no coinciden.</p>
           </div>
         </div>
+
+        <div class="checkbox-wrapper">
+          <div class="checkbox-inline">
+            <p-checkbox 
+              inputId="terms" 
+              formControlName="terms" 
+              binary="true"
+            ></p-checkbox>
+            <label for="terms" class="checkbox-label">
+              Acepto los <a target="_blank" href="documents/tyc/Copia de TÉRMINOS Y CONDICIONES.pdf" class="tyc-link">términos y condiciones</a>
+            </label>
+          </div>
+          <div *ngIf="formRegister.get('terms')?.invalid && formRegister.get('terms')?.touched" class="error-message">
+            Debes aceptar los términos y condiciones.
+          </div>
+        </div>
+        
     
         <p-button type="submit" label="REGISTRARME" />
       </form>

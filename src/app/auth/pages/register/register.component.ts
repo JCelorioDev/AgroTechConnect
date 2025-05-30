@@ -10,11 +10,11 @@ import Swal from 'sweetalert2';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { PasswordModule } from 'primeng/password';
 import { AuthServiceUser } from '../../services/auth/authServiceUser.service';
-
+import { Checkbox } from 'primeng/checkbox';
 
 @Component({
   selector: 'auth-register',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, InputTextModule, PasswordModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, Dialog, ButtonModule, InputTextModule, PasswordModule, Checkbox],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
@@ -28,6 +28,7 @@ export class RegisterComponent {
   public readonly authenticationService = inject(AuthServiceUser);
   private readonly alertSevice = inject(AlertService);
   public isLoadingRegister:boolean = false;
+  public tyc:boolean = false;
 
   constructor(){
     this.formRegister = this.formBuilder.group({
@@ -37,7 +38,8 @@ export class RegisterComponent {
       username : new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]),
       email : new FormControl('', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$")]),
       password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
-      password_confirmation : new FormControl('', [Validators.required])
+      password_confirmation : new FormControl('', [Validators.required]),
+      terms: [false, [Validators.requiredTrue]]
     },
     {
       validators: passwordMatchValidator('password', 'password_confirmation')
