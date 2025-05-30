@@ -96,14 +96,14 @@ export class LoginComponent {
       next: (s) => {
         this.isLoadingLogin = false;
         this.onDialogHide();
-        this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
         localStorage.setItem('userLogin', JSON.stringify(s.data)); 
 
         if (!s.data.email_verified_at) {
           this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
           this.router.navigate(['no-verification']); 
-          this.toggleDarkMode();
         }
+
+        this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
       },
       error: (err) => {
         this.isLoadingLogin = false;

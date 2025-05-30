@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { isPlatformBrowser } from '@angular/common';
 import { LottieComponent, AnimationOptions } from 'ngx-lottie';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'no-verification',
@@ -30,11 +31,10 @@ export class NoVerificationComponent {
   };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object){
-    
+    this.toggleDarkMode();
   }
 
   ngOnInit(): void {
-    this.toggleDarkMode();
     document.body.style.overflow = 'hidden';
     this.startWatchingUserLogin();
   }
@@ -55,7 +55,7 @@ export class NoVerificationComponent {
   handleSuspiciousChange(): void {
     alert('Tu sesión fue alterada. Se cerrará por seguridad.');
     localStorage.removeItem('userLogin');
-    window.location.href = 'menu/publicaciones'; 
+    this.router.navigate(['menu/publicaciones']);
   }
 
   
@@ -74,7 +74,21 @@ export class NoVerificationComponent {
         this.loading = true;
         this.authService.logout().subscribe({
           next: () => {
-            this.alertService.miniAlert('La sesión se cerró correctamente.', 'success', 2500);
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "bottom-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              }
+            });
+            Toast.fire({
+              icon: "success",
+              title: "Se cerró la sesión correctamente"
+            });
             this.router.navigate(['menu/publicaciones']);
             this.toggleDarkMode();
             localStorage.clear();

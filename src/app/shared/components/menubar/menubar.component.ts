@@ -37,7 +37,7 @@ export class MenubarComponent {
   }
 
   ngOnInit():void{
-    this.startWatchingUserLogin();
+    //this.startWatchingUserLogin();
     // Si el correo esta verificado se activará el método
     if (this.authService.getEmailVerified) {
       this.isEmailVerify();
@@ -125,7 +125,7 @@ export class MenubarComponent {
   handleSuspiciousChange(): void {
     alert('Tu sesión fue alterada. Se cerrará por seguridad.');
     localStorage.removeItem('userLogin');
-    window.location.href = 'menu/publicaciones'; 
+    this.router.navigate(['menu/publicaciones']);
   }
 
 
