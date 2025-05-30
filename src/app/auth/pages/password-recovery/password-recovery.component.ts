@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, EventEmitter, Inject, inject, Output, PLATFORM_ID } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
@@ -33,7 +33,7 @@ export class PasswordRecoveryComponent {
   public isLoadingRecoveryPassword:boolean = false;
 
   
-  constructor() { 
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { 
     this.formPasswordReset = this.formbuilder.group({
       password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
       password_confirmation : new FormControl('', [Validators.required])
@@ -43,6 +43,7 @@ export class PasswordRecoveryComponent {
   }
 
   ngOnInit(): void {
+    this.toggleDarkMode();
     this.route.queryParams.subscribe(params => {
       // Obtener el token
       this.token = params['token'] || '';
@@ -75,9 +76,15 @@ export class PasswordRecoveryComponent {
         this.router.navigate(['menu/publicaciones']);
         this.authService.setstatusPassword(true);
         this.isLoadingRecoveryPassword = false;
+        this.toggleDarkMode();
+        this.alertService.miniAlert('La contraseña se cambió correctamente, inicia sesión de nuevo', 'success', 2500);
       },
       error: (err) => {
-        this.alertService.miniAlert(err.error.message, 'warning', 2500);
+        if (err.error.statusCode === 422) {
+          this.alertService.miniAlert('Esta contraseña ya la haz ingresado anteriormente, vuelve a ingresar otra.', 'warning', 2500);
+        }else{
+          this.alertService.miniAlert(err.error.message, 'warning', 2500);
+        }
         this.isLoadingRecoveryPassword = false;
       }
     })
@@ -103,6 +110,15 @@ export class PasswordRecoveryComponent {
 
   get hasSpecialChar() {
     return /[@$!%*?&]/.test(this.password.value || '');
+  }
+
+  toggleDarkMode() {
+    if (isPlatformBrowser(this.platformId)) {
+      const element = document.querySelector('html');
+      if (element !== null) {
+        element.classList.toggle('custom-dark-mode');
+      }
+    }
   }
 
 }

@@ -134,7 +134,7 @@ export class LoginComponent {
 
     async loginWithGoogle(): Promise<void> {
       try {
-        this.isLoadingLogin = true;
+        //this.isLoadingLogin = true;
         
         const response = await this.loginSocialNetworks.loginWithGoogle().toPromise();
 

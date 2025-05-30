@@ -42,6 +42,7 @@ export class ForgotPasswordComponent {
 
   forgotPassword():void{
     if (this.formForgotPassword.invalid) {
+      this.toastService.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formForgotPassword.markAllAsTouched(); return;  
     }
 
