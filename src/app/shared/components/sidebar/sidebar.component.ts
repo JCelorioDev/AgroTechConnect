@@ -26,7 +26,7 @@ import { MenubarComponent } from '../menubar/menubar.component';
 export class SidebarComponent implements OnInit, OnDestroy {
   isOpen = true;
   isMobile = false;
-  checked: boolean = true;
+  checked: boolean = false;
   private resizeListener: (() => void) | null = null; // Corrección aquí
 
   menuItems = [
@@ -40,9 +40,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   ngOnInit(): void {
+
+    if (this.isDarkModeActive()) {
+      this.checked = localStorage.getItem('themeDark') === 'true' ? true : false;
+    }
+
+
     if (isPlatformBrowser(this.platformId)) {
       this.checkViewport();
-      this.toggleDarkMode();
       
       // Usamos arrow function para mantener el contexto de 'this'
       this.resizeListener = () => this.checkViewport();
@@ -77,8 +82,28 @@ export class SidebarComponent implements OnInit, OnDestroy {
     if (isPlatformBrowser(this.platformId)) {
       const element = document.querySelector('html');
       if (element !== null) {
-        element.classList.toggle('custom-dark-mode');
+        const isDarkModeActive = element.classList.contains('custom-dark-mode');
+  
+        if (isDarkModeActive) {
+          // Modo oscuro activado, lo desactiva
+          element.classList.remove('custom-dark-mode');
+          localStorage.removeItem('themeDark');
+        } else {
+          // Modo oscuro desactivado, lo activa
+          element.classList.add('custom-dark-mode');
+          localStorage.setItem('themeDark', 'true');
+        }
       }
     }
   }
+
+  isDarkModeActive(): boolean {
+    if (isPlatformBrowser(this.platformId)) {
+      const element = document.querySelector('html');
+      return element?.classList.contains('custom-dark-mode') ?? false;
+    }
+    return false;
+  }
+  
+  
 }

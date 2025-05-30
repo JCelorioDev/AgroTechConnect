@@ -15,8 +15,7 @@ export default [
   },
   {
     path: 'email/verify',
-    component: VerifyEmailComponent,
-    canActivate: [verificationGuard]
+    component: VerifyEmailComponent
   },
   {
     path: 'reset-password',

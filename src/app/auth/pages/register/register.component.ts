@@ -71,6 +71,7 @@ export class RegisterComponent {
         this.onDialogHide();
         localStorage.setItem('tokenVerificationEmail', s.data.token);
         this.isLoadingRegister = false;
+        this.alertSevice.miniAlert('Registro exitoso', 'success', 2500);
         this.alertSevice.miniAlert('Verifica tu correo electrónico, revisa la bandeja de correo.', 'warning', 3000);
       },
       error: (err:any) => {

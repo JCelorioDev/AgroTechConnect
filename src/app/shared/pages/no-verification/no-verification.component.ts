@@ -31,7 +31,7 @@ export class NoVerificationComponent {
   };
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object){
-    this.toggleDarkMode();
+
   }
 
   ngOnInit(): void {
@@ -85,18 +85,16 @@ export class NoVerificationComponent {
                 toast.onmouseleave = Swal.resumeTimer;
               }
             });
+            this.router.navigate(['menu/publicaciones']);
             Toast.fire({
               icon: "success",
               title: "Se cerró la sesión correctamente"
             });
-            this.router.navigate(['menu/publicaciones']);
-            this.toggleDarkMode();
-            localStorage.clear();
+            localStorage.removeItem('userLogin');
             this.loading = false;
           },
           error: (err) => {
             this.router.navigate(['menu/publicaciones']);
-            this.toggleDarkMode();
             this.alertService.miniAlert(err.error.mensaje, 'error', 2500);
             localStorage.clear();
             this.loading = false;
@@ -128,6 +126,7 @@ export class NoVerificationComponent {
     if (isPlatformBrowser(this.platformId)) {
       const element = document.querySelector('html');
       if (element !== null) {
+        localStorage.setItem('themeDark', 'true');
         element.classList.toggle('custom-dark-mode');
       }
     }
