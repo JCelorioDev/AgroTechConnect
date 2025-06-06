@@ -243,3 +243,156 @@ $sidebar-width: 250px;
   height: auto;
   animation: spin 1s linear infinite;
 }
+
+
+:host ::ng-deep {
+  .eliminate-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+
+    .eliminate-dialog-content {
+      .eliminate-subtext {
+        font-size: 0.9rem;
+        color: #bbb;
+        margin-bottom: 1rem;
+      }
+
+      .eliminate-input-group {
+        width: 100%;
+        margin-bottom: 1.5rem;
+
+        .p-float-label {
+          width: 100%;
+
+          &:not(:first-child) {
+            margin-top: 1.5rem;
+          }
+
+          .p-password {
+            width: 100%;
+
+            input.p-inputtext {
+              width: 100%;
+              padding: 0.75rem;
+              background-color: transparent;
+              border: 1px solid #4caf50;
+              border-radius: 6px;
+              color: #fff;
+              transition: all 0.3s ease;
+
+              &:focus {
+                border-color: #81c784;
+                box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+              }
+            }
+
+            .p-password-toggle-icon {
+              color: #fff !important;
+            }
+
+            button.p-button-icon-only {
+              background: transparent;
+              border: none;
+              box-shadow: none;
+            }
+          }
+
+          label {
+            color: #bbb;
+            font-size: 0.9rem;
+            left: 1rem;
+            top: -0.6rem;
+            background-color: #1f1f1f;
+            padding: 0 0.3rem;
+            transition: color 0.3s ease;
+          }
+        }
+      }
+
+      .eliminate-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+    }
+  }
+}
+
+
+:host ::ng-deep {
+  .eliminate-code-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: center;
+
+    .eliminate-code-dialog-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .code-display {
+        font-size: 2.2rem;
+        font-weight: bold;
+        color: #4caf50;
+        margin-bottom: 1rem;
+        letter-spacing: 4px;
+      }
+
+      .eliminate-subtext {
+        font-size: 0.95rem;
+        color: #bbb;
+        margin-bottom: 1.5rem;
+        max-width: 90%;
+      }
+
+      .input-group {
+        display: flex;
+        justify-content: center;
+
+        .p-inputotp {
+          gap: 0.5rem;
+
+          input {
+            width: 3rem;
+            height: 3.2rem;
+            font-size: 1.5rem;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #4caf50;
+            background-color: transparent;
+            color: #fff;
+            transition: border 0.3s;
+
+            &:focus {
+              border-color: #81c784;
+              box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .delete-account-button {
+    margin-top: 2rem;
+  
+    .p-button {
+      width: 100%;
+      border-radius: 8px;
+    }
+  }
+}
+
+
+
+
+
+
+
