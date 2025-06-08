@@ -4,6 +4,7 @@ import { SidebarComponent } from "../shared/components/sidebar/sidebar.component
 import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
 import { noVerificationGuard } from "../core/guards/no-verification.guard";
+import { ProfileComponent } from "./pages/profile/profile.component";
 
 
 
@@ -26,6 +27,10 @@ export default [
       {
         path: 'preguntas',
         component: PreguntasComponent
+      },
+      {
+        path: 'perfil',
+        component: ProfileComponent
       },
       ...privateRoutes
     ]

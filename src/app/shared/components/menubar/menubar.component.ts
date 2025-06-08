@@ -284,4 +284,10 @@ export class MenubarComponent {
     const method = JSON.parse(localStorage.getItem('userLogin')!);
     return method?.data?.registration_method ? method?.data?.registration_method : 'local';
   }
+
+  // Ir al componente de perfil
+
+  goProfil(idUser?:string):void{
+    this.router.navigate(['menu/perfil']);
+  }
 }

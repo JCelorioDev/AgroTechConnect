@@ -50,6 +50,17 @@ html.custom-dark-mode  .tarjeta-verificacion p{
   color: #ffffff !important;
 }
 
+html.custom-dark-mode .perfil-contenido {
+  i,
+  p,
+  span,
+  .p-panel-header {
+    color: #ffffff !important;
+  }
+}
+
+
+
 html.custom-dark-mode {
   .swal2-container {
     z-index: 5000;
