@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
@@ -38,12 +38,29 @@ export class ProfileComponent {
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  hoverAvatar = false;
+  @ViewChild('fileInput') fileInput!: ElementRef;
+  selectedImage: File | null = null;
+  previewUrl: string | ArrayBuffer | null = null;
+  public loading_spinning:boolean = false;
+  currentPhotoUrl: string | null = null;
 
   encryptedId = toSignal(
     this.route.params.pipe(
       map(params => params['id'])
     )
   );
+
+  constructor(){
+
+    this.userService.currentUserPhoto$.subscribe(newUrl => {
+      this.currentPhotoUrl = newUrl; 
+      if (this.objUser?.image) {
+
+        this.objUser.image.url = newUrl !== null ? newUrl : this.objUser.image.url;
+      }
+    });
+  }
 
   ngOnInit(): void {
     if (this.encryptedId()) { 
@@ -133,12 +150,114 @@ export class ProfileComponent {
       'novato': 'img/trofeos/novato.png'
     };
   
-    // Convertir a minúsculas y eliminar acentos para mejor coincidencia
+
     const normalizedRange = rangeName.toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
   
     return rangeImages[normalizedRange] || rangeImages['novato'];
   }
+
+
+
+
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+  
+    if (!input.files?.length) return;
+  
+    const file = input.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const maxSizeMB = 3;
+  
+    // Validaciones...
+  
+    this.selectedImage = file;
+  
+    const reader = new FileReader();
+    reader.onload = () => {
+      const previewUrl = reader.result as string;
+  
+      this.alertService.alertwithDialogs(
+        '¿Estás seguro de cambiar la foto de tu perfil?',
+        'Después no podrás revertir esta acción',
+        'warning',
+        3000,
+        () => {
+          if (!this.selectedImage) return;
+
+          this.loading_spinning = true;
+  
+          const formData = new FormData();
+          formData.append('avatar', this.selectedImage);
+
+          this.userService.uploadPhotoUser(formData).subscribe({
+            next: (s) => {
+              this.loading_spinning = false;
+              this.alertService.miniAlert('Tu foto de perfil se actualizó correctamente.', 'success', 3000);
+              this.resetFileInput();
+            },
+            error: (err) => {
+              this.loading_spinning = false;
+              if (err.status === 422) {
+                this.alertService.showValidationErrors(err.error);
+              } else {
+                this.alertService.miniAlert(err.error.message, 'error', 3000);
+              }
+            }
+          });
+        },
+        'No, deseo!',
+        'Sí, deseo',
+        `<img src="${previewUrl}" alt="Vista previa" style="margin-top: 1rem; width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 10px rgba(0,0,0,0.2);" />`
+      );
+    };
+  
+    reader.readAsDataURL(file);
+  }
+  
+
+
+
+
+  deletePhoto() {
+    this.alertService.alertwithDialogs(
+      '¿Estás seguro de eliminar tu foto de tu perfil?',
+      'Después no podrás revertir esta acción',
+      'warning',
+      3000,
+      () => {
+        this.loading_spinning = true;
+
+        this.userService.deletePhoto().subscribe({
+          next: (s) => {
+            this.loading_spinning = false;
+            this.alertService.miniAlert('Tu foto de perfil se eliminó correctamente.', 'success', 3000);
+            // No es necesario actualizar manualmente aquí, el BehaviorSubject se encargará
+          },
+          error: (err) => {
+            this.loading_spinning = false;
+            if (err.status === 422) {
+              this.alertService.showValidationErrors(err.error);
+            } else {
+              this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
+          }
+        });
+      },
+      'No, deseo!',
+      'Sí, deseo'
+    );
+  }
+
+
+
+  resetFileInput(): void {
+    this.fileInput.nativeElement.value = '';
+    this.selectedImage = null;
+    this.previewUrl = null;
+  }
+
 
 
 }

@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ResponseUserI } from '../../models/User/userResponse.interface';
+import { UploadPhotoResponse } from '../../models/User/uploadPhotoResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { ResponseUserI } from '../../models/User/userResponse.interface';
 export class UserService {
 
   private readonly httpClient = inject(HttpClient);
+  private currentUserPhoto = new BehaviorSubject<string | null>(null);
+  currentUserPhoto$ = this.currentUserPhoto.asObservable();
 
   constructor() { }
 
@@ -37,6 +40,30 @@ export class UserService {
 
   getInformationnByID(idEncryp:string):Observable<ResponseUserI>{
     return this.httpClient.get<ResponseUserI>(`${environment.apiBaseUrl}user/profile/${idEncryp}`);
+  }
+
+  // Actualizar la foto de un usuario
+
+  uploadPhotoUser(Photo: FormData): Observable<UploadPhotoResponse> {
+    return this.httpClient.post<UploadPhotoResponse>(`${environment.apiBaseUrl}me/avatar`, Photo).pipe(
+      tap(response => {
+        this.currentUserPhoto.next(response.data.avatar_url);
+      })
+    );
+  }
+
+  updateUserPhoto(newUrl: string) {
+    this.currentUserPhoto.next(newUrl);
+  }
+
+  // Eliminar la foto de perfil de usuario 
+
+  deletePhoto(): Observable<any> {
+    return this.httpClient.delete(`${environment.apiBaseUrl}me/avatar`).pipe(
+      tap(() => {
+        this.currentUserPhoto.next(null);
+      })
+    );
   }
 
 }

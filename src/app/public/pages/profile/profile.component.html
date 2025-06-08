@@ -1,8 +1,35 @@
+@if(loading_spinning){
+  <div class="loading-overlay">
+    <img 
+      src="anim/spinning_loading-bards_anim.svg" 
+      alt="Loading..." 
+      class="responsive-spinner"
+    >
+  </div>
+}
+
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
   <div class="perfil-banner">
-    <div class="perfil-avatar">
-      <img [src]="objUser?.image?.url || 'img/user/perfil1.png'" alt="Avatar" />
-    </div>
+    <div class="perfil-avatar" (mouseenter)="hoverAvatar = true" (mouseleave)="hoverAvatar = false">
+      <img [src]="currentPhotoUrl !== null ? (currentPhotoUrl || objUser?.image?.url) : 'img/user/perfil1.png'" 
+      alt="Avatar" />
+    
+      <div class="avatar-actions" *ngIf="hoverAvatar">
+        <input type="file"
+        #fileInput
+        hidden
+        (change)="onFileSelected($event)" />
+ 
+        <button pButton type="button" icon="pi pi-pencil"
+                class="p-button-rounded p-button-info"
+                (click)="fileInput.click()" pTooltip="Editar foto"
+                tooltipPosition="top">
+        </button>
+ 
+        <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger" 
+                (click)="deletePhoto()" pTooltip="Eliminar foto" tooltipPosition="top"></button>
+      </div>
+    </div> 
   </div>
 
   <div class="perfil-contenido">

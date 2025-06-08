@@ -80,7 +80,8 @@ export class AlertService {
       time?: number,
       onConfirm?: () => void,
       txtButtonCancel: string = 'Cancelar',
-      txtButtonConfirm: string = 'Confirmar'
+      txtButtonConfirm: string = 'Confirmar',
+      htmlContent?: string
     ): void {
       Swal.fire({
         title: title,
@@ -92,7 +93,8 @@ export class AlertService {
         confirmButtonText: txtButtonConfirm,
         cancelButtonText: txtButtonCancel,
         allowOutsideClick: false,  
-        allowEscapeKey: false,     
+        allowEscapeKey: false,   
+        html: htmlContent || undefined  
       }).then((result) => {
         if (result.isConfirmed) {
           onConfirm?.(); 
