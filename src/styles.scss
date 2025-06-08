@@ -59,7 +59,21 @@ html.custom-dark-mode .perfil-contenido {
   }
 }
 
+html.custom-dark-mode .perfil-metricas div{
+  background: rgba(24, 23, 23, 0.219) !important;
+}
 
+html.custom-dark-mode .perfil-sobremi .p-panel{
+  background: rgba(24, 23, 23, 0.219) !important;
+}
+
+html.custom-dark-mode .perfil-social a  {
+  background: rgba(24, 23, 23, 0.219) !important;
+}
+
+html.custom-dark-mode .perfil-estado {
+  background: rgb(43, 102, 46) !important;
+}
 
 html.custom-dark-mode {
   .swal2-container {

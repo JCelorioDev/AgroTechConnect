@@ -6,9 +6,12 @@
   </div>
 
   <div class="perfil-contenido">
-    <p-tag *ngIf="range?.name" severity="success" [value]="range?.name" class="perfil-estado"></p-tag>
+    <div class="perfil-rango-container">
+      <p-tag *ngIf="range?.name" severity="success" [value]="range?.name" class="perfil-estado"></p-tag>
+      <img [src]="getRangeImageUrl(range?.name)" alt="Rango del usuario" class="rango-imagen" />
+    </div>
     <h2 class="perfil-nombre">
-      {{(objUser?.name || '') + ' ' + (objUser?.lastname || '')}} <i *ngIf="objUser?.email_verified" class="pi pi-star-fill perfil-estrella"></i>
+      {{(objUser?.name || '') + ' ' + (objUser?.lastname || '')}} <i *ngIf="objUser?.email_verified"></i>
     </h2>
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
 

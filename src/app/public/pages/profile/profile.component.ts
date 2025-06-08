@@ -120,5 +120,25 @@ export class ProfileComponent {
     return { icon: 'pi pi-link' };
   }
 
+
+  getRangeImageUrl(rangeName: string | undefined): string {
+    if (!rangeName) return 'img/trofeos/novato.png'; 
+    
+    const rangeImages: {[key: string]: string} = {
+      'aprendiz': 'img/trofeos/aprendiz.png',
+      'contribuyente': 'img/trofeos/contribuyente.png',
+      'experto': 'img/trofeos/experto.png',
+      'iniciado': 'img/trofeos/iniciado.png',
+      'leyenda': 'img/trofeos/leyenda.png',
+      'novato': 'img/trofeos/novato.png'
+    };
   
+    // Convertir a minúsculas y eliminar acentos para mejor coincidencia
+    const normalizedRange = rangeName.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+    return rangeImages[normalizedRange] || rangeImages['novato'];
+  }
+
+
 }
