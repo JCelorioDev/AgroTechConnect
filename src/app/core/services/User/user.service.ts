@@ -33,4 +33,10 @@ export class UserService {
     return this.httpClient.get<ResponseUserI>(`${environment.apiBaseUrl}me/profile`);
   }
 
+  // Mostrar la información de usurio por id usuario 
+
+  getInformationnByID(idEncryp:string):Observable<ResponseUserI>{
+    return this.httpClient.get<ResponseUserI>(`${environment.apiBaseUrl}user/profile/${idEncryp}`);
+  }
+
 }

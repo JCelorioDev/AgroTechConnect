@@ -1,33 +1,50 @@
-<div class="perfil-container">
-    <div class="perfil-banner">
-      <div class="perfil-avatar">
-        <img [src]="objUser?.image?.url ? objUser?.image?.url  : 'img/user/perfil1.png'" alt="Avatar" />
-      </div>
+<div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
+  <div class="perfil-banner">
+    <div class="perfil-avatar">
+      <img [src]="objUser?.image?.url || 'img/user/perfil1.png'" alt="Avatar" />
     </div>
-  
-    <div class="perfil-contenido">
-      <p-tag severity="success" [value]="range?.name" class="perfil-estado"></p-tag>
-      <h2 class="perfil-nombre">
-        {{objUser?.name + ' ' + objUser?.lastname}} <i class="pi pi-star-fill perfil-estrella"></i>
-      </h2>
-      <p class="perfil-rol">{{'@' + objUser?.username}}</p>
-  
-      <div class="perfil-metricas">
-        <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length}}</span></div>
-        <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length}}</span></div>
-        <div><i class="pi pi-users"></i><span>{{objUser?.followers?.length}}</span></div>
-      </div>
-  
-      <p-panel class="perfil-sobremi" header="Sobre mí">
-        <p>
-          {{objUser?.user_information?.description}}
-        </p>
-      </p-panel>
-  
-      <div class="perfil-social">
-        <i class="pi pi-linkedin"> DroneCropXpert</i> 
-        <i class="pi pi-youtube"> DroneCropXpert</i> 
-      </div>
+  </div>
+
+  <div class="perfil-contenido">
+    <p-tag *ngIf="range?.name" severity="success" [value]="range?.name" class="perfil-estado"></p-tag>
+    <h2 class="perfil-nombre">
+      {{(objUser?.name || '') + ' ' + (objUser?.lastname || '')}} <i *ngIf="objUser?.email_verified" class="pi pi-star-fill perfil-estrella"></i>
+    </h2>
+    <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
+
+    <div class="perfil-metricas">
+      <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
+      <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
+      <div><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
     </div>
+
+    <p-panel *ngIf="objUser?.user_information?.description" class="perfil-sobremi" header="Sobre mí">
+      <p>{{objUser.user_information.description}}</p>
+    </p-panel>
+
+    <div class="perfil-social" *ngIf="objUser?.user_information && hasSocialLinks()">
+      <a *ngFor="let link of getSocialLinks()" 
+         [href]="link" target="_blank" rel="noopener">
+        <i [class]="getSocialIcon(link).icon"></i>
+      </a>
+    </div>
+  </div>
 </div>
-  
+
+<ng-template #skeleton_info>
+<!-- Mantén tu skeleton loader existente -->
+<div style="display: flex; flex-direction: column; align-items: center; padding: 1rem; gap: 1.5rem; max-width: 100%; margin-top: 1.5rem;">
+  <p-skeleton width="120px" height="22px"></p-skeleton>
+  <p-skeleton width="80px" height="18px"></p-skeleton>
+  <div style="width: 100%; margin-top: 1rem;">
+    <p-skeleton width="110px" height="20px"></p-skeleton>
+    <div style="margin-top: 0.7rem; display: flex; flex-direction: column; gap: 0.4rem;">
+      <p-skeleton width="100%" height="10px"></p-skeleton>
+      <p-skeleton width="98%" height="10px"></p-skeleton>
+      <p-skeleton width="95%" height="10px"></p-skeleton>
+      <p-skeleton width="90%" height="10px"></p-skeleton>
+      <p-skeleton width="85%" height="10px"></p-skeleton>
+    </div>
+  </div>
+</div>
+</ng-template>

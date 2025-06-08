@@ -32,6 +32,10 @@ export default [
         path: 'perfil',
         component: ProfileComponent
       },
+      {
+        path: 'perfil/:id',
+        component: ProfileComponent
+      },
       ...privateRoutes
     ]
   }
