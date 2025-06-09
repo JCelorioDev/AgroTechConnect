@@ -52,12 +52,20 @@ export class ProfileComponent {
   );
 
   constructor(){
-
     this.userService.currentUserPhoto$.subscribe(newUrl => {
-      this.currentPhotoUrl = newUrl; 
+      this.currentPhotoUrl = newUrl;
+      
+      // Actualiza tanto el currentPhotoUrl como el objUser.image.url
       if (this.objUser?.image) {
-
-        this.objUser.image.url = newUrl !== null ? newUrl : this.objUser.image.url;
+        if (newUrl === '') {
+          // Foto eliminada - establece null para usar la imagen por defecto
+          this.objUser.image.url = null;
+          this.currentPhotoUrl = null;
+        } else if (newUrl) {
+          // Nueva foto - actualiza ambos
+          this.objUser.image.url = newUrl;
+          this.currentPhotoUrl = newUrl;
+        }
       }
     });
   }
@@ -74,12 +82,19 @@ export class ProfileComponent {
     this.userService.getInformation().subscribe({
       next: (s) => {
         this.objUser = s.data;
+        // Sincroniza el currentPhotoUrl con la foto del backend
+        if (this.objUser?.image?.url) {
+          this.currentPhotoUrl = this.objUser.image.url;
+        } else {
+          this.currentPhotoUrl = null;
+        }
         this.processRanges();
         this.isLoadingInfoUser = false;
       },
       error: (err) => this.handleError(err)
     });
   }
+
 
   getInformationnByID(): void {
     this.userService.getInformationnByID(this.encryptedId()!).subscribe({
@@ -233,7 +248,7 @@ export class ProfileComponent {
           next: (s) => {
             this.loading_spinning = false;
             this.alertService.miniAlert('Tu foto de perfil se eliminó correctamente.', 'success', 3000);
-            // No es necesario actualizar manualmente aquí, el BehaviorSubject se encargará
+            this.getInformation();
           },
           error: (err) => {
             this.loading_spinning = false;
@@ -249,7 +264,6 @@ export class ProfileComponent {
       'Sí, deseo'
     );
   }
-
 
 
   resetFileInput(): void {

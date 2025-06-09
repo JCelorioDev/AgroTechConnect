@@ -61,7 +61,7 @@ export class UserService {
   deletePhoto(): Observable<any> {
     return this.httpClient.delete(`${environment.apiBaseUrl}me/avatar`).pipe(
       tap(() => {
-        this.currentUserPhoto.next(null);
+        this.currentUserPhoto.next(''); // Usamos string vacío para indicar foto eliminada
       })
     );
   }

@@ -68,8 +68,8 @@ export interface Follower {
 
 export interface Image {
     id:             string;
-    image_Uuid:     string;
-    url:            string;
+    image_Uuid:     string | null;
+    url:            string | null;
     imageable_type: string;
     imageable:      null;
     created_at:     AtedAt;

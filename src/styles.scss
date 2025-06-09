@@ -75,6 +75,19 @@ html.custom-dark-mode .perfil-estado {
   background: rgb(43, 102, 46) !important;
 }
 
+html.custom-dark-mode .avatar-actions .p-button-danger {
+  background-color: #e4a84f !important;
+  border: 1px solid #c98d3a !important; 
+  box-shadow: 0 0 0 1px rgba(201, 141, 58, 0.5) !important; 
+}
+
+html.custom-dark-mode .avatar-actions .p-button-info {
+  background-color: #4cd64c !important;
+  border: 1px solid #44a527 !important;
+  box-shadow: 0 0 0 1px rgba(82, 201, 58, 0.5) !important;
+}
+
+
 html.custom-dark-mode {
   .swal2-container {
     z-index: 5000;

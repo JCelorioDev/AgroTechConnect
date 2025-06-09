@@ -11,10 +11,10 @@
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
   <div class="perfil-banner">
     <div class="perfil-avatar" (mouseenter)="hoverAvatar = true" (mouseleave)="hoverAvatar = false">
-      <img [src]="currentPhotoUrl !== null ? (currentPhotoUrl || objUser?.image?.url) : 'img/user/perfil1.png'" 
+      <img [src]="(currentPhotoUrl !== null && currentPhotoUrl !== '') ? currentPhotoUrl : 
+      (objUser?.image?.url || 'img/user/perfil1.png')" 
       alt="Avatar" />
-    
-      <div class="avatar-actions" *ngIf="hoverAvatar">
+      <div class="avatar-actions" *ngIf="hoverAvatar && !encryptedId()">
         <input type="file"
         #fileInput
         hidden
