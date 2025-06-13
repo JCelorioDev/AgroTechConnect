@@ -4,6 +4,9 @@ import { environment } from '../../../../environments/environment';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ResponseUserI } from '../../models/User/userResponse.interface';
 import { UploadPhotoResponse } from '../../models/User/uploadPhotoResponse.interface';
+import { updatePasswordRequest } from '../../models/User/updatePasswordRequest.interface';
+import { UpdatePasswodResponse } from '../../models/User/updatePassword.interface';
+import { ShowInformationOpcResponse } from '../../models/User/showInformationOpcResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -64,6 +67,18 @@ export class UserService {
         this.currentUserPhoto.next(''); // Usamos string vacío para indicar foto eliminada
       })
     );
+  }
+
+  // Actualizar la contraseña de usuario
+
+  updatePassword(FormUpdatePassword:updatePasswordRequest):Observable<UpdatePasswodResponse>{
+      return this.httpClient.put<UpdatePasswodResponse>(`${environment.apiBaseUrl}me/password`, FormUpdatePassword)
+  }
+
+  // Mostrar la información adicional de usuario
+
+  showInformationOpc():Observable<ShowInformationOpcResponse>{
+    return this.httpClient.get<ShowInformationOpcResponse>(`${environment.apiBaseUrl}me/user-information`)
   }
 
 }

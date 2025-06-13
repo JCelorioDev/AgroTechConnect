@@ -304,3 +304,189 @@
   height: auto;
   animation: spin 1s linear infinite;
 }
+
+
+:host ::ng-deep {
+  .change-password-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+
+    .change-password-dialog-content {
+      .change-password-subtext {
+        font-size: 0.9rem;
+        color: #bbb;
+        margin-bottom: 1rem;
+      }
+
+      .change-password-input-group {
+        width: 100%;
+        margin-bottom: 1.5rem;
+
+        .p-float-label {
+          width: 100%;
+
+          &:not(:first-child) {
+            margin-top: 1.5rem;
+          }
+
+          .p-password {
+            width: 100%;
+
+            input.p-inputtext {
+              width: 100%;
+              padding: 0.75rem;
+              background-color: transparent;
+              border: 1px solid #4caf50;
+              border-radius: 6px;
+              color: #fff;
+              transition: all 0.3s ease;
+
+              &:focus {
+                border-color: #81c784;
+                box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+              }
+            }
+
+            .p-password-toggle-icon {
+              color: #fff !important;
+            }
+
+            button.p-button-icon-only {
+              background: transparent;
+              border: none;
+              box-shadow: none;
+            }
+          }
+
+          label {
+            color: #bbb;
+            font-size: 0.9rem;
+            left: 1rem;
+            top: -0.6rem;
+            background-color: #1f1f1f;
+            padding: 0 0.3rem;
+            transition: color 0.3s ease;
+          }
+        }
+
+        .error-message {
+          color: #c0b9b9;
+          font-size: 0.75rem;
+
+          .requirements-list {
+            margin-top: 0.3rem;
+            list-style: disc;
+            padding-left: 1rem;
+
+            li {
+              color: #afacac;
+              &.valid {
+                color: #58c05b;
+              }
+            }
+          }
+        }
+      }
+
+      .change-password-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+    }
+  }
+}
+
+
+.boton-opciones-avatar {
+  position: absolute;
+  top: .6rem;
+  right: 0.5rem;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s, transform 0.2s;
+
+  &:hover {
+    background-color: rgba(240, 240, 240, 1);
+    transform: scale(1.05);
+  }
+
+  i {
+    font-size: 1.2rem;
+  }
+}
+
+
+:host ::ng-deep .organic-change-password-dialog {
+  .p-dialog {
+    background: #25282E !important;
+    border-radius: 1rem;
+    padding: 1.2rem;
+    color: #ffffff;
+    border: none !important;
+  }
+
+  .p-dialog-content {
+    padding: 0;
+    background-color:  transparent;
+  }
+
+  .menu-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .menu-option {
+    display: flex;
+    align-items: center;
+    background-color: #a4a8af1f;
+    color: #ffffff;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.2s ease;
+    border-radius: 0%;
+
+    &:hover {
+      background-color: #5459611f;
+    }
+
+    svg.menu-icon {
+      margin-right: 0.75rem;
+      stroke: currentColor;
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .text-red {
+    color: #f87171;
+
+    &:hover {
+      background-color: #7f1d1d;
+    }
+  }
+
+  .text-green {
+    color: #4ade80;
+
+    &:hover {
+      background-color: #065f46;
+    }
+  }
+}
+

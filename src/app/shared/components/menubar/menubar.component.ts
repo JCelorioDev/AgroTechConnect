@@ -71,6 +71,7 @@ export class MenubarComponent {
     this.visible = true;
   }
 
+
   // Mostrar el componente del login (solo si no esta autenticado)
 
   goLogin(open:any):void{

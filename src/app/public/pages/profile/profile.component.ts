@@ -13,6 +13,13 @@ import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop'; 
+import { Dialog } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PasswordModule } from 'primeng/password';
+import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
+import { TextareaModule } from 'primeng/textarea';
+import { UserInformation } from '../../../core/models/User/showInformationOpcResponse.interface';
 
 @Component({
   selector: 'app-profile',
@@ -25,7 +32,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
     BadgeModule,
     PanelModule,
     TagModule,
-    SkeletonModule
+    SkeletonModule,
+    Dialog,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PasswordModule,
+    TextareaModule
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
@@ -38,12 +51,19 @@ export class ProfileComponent {
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  public formChangePassword!:FormGroup;
+  private formBuilder = inject(FormBuilder);
+  public visibleChangePassword:boolean = false; 
   hoverAvatar = false;
   @ViewChild('fileInput') fileInput!: ElementRef;
   selectedImage: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
   public loading_spinning:boolean = false;
   currentPhotoUrl: string | null = null;
+  public visibleModal:boolean= false;
+  public visibleModalUpdateInformation:boolean = false;
+  public formUpdateinformationAdictional!:FormGroup;
+  private objUserInformation!:UserInformation;
 
   encryptedId = toSignal(
     this.route.params.pipe(
@@ -52,6 +72,22 @@ export class ProfileComponent {
   );
 
   constructor(){
+
+    this.formChangePassword = this.formBuilder.group({
+      password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
+      new_password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
+      new_password_confirmation : new FormControl('', Validators.required)
+    }, {
+        validators: passwordMatchValidator('new_password', 'new_password_confirmation')
+    });
+
+    this.formUpdateinformationAdictional = this.formBuilder.group({
+      description : new FormControl('', [Validators.required, Validators.maxLength(100)]),
+      link1 : new FormControl(null),
+      link2 : new FormControl(null),
+      link3 : new FormControl(null)
+    })
+
     this.userService.currentUserPhoto$.subscribe(newUrl => {
       this.currentPhotoUrl = newUrl;
       
@@ -232,9 +268,6 @@ export class ProfileComponent {
   }
   
 
-
-
-
   deletePhoto() {
     this.alertService.alertwithDialogs(
       '¿Estás seguro de eliminar tu foto de tu perfil?',
@@ -270,6 +303,105 @@ export class ProfileComponent {
     this.fileInput.nativeElement.value = '';
     this.selectedImage = null;
     this.previewUrl = null;
+  }
+
+
+  // Métodos para verificar cada requisito de contraseña
+  get password() {
+    return this.formChangePassword.get('password') as FormControl;
+  }
+
+  get lengthValid() {
+    const value = this.password.value || '';
+    return value.length >= 8 && value.length <= 15;
+  }
+
+  get hasUpperCase() {
+    return /[A-Z]/.test(this.password.value || '');
+  }
+
+  get hasNumber() {
+    return /[0-9]/.test(this.password.value || '');
+  }
+
+  get hasSpecialChar() {
+    return /[@$!%*?&]/.test(this.password.value || '');
+  }
+
+
+  get password2() {
+    return this.formChangePassword.get('new_password') as FormControl;
+  }
+
+  get lengthValid2() {
+    const value = this.password2.value || '';
+    return value.length >= 8 && value.length <= 15;
+  }
+
+  get hasUpperCase2() {
+    return /[A-Z]/.test(this.password2.value || '');
+  }
+
+  get hasNumber2() {
+    return /[0-9]/.test(this.password2.value || '');
+  }
+
+  get hasSpecialChar2() {
+    return /[@$!%*?&]/.test(this.password2.value || '');
+  }
+
+
+  // Actualizar la contraseña de usuario
+
+  updatePassword():void{
+    if (this.formChangePassword.invalid) {
+      this.formChangePassword.markAllAsTouched(); return ;
+    }
+    this.loading_spinning = true;
+
+    this.userService.updatePassword(this.formChangePassword.value).subscribe({
+      next: (s) => {
+        this.alertService.miniAlert('Tu contraseña se cambió correctamente, vuelve a iniciar sesión.', 'success', 3000);
+        localStorage.clear();
+        this.router.navigate(['menu/publicaciones']);
+        this.loading_spinning = false;
+      },
+      error: (err) => {
+        this.loading_spinning = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        }else{
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    })
+  }
+
+  updateInformationOpc():void{
+    if (this.formUpdateinformationAdictional.invalid) {
+      this.formUpdateinformationAdictional.markAllAsTouched(); return ;
+    }
+  }
+
+  // Mostrar información adicional de usuario
+
+  showInformationOpc():void{    
+    this.userService.showInformationOpc().subscribe({
+      next: (s) => {
+        this.objUserInformation = s.data.user_information;
+      },
+      error: (err) => {
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        }else{
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    });
+
+    this.formUpdateinformationAdictional.patchValue({
+      description : this.objUserInformation.description
+    })
   }
 
 

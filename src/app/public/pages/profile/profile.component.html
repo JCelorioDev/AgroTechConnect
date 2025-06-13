@@ -8,12 +8,183 @@
   </div>
 }
 
+<!-- Dialogo de opciones de perfil -->
+
+<p-dialog
+  class="organic-change-password-dialog"
+  [(visible)]="visibleModal"
+  [modal]="true"
+  [dismissableMask]="true"
+  [style]="{ width: '20rem' }"
+  [position]="'center'"
+  [showHeader]="false"
+>
+
+  <!-- Cambiar la contraseña de usuario -->
+
+  <div class="menu-container">
+    <div *ngIf="!encryptedId() && objUser?.registration_method == 'local'" class="menu-option" (click)="visibleChangePassword=true; visibleModal= false">
+      <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3zM4 21v-2c0-2.21 3.582-4 8-4s8 1.79 8 4v2H4z" />
+      </svg>
+      <span>Cambiar mi contraseña</span>
+    </div>
+  </div>
+
+  <!-- Editar información adicional de usuario -->
+
+  <div *ngIf="!encryptedId()" class="menu-option" (click)="visibleModal= false; visibleModalUpdateInformation = true">
+    <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3zM4 21v-2c0-2.21 3.582-4 8-4s8 1.79 8 4v2H4z" />
+    </svg>
+    <span>Actualizar mí información</span>
+  </div>
+</p-dialog>
+
+
+<!-- MODAL PARA CAMBIAR LA CONTRASEÑA --> 
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="visibleChangePassword"
+  [position]="'topright'"
+  [style]="{ width: '25rem' }"
+  [dismissableMask]="true"
+  contentStyleClass="change-password-dialog"
+  [showHeader]="false"
+>
+  <div class="change-password-dialog-content">
+    <p class="change-password-subtext">Actualiza tu contraseña</p>
+
+    <div class="change-password-input-group">
+      <form [formGroup]="formChangePassword">
+
+        <span class="p-float-label">
+          <p-password
+            formControlName="password"
+            inputId="password"
+            [toggleMask]="true"
+            [feedback]="false"
+          ></p-password>
+          <label for="password">Contraseña anterior</label>
+        </span>
+        <div *ngIf="formChangePassword.get('password')?.invalid && formChangePassword.get('password')?.touched">
+          <p *ngIf="formChangePassword.get('password')?.errors?.['required']">El campo es obligatorio.</p>
+          <div *ngIf="formChangePassword.get('password')?.errors?.['pattern']" class="error-message">
+            <strong>Requisitos:</strong>
+            <ul class="requirements-list" *ngIf="password?.value">
+              <li *ngIf="!lengthValid" [class.valid]="lengthValid">8-15 caracteres</li>
+              <li *ngIf="!hasSpecialChar" [class.valid]="hasSpecialChar">Al menos un carácter especial ({{'@'}}$!%*?&)</li>
+              <li *ngIf="!hasUpperCase" [class.valid]="hasUpperCase">Una mayúscula (A-Z)</li>
+              <li *ngIf="!hasNumber" [class.valid]="hasNumber">Un número (0-9)</li>
+            </ul>
+          </div>
+        </div>
+
+        <span class="p-float-label">
+          <p-password
+            formControlName="new_password"
+            inputId="new_password"
+            [toggleMask]="true"
+            [feedback]="false"
+          ></p-password>
+          <label for="new_password">Nueva contraseña</label>
+        </span>
+        <div *ngIf="formChangePassword.get('new_password')?.invalid && formChangePassword.get('new_password')?.touched">
+          <p *ngIf="formChangePassword.get('new_password')?.errors?.['required']">El campo es obligatorio.</p>
+          <div *ngIf="formChangePassword.get('new_password')?.errors?.['pattern']" class="error-message">
+            <strong>Requisitos:</strong>
+            <ul class="requirements-list" *ngIf="password2?.value">
+              <li *ngIf="!lengthValid2" [class.valid]="lengthValid2">8-15 caracteres</li>
+              <li *ngIf="!hasSpecialChar2" [class.valid]="hasSpecialChar2">Al menos un carácter especial ({{'@'}}$!%*?&)</li>
+              <li *ngIf="!hasUpperCase2" [class.valid]="hasUpperCase2">Una mayúscula (A-Z)</li>
+              <li *ngIf="!hasNumber2" [class.valid]="hasNumber2">Un número (0-9)</li>
+            </ul>
+          </div>
+        </div>
+
+        <span class="p-float-label">
+          <p-password
+            formControlName="new_password_confirmation"
+            inputId="new_password_confirmation"
+            [toggleMask]="true"
+            [feedback]="false"
+          ></p-password>
+          <label for="new_password_confirmation">Repetir nueva contraseña</label>
+        </span>
+        <div *ngIf="formChangePassword.get('new_password_confirmation')?.invalid && formChangePassword.get('new_password_confirmation')?.touched">
+          <p *ngIf="formChangePassword.get('new_password_confirmation')?.errors?.['required']">El campo es obligatorio.</p>
+          <p *ngIf="formChangePassword.get('new_password_confirmation')?.errors?.['passwordMismatch']">Las contraseñas no coinciden.</p>
+        </div>
+
+        <div class="change-password-actions">
+          <p-button label="Cancelar" severity="secondary" (click)="visibleChangePassword = false" />
+          <p-button label="Actualizar" (click)="updatePassword()" />
+        </div>
+
+      </form>
+    </div>
+  </div>
+</p-dialog>
+
+
+<!-- MODAL PARA ACTUALIZAR LA INFORMACIÓN ADICIONAL -->
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="visibleModalUpdateInformation"
+  [position]="'center'"
+  [style]="{ width: '25rem' }"
+  [dismissableMask]="true"
+  contentStyleClass="change-password-dialog"
+  [showHeader]="false"
+>
+  <div class="change-password-dialog-content">
+    <p class="change-password-subtext">Actualiza la información adicional de tu perfil</p>
+
+    <div class="change-password-input-group">
+      <form [formGroup]="formUpdateinformationAdictional">
+
+        <span class="p-float-label">
+          <textarea rows="5" cols="30" pTextarea formControlName="description"></textarea>
+          <label for="description">Descripción</label>
+        </span>
+        <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched">
+          <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['required']">La descripción es obligatoria</p>
+        </div>
+
+        <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched">
+          <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['maxlength']">Alcazaste el límite de carácteres</p>
+        </div>
+
+
+
+
+
+        <div class="change-password-actions">
+          <p-button label="Cancelar" severity="secondary" (click)="visibleModalUpdateInformation = false" />
+          <p-button label="Actualizar"  (onClick)="updateInformationOpc()"/>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</p-dialog>
+
+
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
+  <button (click)="visibleModal=true" pButton type="button" icon="pi pi-ellipsis-h"
+          class="boton-opciones-avatar p-button-rounded p-button-text"></button>
   <div class="perfil-banner">
     <div class="perfil-avatar" (mouseenter)="hoverAvatar = true" (mouseleave)="hoverAvatar = false">
       <img [src]="(currentPhotoUrl !== null && currentPhotoUrl !== '') ? currentPhotoUrl : 
       (objUser?.image?.url || 'img/user/perfil1.png')" 
       alt="Avatar" />
+
+
+
       <div class="avatar-actions" *ngIf="hoverAvatar && !encryptedId()">
         <input type="file"
         #fileInput
