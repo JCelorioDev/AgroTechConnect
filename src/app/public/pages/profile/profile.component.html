@@ -34,7 +34,7 @@
 
   <!-- Editar información adicional de usuario -->
 
-  <div *ngIf="!encryptedId()" class="menu-option" (click)="visibleModal= false; visibleModalUpdateInformation = true">
+  <div *ngIf="!encryptedId()" class="menu-option" (click)="visibleModal= false; visibleModalUpdateInformation = true; showInformationOpc();">
     <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
         d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3zM4 21v-2c0-2.21 3.582-4 8-4s8 1.79 8 4v2H4z" />

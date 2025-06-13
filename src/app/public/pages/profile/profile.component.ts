@@ -389,6 +389,9 @@ export class ProfileComponent {
     this.userService.showInformationOpc().subscribe({
       next: (s) => {
         this.objUserInformation = s.data.user_information;
+        this.formUpdateinformationAdictional.patchValue({
+          description : this.objUserInformation?.description
+        });
       },
       error: (err) => {
         if (err.status === 422) {
@@ -399,9 +402,6 @@ export class ProfileComponent {
       }
     });
 
-    this.formUpdateinformationAdictional.patchValue({
-      description : this.objUserInformation.description
-    })
   }
 
 
