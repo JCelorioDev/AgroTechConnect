@@ -64,6 +64,7 @@ export class ProfileComponent {
   public visibleModalUpdateInformation:boolean = false;
   public formUpdateinformationAdictional!:FormGroup;
   private objUserInformation!:UserInformation;
+  activeLinks: number = 1; 
 
   encryptedId = toSignal(
     this.route.params.pipe(
@@ -82,11 +83,11 @@ export class ProfileComponent {
     });
 
     this.formUpdateinformationAdictional = this.formBuilder.group({
-      description : new FormControl('', [Validators.required, Validators.maxLength(100)]),
-      link1 : new FormControl(null),
-      link2 : new FormControl(null),
-      link3 : new FormControl(null)
-    })
+      description: ['', [Validators.required, Validators.maxLength(500)]],
+      link1: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
+      link2: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
+      link3: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]]
+    });
 
     this.userService.currentUserPhoto$.subscribe(newUrl => {
       this.currentPhotoUrl = newUrl;
@@ -381,29 +382,119 @@ export class ProfileComponent {
     if (this.formUpdateinformationAdictional.invalid) {
       this.formUpdateinformationAdictional.markAllAsTouched(); return ;
     }
+
+    this.userService.updateInformation(this.formUpdateinformationAdictional.value).subscribe({
+      next: (s) => {
+        this.showInformationOpc();
+        this.getInformation();
+        this.alertService.miniAlert('La información adicional se actualizó correctamente', 'success', 3000);
+        this.visibleModalUpdateInformation = false;
+      },
+      error: (err) => {
+        this.visibleModalUpdateInformation = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    })
   }
 
   // Mostrar información adicional de usuario
 
-  showInformationOpc():void{    
+  showInformationOpc(): void {    
     this.userService.showInformationOpc().subscribe({
       next: (s) => {
         this.objUserInformation = s.data.user_information;
+        
+        // Actualizar el formulario con los datos del usuario
         this.formUpdateinformationAdictional.patchValue({
-          description : this.objUserInformation?.description
+          description: this.objUserInformation?.description,
+          link1: this.objUserInformation?.link1,
+          link2: this.objUserInformation?.link2,
+          link3: this.objUserInformation?.link3
         });
+
+        // Calcular cuántos links están activos
+        this.calculateActiveLinks();
       },
       error: (err) => {
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
-        }else{
+        } else {
           this.alertService.miniAlert(err.error.message, 'error', 3000);
         }
       }
     });
+  }
 
+  calculateActiveLinks(): void {
+    this.activeLinks = 0;
+    if (this.formUpdateinformationAdictional.get('link1')?.value) this.activeLinks = 1;
+    if (this.formUpdateinformationAdictional.get('link2')?.value) this.activeLinks = 2;
+    if (this.formUpdateinformationAdictional.get('link3')?.value) this.activeLinks = 3;
+    
+    // Si todos los links están vacíos, mostramos al menos uno
+    if (this.activeLinks === 0) this.activeLinks = 1;
+  }
+
+  showLinkField(linkNumber: number): boolean {
+    return linkNumber <= this.activeLinks;
   }
 
 
+  // Método para verificar si se pueden añadir más links
+  canAddMoreLinks(): boolean {
+    const totalLinks = [
+      this.formUpdateinformationAdictional.get('link1')?.value,
+      this.formUpdateinformationAdictional.get('link2')?.value,
+      this.formUpdateinformationAdictional.get('link3')?.value
+    ].filter(link => link !== null && link !== '').length;
+    
+    return totalLinks < 3 && this.activeLinks < 3;
+  }
+
+  // Método para añadir nuevo link
+  addNewLink(): void {
+    if (this.canAddMoreLinks()) {
+      this.activeLinks++;
+    }
+  }
+
+  // Método para eliminar link
+  removeLink(linkNumber: number): void {
+    // Resetear el valor del link a null
+    this.formUpdateinformationAdictional.get(`link${linkNumber}`)?.setValue(null);
+    
+    // Si estamos eliminando el último link visible, reducimos el contador
+    if (linkNumber === this.activeLinks) {
+      this.activeLinks--;
+    } else {
+      // Si eliminamos un link intermedio, reorganizamos
+      this.reorganizeLinks();
+    }
+  }
+
+  // Método privado para reorganizar links
+  private reorganizeLinks(): void {
+    const links = [
+      this.formUpdateinformationAdictional.get('link1')?.value,
+      this.formUpdateinformationAdictional.get('link2')?.value,
+      this.formUpdateinformationAdictional.get('link3')?.value
+    ].filter(link => link !== null && link !== '');
+
+    // Resetear todos los links
+    this.formUpdateinformationAdictional.get('link1')?.setValue(null);
+    this.formUpdateinformationAdictional.get('link2')?.setValue(null);
+    this.formUpdateinformationAdictional.get('link3')?.setValue(null);
+
+    // Asignar los links sin huecos
+    links.forEach((link, index) => {
+      this.formUpdateinformationAdictional.get(`link${index + 1}`)?.setValue(link);
+    });
+
+    this.activeLinks = links.length > 0 ? links.length : 1;
+  }
 
 }

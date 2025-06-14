@@ -7,6 +7,8 @@ import { UploadPhotoResponse } from '../../models/User/uploadPhotoResponse.inter
 import { updatePasswordRequest } from '../../models/User/updatePasswordRequest.interface';
 import { UpdatePasswodResponse } from '../../models/User/updatePassword.interface';
 import { ShowInformationOpcResponse } from '../../models/User/showInformationOpcResponse.interface';
+import { UpdateInformationOpcResponseInterface } from '../../models/User/updateInformationOpcResponse.interface';
+import { updateInformationProfileRequest } from '../../models/User/updateInformationProfileRequest.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -79,6 +81,12 @@ export class UserService {
 
   showInformationOpc():Observable<ShowInformationOpcResponse>{
     return this.httpClient.get<ShowInformationOpcResponse>(`${environment.apiBaseUrl}me/user-information`)
+  }
+
+  // Actualizar la información adicional de usuario 
+
+  updateInformation(FormUpdateInformation:updateInformationProfileRequest):Observable<UpdateInformationOpcResponseInterface>{
+    return this.httpClient.post<UpdateInformationOpcResponseInterface>(`${environment.apiBaseUrl}me/user-information`, FormUpdateInformation)
   }
 
 }

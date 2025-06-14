@@ -23,6 +23,29 @@ html.custom-dark-mode .p-button {
   border: 1px solid #555 !important;
 }
 
+
+
+html.custom-dark-mode .profile-add-link-button {
+  &, &.p-button-text {
+    background-color: transparent !important;
+    color: #81c784 !important;
+    border: none !important;
+    
+    &:hover {
+      background-color: rgba(129, 199, 132, 0.1) !important;
+    }
+  }
+}
+
+html.custom-dark-mode .link-remove-btn {
+  &, &.p-button-text {
+    background-color: transparent !important;
+    color: #ece49d !important;
+    border: none !important;
+    
+  }
+}
+
 html.custom-dark-mode .p-input-icon-left input {
   border: 1px solid #a6a8a7;
   background: #25282efd;
@@ -132,6 +155,10 @@ html.custom-dark-mode {
   }
 }
 
+
+html.custom-dark-mode .profile-cancel-button{
+  background-color: #df9462 !important;
+}
 
 
 

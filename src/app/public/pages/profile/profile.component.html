@@ -138,41 +138,80 @@
   [position]="'center'"
   [style]="{ width: '25rem' }"
   [dismissableMask]="true"
-  contentStyleClass="change-password-dialog"
+  contentStyleClass="user-profile-dialog"
   [showHeader]="false"
 >
-  <div class="change-password-dialog-content">
-    <p class="change-password-subtext">Actualiza la información adicional de tu perfil</p>
+  <div class="user-profile-dialog-content">
+    <p class="user-profile-subtext">Actualiza la información adicional de tu perfil</p>
 
-    <div class="change-password-input-group">
+    <div class="user-profile-input-group">
       <form [formGroup]="formUpdateinformationAdictional">
 
-        <span class="p-float-label">
-          <textarea rows="5" cols="30" pTextarea formControlName="description"></textarea>
-          <label for="description">Descripción</label>
-        </span>
-        <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched">
-          <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['required']">La descripción es obligatoria</p>
+        <!-- Descripción -->
+        <div class="profile-description-container">
+          <label class="profile-field-label">Descripción</label>
+          <textarea pInputTextarea formControlName="description" rows="5" class="profile-description-input"></textarea>
+          <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched" class="profile-error-message">
+            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['required']">La descripción es obligatoria</p>
+            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['maxlength']">Alcazaste el límite de carácteres</p>
+          </div>
         </div>
 
-        <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched">
-          <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['maxlength']">Alcazaste el límite de carácteres</p>
+        <!-- Sección de Links -->
+        <div class="profile-links-section">
+          <label class="profile-field-label">Enlaces</label>
+          <p class="profile-links-subtitle">Puedes agregar hasta 3 enlaces</p>
+          
+          <div class="profile-links-container">
+            <!-- Link 1 -->
+            <div class="profile-link-item" *ngIf="showLinkField(1)">
+              <div class="profile-link-input-container">
+                <input pInputText formControlName="link1" placeholder="https://example.com" class="profile-link-input" />
+                <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger p-button-sm link-remove-btn" 
+                        (click)="removeLink(1)"></button>
+              </div>
+              <small *ngIf="formUpdateinformationAdictional.get('link1')?.errors?.['pattern']" class="profile-link-error">Ingresa una URL válida</small>
+            </div>
+
+            <!-- Link 2 -->
+            <div class="profile-link-item" *ngIf="showLinkField(2)">
+              <div class="profile-link-input-container">
+                <input pInputText formControlName="link2" placeholder="https://example.com" class="profile-link-input" />
+                <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger p-button-sm link-remove-btn" 
+                        (click)="removeLink(2)"></button>
+              </div>
+              <small *ngIf="formUpdateinformationAdictional.get('link2')?.errors?.['pattern']" class="profile-link-error">Ingresa una URL válida</small>
+            </div>
+
+            <!-- Link 3 -->
+            <div class="profile-link-item" *ngIf="showLinkField(3)">
+              <div class="profile-link-input-container">
+                <input pInputText formControlName="link3" placeholder="https://example.com" class="profile-link-input" />
+                <button pButton icon="pi pi-times" class="p-button-rounded p-button-text p-button-danger p-button-sm link-remove-btn" 
+                        (click)="removeLink(3)"></button>
+              </div>
+              <small *ngIf="formUpdateinformationAdictional.get('link3')?.errors?.['pattern']" class="profile-link-error">Ingresa una URL válida</small>
+            </div>
+
+            <!-- Botón para agregar nuevo link -->
+            <button pButton pRipple 
+                    *ngIf="canAddMoreLinks()"
+                    icon="pi pi-plus" 
+                    label="Añadir enlace" 
+                    class="p-button-text profile-add-link-button"
+                    (click)="addNewLink()"></button>
+          </div>
         </div>
 
-
-
-
-
-        <div class="change-password-actions">
-          <p-button label="Cancelar" severity="secondary" (click)="visibleModalUpdateInformation = false" />
-          <p-button label="Actualizar"  (onClick)="updateInformationOpc()"/>
+        <div class="user-profile-actions">
+          <button pButton pRipple label="Cancelar" class="profile-cancel-button" (click)="visibleModalUpdateInformation = false"></button>
+          <button pButton pRipple label="Actualizar" class="profile-update-button" (click)="updateInformationOpc()"></button>
         </div>
 
       </form>
     </div>
   </div>
 </p-dialog>
-
 
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
   <button (click)="visibleModal=true" pButton type="button" icon="pi pi-ellipsis-h"

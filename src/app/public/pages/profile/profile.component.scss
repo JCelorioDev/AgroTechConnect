@@ -490,3 +490,171 @@
   }
 }
 
+:host ::ng-deep {
+
+  .user-profile-dialog {
+    background: #1f1f1f !important;
+    border-radius: 16px;
+    padding: 2rem;
+    color: #fff;
+    font-family: 'Segoe UI', sans-serif;
+
+    .user-profile-dialog-content {
+      .user-profile-subtext {
+        font-size: 0.9rem;
+        color: #bbb;
+        margin-bottom: 1.5rem;
+      }
+
+      .user-profile-input-group {
+        width: 100%;
+        margin-bottom: 1.5rem;
+
+
+        .profile-description-container {
+          margin-bottom: 1.5rem;
+
+          .profile-field-label {
+            display: block;
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .profile-description-input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: transparent;
+            border: 1px solid #4caf50;
+            border-radius: 6px;
+            color: #fff;
+            transition: all 0.3s ease;
+            resize: none;
+
+            &:focus {
+              border-color: #81c784;
+              box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            }
+          }
+
+          .profile-error-message {
+            color: #f44336;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+          }
+        }
+
+        .profile-links-section {
+          margin-bottom: 2rem;
+
+          .profile-field-label {
+            display: block;
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+          }
+
+          .profile-links-subtitle {
+            color: #bbb;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+          }
+
+          .profile-links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+            .profile-link-item {
+              .profile-link-input-container {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                .profile-link-input {
+                  flex: 1;
+                  width: 100%;
+                  padding: 0.75rem;
+                  background-color: transparent;
+                  border: 1px solid #4caf50;
+                  border-radius: 6px;
+                  color: #fff;
+                  transition: all 0.3s ease;
+
+                  &:focus {
+                    border-color: #81c784;
+                    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+                  }
+                }
+
+                .profile-link-remove-button {
+                  color: #f44336 !important;
+                  margin-left: 0.5rem;
+                }
+              }
+
+              .profile-link-error {
+                color: #f44336;
+                font-size: 0.75rem;
+                margin-top: 0.25rem;
+                display: block;
+              }
+            }
+
+            .profile-add-link-button {
+              color: #26f12d !important;
+              margin-top: 0.5rem;
+              align-self: flex-start;
+              padding: 0.5rem 1rem !important;
+
+              &:hover {
+                background-color: rgba(76, 175, 80, 0.1) !important;
+              }
+
+              .p-button-label {
+                font-weight: normal;
+              }
+            }
+          }
+        }
+
+
+        .user-profile-actions {
+          display: flex;
+          justify-content: flex-end;
+          gap: 2rem; 
+          margin-top: 3rem;
+        
+        
+          .p-button {
+            margin: 0; 
+            min-width: auto;
+          }
+        
+
+          .p-button.p-button-secondary {
+            &:hover {
+              background-color: rgba(255, 255, 255, 0.05);
+            }
+          }
+
+
+          .p-button:not(.p-button-secondary) {
+            background-color: #4caf50;
+            border: none;
+        
+            &:hover {
+              background-color: #3d8b40;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+:host ::ng-deep .p-dialog {
+  background: none !important;
+  border: none !important;
+}
