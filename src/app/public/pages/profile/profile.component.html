@@ -154,10 +154,52 @@
         <!-- Descripción -->
         <div class="profile-description-container">
           <label class="profile-field-label">Descripción</label>
-          <textarea pInputTextarea formControlName="description" rows="5" class="profile-description-input"></textarea>
-          <div *ngIf="formUpdateinformationAdictional.get('description')?.invalid && formUpdateinformationAdictional.get('description')?.touched" class="profile-error-message">
-            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['required']">La descripción es obligatoria</p>
-            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['maxlength']">Alcazaste el límite de carácteres</p>
+          
+          <div class="emoji-input-container">
+            <textarea 
+              pInputTextarea 
+              formControlName="description" 
+              rows="5"
+              class="profile-description-input"
+              #descriptionInput
+            ></textarea>
+            
+            <button 
+              pButton 
+              icon="pi pi-smile" 
+              class="p-button-text emoji-trigger"
+              (click)="showDialog = true"
+              type="button"
+            ></button>
+          </div>
+    
+          <p-dialog 
+            header="Seleccionar emoji" 
+            [(visible)]="showDialog"
+            [style]="{ width: '350px' }"
+            [modal]="true"
+          >
+            <div class="emoji-grid">
+              <span 
+                *ngFor="let emoji of emojis" 
+                (click)="addEmoji(emoji)"
+                class="emoji-item"
+              >{{ emoji }}</span>
+            </div>
+          </p-dialog>
+    
+          <div 
+            *ngIf="formUpdateinformationAdictional.get('description')?.invalid && 
+                   (formUpdateinformationAdictional.get('description')?.touched || 
+                    formUpdateinformationAdictional.get('description')?.dirty)" 
+            class="profile-error-message"
+          >
+            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['required']">
+              <i class="pi pi-exclamation-circle"></i> La descripción es obligatoria
+            </p>
+            <p *ngIf="formUpdateinformationAdictional.get('description')?.errors?.['maxlength']">
+              <i class="pi pi-exclamation-circle"></i> Has alcanzado el límite de caracteres
+            </p>
           </div>
         </div>
 

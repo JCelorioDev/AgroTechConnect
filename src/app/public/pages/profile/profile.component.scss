@@ -697,3 +697,46 @@
 .profile-cancel-button{
   background-color: #f04747c0 !important;
 }
+
+ .profile-description-container {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .emoji-input-container {
+      position: relative;
+    }
+
+    .emoji-trigger {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .emoji-item {
+      cursor: pointer;
+      font-size: 1.5rem;
+      text-align: center;
+      transition: transform 0.2s;
+      padding: 5px;
+      border-radius: 4px;
+    }
+
+    .emoji-item:hover {
+      transform: scale(1.2);
+      background-color: #f0f0f0;
+    }
+
+    .profile-error-message {
+      color: #e24c4c;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }

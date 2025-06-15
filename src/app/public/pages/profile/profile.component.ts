@@ -67,6 +67,15 @@ export class ProfileComponent {
   private objUserInformation!:UserInformation;
   activeLinks: number = 1; 
   private updateConfirm:boolean = false;
+  @ViewChild('descriptionInput') descriptionInput!: ElementRef<HTMLTextAreaElement>;
+  showDialog = false;
+
+  emojis = [
+    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣',
+    '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰',
+    '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜',
+  ];
+
 
   encryptedId = toSignal(
     this.route.params.pipe(
@@ -522,6 +531,26 @@ export class ProfileComponent {
     this.activeLinks = links.length > 0 ? links.length : 1;
   }
 
+  addEmoji(emoji: string) {
+    const textarea = this.descriptionInput.nativeElement;
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const currentValue = this.formUpdateinformationAdictional.get('description')?.value || '';
 
+    // Insertar el emoji en la posición actual del cursor
+    const newValue = currentValue.substring(0, startPos) + emoji + currentValue.substring(endPos);
+    
+    // Actualizar el formControl
+    this.formUpdateinformationAdictional.get('description')?.setValue(newValue);
+    
+    // Cerrar el diálogo
+    this.showDialog = false;
+    
+    // Restaurar el foco y posición del cursor
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
+    }, 0);
+  }
 
 }
