@@ -459,7 +459,7 @@
     cursor: pointer;
     margin-top: 1rem;
     transition: background-color 0.2s ease;
-    border-radius: 0%;
+    border-radius: 6px !important;
 
     &:hover {
       background-color: #5459611f;
@@ -657,4 +657,43 @@
 :host ::ng-deep .p-dialog {
   background: none !important;
   border: none !important;
+}
+
+
+.global-loading-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(7, 7, 7, 0.233);
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  z-index: 10000; 
+  pointer-events: all; 
+}
+
+.global-loading-spinner {
+  width: 5rem;
+  height: 5rem;
+  animation: global-spin-animation 1.2s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1)); 
+}
+
+@keyframes global-spin-animation {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+@media (max-width: 768px) {
+  .global-loading-spinner {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+}
+
+.profile-cancel-button{
+  background-color: #f04747c0 !important;
 }

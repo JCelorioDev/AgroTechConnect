@@ -59,12 +59,14 @@ export class ProfileComponent {
   selectedImage: File | null = null;
   previewUrl: string | ArrayBuffer | null = null;
   public loading_spinning:boolean = false;
+  public loading_spinning2:boolean = false;
   currentPhotoUrl: string | null = null;
   public visibleModal:boolean= false;
   public visibleModalUpdateInformation:boolean = false;
   public formUpdateinformationAdictional!:FormGroup;
   private objUserInformation!:UserInformation;
   activeLinks: number = 1; 
+  private updateConfirm:boolean = false;
 
   encryptedId = toSignal(
     this.route.params.pipe(
@@ -358,6 +360,7 @@ export class ProfileComponent {
     if (this.formChangePassword.invalid) {
       this.formChangePassword.markAllAsTouched(); return ;
     }
+    
     this.loading_spinning = true;
 
     this.userService.updatePassword(this.formChangePassword.value).subscribe({
@@ -383,12 +386,16 @@ export class ProfileComponent {
       this.formUpdateinformationAdictional.markAllAsTouched(); return ;
     }
 
+    this.loading_spinning2 = true;
+
     this.userService.updateInformation(this.formUpdateinformationAdictional.value).subscribe({
       next: (s) => {
+        this.updateConfirm = true;
         this.showInformationOpc();
         this.getInformation();
         this.alertService.miniAlert('La información adicional se actualizó correctamente', 'success', 3000);
         this.visibleModalUpdateInformation = false;
+        this.loading_spinning2 = false;
       },
       error: (err) => {
         this.visibleModalUpdateInformation = false;
@@ -404,6 +411,8 @@ export class ProfileComponent {
   // Mostrar información adicional de usuario
 
   showInformationOpc(): void {    
+    this.loading_spinning2 = true;
+
     this.userService.showInformationOpc().subscribe({
       next: (s) => {
         this.objUserInformation = s.data.user_information;
@@ -418,8 +427,18 @@ export class ProfileComponent {
 
         // Calcular cuántos links están activos
         this.calculateActiveLinks();
+
+
+        this.loading_spinning2 = false;
+
+        if (!this.updateConfirm) {
+          this.visibleModalUpdateInformation = true; 
+        }
+
+        this.updateConfirm = false;
       },
       error: (err) => {
+        this.loading_spinning2 = false;
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
         } else {
