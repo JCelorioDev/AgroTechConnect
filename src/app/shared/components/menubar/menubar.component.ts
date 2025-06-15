@@ -110,6 +110,7 @@ export class MenubarComponent {
               icon: "success"
             });
             this.visible = false;
+            this.router.navigate(['menu/publicaciones']);
           },
           error: (err) => {
             this.alertService.miniAlert(err.error.message, 'error', 2500);

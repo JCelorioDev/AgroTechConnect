@@ -250,6 +250,7 @@ export class ProfileComponent {
               this.loading_spinning = false;
               this.alertService.miniAlert('Tu foto de perfil se actualizó correctamente.', 'success', 3000);
               this.resetFileInput();
+              this.getInformation();
             },
             error: (err) => {
               this.loading_spinning = false;
@@ -282,6 +283,9 @@ export class ProfileComponent {
 
         this.userService.deletePhoto().subscribe({
           next: (s) => {
+            if (!this.objUser.image) {
+              this.alertService.miniAlert('No tienes un avatar por eliminar, sube uno.', 'error', 3000);
+            }
             this.loading_spinning = false;
             this.alertService.miniAlert('Tu foto de perfil se eliminó correctamente.', 'success', 3000);
             this.getInformation();
@@ -358,6 +362,7 @@ export class ProfileComponent {
 
   updatePassword():void{
     if (this.formChangePassword.invalid) {
+      this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formChangePassword.markAllAsTouched(); return ;
     }
     
@@ -383,6 +388,7 @@ export class ProfileComponent {
 
   updateInformationOpc():void{
     if (this.formUpdateinformationAdictional.invalid) {
+      this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formUpdateinformationAdictional.markAllAsTouched(); return ;
     }
 
@@ -515,5 +521,7 @@ export class ProfileComponent {
 
     this.activeLinks = links.length > 0 ? links.length : 1;
   }
+
+
 
 }
