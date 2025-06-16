@@ -12,6 +12,7 @@ import { updateInformationProfileRequest } from '../../models/User/updateInforma
 import { FollowUserResponse } from '../../models/User/followUserResponse.interface';
 import { MefollowersResponse } from '../../models/User/mefollowersResponse.interface';
 import { MeFollowingResponse } from '../../models/User/mefollowingResponse.interface';
+import { Followers } from '../../models/User/followersResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -112,5 +113,11 @@ export class UserService {
 
   meFollowing():Observable<MeFollowingResponse>{
     return this.httpClient.get<MeFollowingResponse>(`${environment.apiBaseUrl}me/following`);
+  }
+
+  // Ver seguidores de otro usuario
+
+  followers(idUser:string):Observable<Followers>{
+    return this.httpClient.get<Followers>(`${environment.apiBaseUrl}users/${idUser}/followers`)
   }
 }

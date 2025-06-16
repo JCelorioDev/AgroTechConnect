@@ -656,6 +656,9 @@ export class ProfileComponent {
 
   // Ver seguidores de otro usuario
 
-  
+  followers():void{
+    
+  }
+
 
 }
