@@ -569,4 +569,40 @@ export class ProfileComponent {
     });
   }
 
+  // Seguir a un usuario
+
+  followAuser():void{
+    this.loading_spinning2 = true;
+    this.userService.followAuser(this.encryptedId()).subscribe({
+      next: (s) => {
+        this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
+        this.loading_spinning2 = false;
+      },
+      error: (err) => {
+        this.loading_spinning2 = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    })
+  }
+
+  // Método para saber si ya el usuario sigue a un usuario
+
+  verifyFollowUser(): boolean {
+    if (!this.objUser?.followers || !Array.isArray(this.objUser.followers)) {
+      return false;
+    }
+  
+    for (const follow of this.objUser.followings) {
+      if (follow.id === this.encryptedId()) {
+        return true; 
+      }
+    }
+    
+    return false; 
+  }
+
 }

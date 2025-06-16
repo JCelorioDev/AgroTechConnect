@@ -262,7 +262,7 @@
 </p-dialog>
 
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
-  <button *ngIf="!encryptedId" (click)="visibleModal=true" pButton type="button" icon="pi pi-ellipsis-h"
+  <button *ngIf="!encryptedId()" (click)="visibleModal=true" pButton type="button" icon="pi pi-ellipsis-h"
           class="boton-opciones-avatar p-button-rounded p-button-text"></button>
   <div class="perfil-banner">
     <div class="perfil-avatar" (mouseenter)="hoverAvatar = true" (mouseleave)="hoverAvatar = false">
@@ -303,7 +303,7 @@
 
     <div class="perfil-metricas">
       @if(encryptedId()){
-        <div style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
+        <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
       }
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
       <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>

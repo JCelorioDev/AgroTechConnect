@@ -90,7 +90,7 @@ export class UserService {
     return this.httpClient.post<UpdateInformationOpcResponseInterface>(`${environment.apiBaseUrl}me/user-information`, FormUpdateInformation)
   }
 
-  
+
   // Seguir a un usuario
 
   followAuser(idUser:string):Observable<FollowUserResponse>{
@@ -98,4 +98,9 @@ export class UserService {
       user_id : idUser
     })
   }
+
+  // Ver mis seguidores
+
+
+  // Ver mis seguidos
 }
