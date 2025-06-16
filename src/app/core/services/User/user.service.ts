@@ -9,6 +9,7 @@ import { UpdatePasswodResponse } from '../../models/User/updatePassword.interfac
 import { ShowInformationOpcResponse } from '../../models/User/showInformationOpcResponse.interface';
 import { UpdateInformationOpcResponseInterface } from '../../models/User/updateInformationOpcResponse.interface';
 import { updateInformationProfileRequest } from '../../models/User/updateInformationProfileRequest.interface';
+import { FollowUserResponse } from '../../models/User/followUserResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -89,4 +90,12 @@ export class UserService {
     return this.httpClient.post<UpdateInformationOpcResponseInterface>(`${environment.apiBaseUrl}me/user-information`, FormUpdateInformation)
   }
 
+  
+  // Seguir a un usuario
+
+  followAuser(idUser:string):Observable<FollowUserResponse>{
+    return this.httpClient.post<FollowUserResponse>(`${environment.apiBaseUrl}users/follow`, {
+      user_id : idUser
+    })
+  }
 }
