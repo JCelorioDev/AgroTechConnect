@@ -324,10 +324,10 @@
         <div class="user-list">
           <!-- Usuarios -->
           <div *ngFor="let following of listFollowingsMe" class="user-card">
-            <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="Avatar" class="user-avatar">
+            <img [src]="following.followed.image.url"alt="Avatar" class="user-avatar">
             <div class="user-details">
-              <span class="user-name">{{following?.followed?.name}}{{following?.followed?.lastname}}</span>
-              <span class="user-handle">{{following?.followed?.username}}</span>
+              <span class="user-name">{{following?.followed?.name}} {{following?.followed?.lastname}}</span>
+              <span class="user-handle">{{'@' + following?.followed?.username}}</span>
             </div>
             <button class="unfollow-button">
               <i class="pi pi-user-minus"></i>

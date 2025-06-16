@@ -611,7 +611,6 @@ export class ProfileComponent {
     this.loading_spinning2 = true;
 
     this.meFollowing();
-
     this.userService.mefollowers().subscribe({
       next: (s) => {
        this.listFollowersMe = s.data.data;
@@ -626,6 +625,7 @@ export class ProfileComponent {
         }
       }
     })
+
   }
 
   // Ver mis seguidos
@@ -644,5 +644,18 @@ export class ProfileComponent {
       }
     })
   }
+
+  // Verificar si ya el response de seguidor y seguidores esta listo
+
+  verifyFollowersAndFollowings():void{
+    if (this.listFollowersMe.length > 0 && this.listFollowingsMe.length > 0) {
+      this.loading_spinning2 = false;
+      this.dialogoFollowers = true;
+    }
+  }
+
+  // Ver seguidores de otro usuario
+
+  
 
 }
