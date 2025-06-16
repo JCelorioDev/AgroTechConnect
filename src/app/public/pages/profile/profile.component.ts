@@ -74,6 +74,7 @@ export class ProfileComponent {
   showDialog = false;
   private readonly emojiService = inject(EmojiService);
   public listFollowersMe!:any[];
+  public listFollowingsMe!:any[];
   public dialogoFollowers:boolean = false;
 
   emojis: string[] = [];
@@ -609,15 +610,37 @@ export class ProfileComponent {
   mefollowers():void{
     this.loading_spinning2 = true;
 
+    this.meFollowing();
+
     this.userService.mefollowers().subscribe({
       next: (s) => {
        this.listFollowersMe = s.data.data;
-       console.log(this.listFollowersMe);
        this.loading_spinning2 = false;
        this.dialogoFollowers = true;
       },
       error: (err) => {
-        this.loading_spinning2 = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    })
+  }
+
+  // Ver mis seguidos
+
+  meFollowing():void{
+    this.userService.meFollowing().subscribe({
+      next: (s) => {
+       this.listFollowingsMe = s.data.data;
+      },
+      error: (err) => {
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
       }
     })
   }

@@ -318,40 +318,16 @@
       <div class="connections-column">
         <div class="column-header">
           <h3>Siguiendo</h3>
-          <span class="counter-badge">86</span>
+          <span class="counter-badge">{{listFollowingsMe?.length}}</span>
         </div>
         
         <div class="user-list">
-          <!-- Usuario 1 -->
-          <div class="user-card">
+          <!-- Usuarios -->
+          <div *ngFor="let following of listFollowingsMe" class="user-card">
             <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="Avatar" class="user-avatar">
             <div class="user-details">
-              <span class="user-name">Laura García</span>
-              <span class="user-handle">laurag</span>
-            </div>
-            <button class="unfollow-button">
-              <i class="pi pi-user-minus"></i>
-            </button>
-          </div>
-          
-          <!-- Usuario 2 -->
-          <div class="user-card">
-            <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="Avatar" class="user-avatar">
-            <div class="user-details">
-              <span class="user-name">David Romero</span>
-              <span class="user-handle">davidr</span>
-            </div>
-            <button class="unfollow-button">
-              <i class="pi pi-user-minus"></i>
-            </button>
-          </div>
-          
-          <!-- Usuario 3 -->
-          <div class="user-card">
-            <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Avatar" class="user-avatar">
-            <div class="user-details">
-              <span class="user-name">Sofía Castro</span>
-              <span class="user-handle">sofiac</span>
+              <span class="user-name">{{following?.followed?.name}}{{following?.followed?.lastname}}</span>
+              <span class="user-handle">{{following?.followed?.username}}</span>
             </div>
             <button class="unfollow-button">
               <i class="pi pi-user-minus"></i>
