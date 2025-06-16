@@ -385,9 +385,12 @@
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
 
     <div class="perfil-metricas">
-      @if(encryptedId()){
+      @if(encryptedId() && !verifyFollowUser() && !readyFollowing){
         <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
+      }@else {
+        <div  style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Dejar de seguir</span></div>
       }
+
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
       <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
       <div style="cursor: pointer;" (click)="encryptedId() ? followers() : mefollowers()"><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>

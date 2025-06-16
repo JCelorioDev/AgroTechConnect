@@ -76,6 +76,8 @@ export class ProfileComponent {
   public listFollowersMe!:any[];
   public listFollowingsMe!:any[];
   public dialogoFollowers:boolean = false;
+  public readyFollowing:boolean = false;
+
 
   emojis: string[] = [];
 
@@ -122,6 +124,7 @@ export class ProfileComponent {
   }
 
   ngOnInit(): void {
+    this.getUser();
     if (this.encryptedId()) { 
       this.getInformationnByID();
     } else {
@@ -157,6 +160,7 @@ export class ProfileComponent {
       },
       error: (err) => this.handleError(err)
     });
+
   }
 
   private processRanges(): void {
@@ -575,35 +579,40 @@ export class ProfileComponent {
 
   followAuser():void{
     this.loading_spinning2 = true;
-    this.userService.followAuser(this.encryptedId()).subscribe({
-      next: (s) => {
-        this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
-        this.loading_spinning2 = false;
-      },
-      error: (err) => {
-        this.loading_spinning2 = false;
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
+
+    let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
+
+    if (!!userLogin.token){
+      //this.getUser();
+      this.userService.followAuser(this.encryptedId()).subscribe({
+        next: (s) => {
+          this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
+          this.loading_spinning2 = false;
+          this.readyFollowing = true;
+        },
+        error: (err) => {
+          this.loading_spinning2 = false;
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
         }
-      }
-    })
+      })
+    }else{
+      this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta', 'warning', 3000);
+    }
+
   }
 
   // Método para saber si ya el usuario sigue a un usuario
 
-  verifyFollowUser(): boolean {
-    if (!this.objUser?.followers || !Array.isArray(this.objUser.followers)) {
-      return false;
-    }
-  
-    for (const follow of this.objUser.followings) {
-      if (follow.id === this.encryptedId()) {
-        return true; 
+  verifyFollowUser(): boolean {  
+    for (const follow of this.objUsuario?.followings) {
+      if (follow.followed.email === this.objUser.email) {
+        return true;
       }
     }
-    
     return false; 
   }
 
@@ -694,5 +703,20 @@ export class ProfileComponent {
     })
   }
 
+
+  // Obtener data de usuario 
+
+  public objUsuario:any;
+
+  getUser():void{
+    this.userService.getInformation().subscribe({
+      next: (s) => {
+        this.objUsuario = s.data;
+      },
+      error: (err) => {
+
+      }
+    })
+  }
 
 }
