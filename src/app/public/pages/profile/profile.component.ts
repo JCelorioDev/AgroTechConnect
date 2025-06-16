@@ -21,7 +21,7 @@ import { passwordMatchValidator } from '../../../core/validation/password repeat
 import { TextareaModule } from 'primeng/textarea';
 import { UserInformation } from '../../../core/models/User/showInformationOpcResponse.interface';
 import { EmojiService } from '../../../shared/services/api-emoji/emoji.service';
-
+import { DividerModule } from 'primeng/divider';
 
 @Component({
   selector: 'app-profile',
@@ -40,7 +40,8 @@ import { EmojiService } from '../../../shared/services/api-emoji/emoji.service';
     FormsModule,
     ReactiveFormsModule,
     PasswordModule,
-    TextareaModule
+    TextareaModule, 
+    DividerModule
   ],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
@@ -548,7 +549,7 @@ export class ProfileComponent {
     // Cerrar el diálogo
     this.showDialog = false;
     
-    // Restaurar el foco y posición del cursor
+
     setTimeout(() => {
       textarea.focus();
       textarea.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
@@ -561,9 +562,7 @@ export class ProfileComponent {
     this.emojiService.getsAllEmojis().subscribe({
       next: (response) => {
         const emojis = response.map(e => e.emoji);
-        // Elimina duplicados usando Set y lo convierte de nuevo a array
-        this.emojis = Array.from(new Set(emojis)).sort(); // Si quieres ordenados alfabéticamente
-        console.log(this.emojis);
+        this.emojis = Array.from(new Set(emojis)).sort(); 
       },
       error: (err) => {
         console.error('Error al cargar los emojis', err);
@@ -613,6 +612,7 @@ export class ProfileComponent {
     this.userService.mefollowers().subscribe({
       next: (s) => {
        this.listFollowersMe = s.data.data;
+       console.log(this.listFollowersMe);
        this.loading_spinning2 = false;
        this.dialogoFollowers = true;
       },

@@ -267,14 +267,103 @@
   [modal]="true"
   [(visible)]="dialogoFollowers"
   [position]="'center'"
-  [style]="{ width: '25rem' }"
-  [dismissableMask]="true"
-  contentStyleClass="change-password-dialog"
+  [style]="{ width: '42rem' }"
+  [closable]="true"
+  contentStyleClass="connections-dialog"
   [showHeader]="false"
 >
-  <div class="change-password-dialog-content">
+  <div class="connections-dialog-content">
+    <div class="dialog-header">
+      <h2>
+        <i class="pi pi-users"></i>
+        <span>Conexiones de <span class="username">{{'@'}}{{objUser?.username}}</span></span>
+      </h2>
+      <p-divider></p-divider>
+    </div>
 
-    <div class="change-password-input-group">
+    <div class="connections-grid">
+      <!-- Columna Seguidores -->
+      <div class="connections-column">
+        <div class="column-header">
+          <h3>Seguidores</h3>
+          <span class="counter-badge">{{objUser?.followers?.length}}</span>
+        </div>
+        
+        <div class="user-list">
+          <!-- Usuarios -->
+          <div *ngFor="let follower of listFollowersMe" class="user-card">
+            <img [src]="follower.follower.image.url" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+              <span class="user-name">{{follower?.follower?.name}}{{follower?.follower?.lastname}}</span>
+              <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
+            </div>
+            <button class="follow-button">
+              <i class="pi pi-user-plus"></i>
+            </button>
+          </div>
+        </div>
+        
+        <button class="view-all">
+          Ver todos los seguidores
+          <i class="pi pi-chevron-down"></i>
+        </button>
+      </div>
+      
+      <!-- Divisor vertical -->
+      <div class="divider-vertical">
+        <span>O</span>
+      </div>
+      
+      <!-- Columna Siguiendo -->
+      <div class="connections-column">
+        <div class="column-header">
+          <h3>Siguiendo</h3>
+          <span class="counter-badge">86</span>
+        </div>
+        
+        <div class="user-list">
+          <!-- Usuario 1 -->
+          <div class="user-card">
+            <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+              <span class="user-name">Laura García</span>
+              <span class="user-handle">laurag</span>
+            </div>
+            <button class="unfollow-button">
+              <i class="pi pi-user-minus"></i>
+            </button>
+          </div>
+          
+          <!-- Usuario 2 -->
+          <div class="user-card">
+            <img src="https://randomuser.me/api/portraits/men/5.jpg" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+              <span class="user-name">David Romero</span>
+              <span class="user-handle">davidr</span>
+            </div>
+            <button class="unfollow-button">
+              <i class="pi pi-user-minus"></i>
+            </button>
+          </div>
+          
+          <!-- Usuario 3 -->
+          <div class="user-card">
+            <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Avatar" class="user-avatar">
+            <div class="user-details">
+              <span class="user-name">Sofía Castro</span>
+              <span class="user-handle">sofiac</span>
+            </div>
+            <button class="unfollow-button">
+              <i class="pi pi-user-minus"></i>
+            </button>
+          </div>
+        </div>
+        
+        <button class="view-all">
+          Ver todos los seguidos
+          <i class="pi pi-chevron-down"></i>
+        </button>
+      </div>
     </div>
   </div>
 </p-dialog>

@@ -751,3 +751,348 @@
       background-color: #646464;
     }
   
+
+    :host ::ng-deep {
+      .connections-dialog {
+        background: #1f1f1f !important;
+        border-radius: 16px;
+        padding: 1.5rem;
+        color: #fff;
+        font-family: 'Segoe UI', sans-serif;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    
+        .connections-dialog-content {
+          .dialog-header {
+            margin-bottom: 1.5rem;
+            
+            h2 {
+              margin: 0;
+              font-size: 1.5rem;
+              font-weight: 600;
+              color: #fff;
+              display: flex;
+              align-items: center;
+              gap: 0.75rem;
+              
+              .username {
+                color: #4caf50;
+                font-size: clamp(1.2rem, 2.5vw, 1rem);
+                font-weight: 700;
+              }
+              
+              .pi {
+                color: #4caf50;
+                font-size: 1.3rem;
+              }
+            }
+            
+            .p-divider {
+              border-color: rgba(255, 255, 255, 0.08);
+              margin: 1rem 0;
+            }
+          }
+          
+          .connections-grid {
+            display: flex;
+            gap: 1.5rem;
+            
+            .connections-column {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              background: rgba(255, 255, 255, 0.03);
+              border-radius: 12px;
+              padding: 1.25rem;
+              border: 1px solid rgba(255, 255, 255, 0.05);
+              
+              .column-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1.25rem;
+                
+                h3 {
+                  margin: 0;
+                  font-size: 1.1rem;
+                  font-weight: 600;
+                  color: #fff;
+                  display: flex;
+                  align-items: center;
+                  gap: 0.5rem;
+                }
+                
+                .counter-badge {
+                  background: rgba(76, 175, 80, 0.2);
+                  color: #4caf50;
+                  border-radius: 20px;
+                  padding: 0.25rem 0.75rem;
+                  font-size: 0.85rem;
+                  font-weight: 600;
+                }
+              }
+              
+              .user-list {
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+                
+                .user-card {
+                  display: flex;
+                  align-items: center;
+                  padding: 0.75rem;
+                  border-radius: 8px;
+                  background: rgba(255, 255, 255, 0.02);
+                  border: 1px solid rgba(255, 255, 255, 0.03);
+                  transition: all 0.2s ease;
+                  
+                  .user-avatar {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                    margin-right: 0.75rem;
+                    border: 2px solid rgba(76, 175, 80, 0.3);
+                  }
+                  
+                  .user-details {
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    
+                    .user-name {
+                      font-weight: 600;
+                      font-size: 0.95rem;
+                      margin-bottom: 0.15rem;
+                    }
+                    
+                    .user-handle {
+                      font-size: 0.8rem;
+                      color: #bbb;
+                      opacity: 0.9;
+                    }
+                  }
+                  
+                  .follow-button, .unfollow-button {
+                    background: transparent;
+                    border: none;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    
+                    .pi {
+                      font-size: 0.9rem;
+                    }
+                  }
+                  
+                  .follow-button {
+                    color: #4caf50;
+                    border: 1px solid rgba(76, 175, 80, 0.3);
+                    
+                    &:hover {
+                      background: rgba(76, 175, 80, 0.1);
+                      border-color: rgba(76, 175, 80, 0.5);
+                    }
+                    
+                    &.following {
+                      color: #fff;
+                      background: #4caf50;
+                    }
+                  }
+                  
+                  .unfollow-button {
+                    color: #f44336;
+                    border: 1px solid rgba(244, 67, 54, 0.3);
+                    
+                    &:hover {
+                      background: rgba(244, 67, 54, 0.1);
+                      border-color: rgba(244, 67, 54, 0.5);
+                    }
+                  }
+                }
+              }
+              
+              .view-all {
+                background: transparent;
+                border: none;
+                color: #4caf50;
+                font-size: 0.9rem;
+                font-weight: 500;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                padding: 0.5rem;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                margin-top: auto;
+                
+                &:hover {
+                  background: rgba(76, 175, 80, 0.1);
+                  
+                  .pi {
+                    transform: translateY(1px);
+                  }
+                }
+                
+                .pi {
+                  font-size: 0.8rem;
+                  transition: transform 0.2s ease;
+                }
+              }
+            }
+            
+            .divider-vertical {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              
+              span {
+                background: #1f1f1f;
+                color: #bbb;
+                padding: 0 0.75rem;
+                font-size: 0.9rem;
+                font-weight: 600;
+                z-index: 1;
+              }
+              
+              &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 50%;
+                border-left: 1px dashed rgba(255, 255, 255, 0.1);
+              }
+            }
+          }
+        }
+
+
+      .user-card {
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      .counter-badge {
+        position: relative;
+        &::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 20px;
+          background: rgba(76, 175, 80, 0.4);
+          opacity: 0;
+          animation: pulse 2s infinite;
+        }
+      }
+
+      @keyframes pulse {
+        0% { opacity: 0; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(1.05); }
+        100% { opacity: 0; transform: scale(1); }
+      }
+      }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      :host ::ng-deep {
+        .connections-dialog {
+          width: 90vw !important;
+          
+          .connections-grid {
+            flex-direction: column;
+            
+            .divider-vertical {
+              margin: 1rem 0;
+              height: 1px;
+              
+              &::before {
+                left: 0;
+                right: 0;
+                top: 50%;
+                border-left: none;
+                border-top: 1px dashed rgba(255, 255, 255, 0.1);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    :host ::ng-deep {
+      @media (max-width: 768px) {
+        .connections-dialog {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          border-radius: 0 !important;
+          margin: 0 !important;
+          padding: 1rem !important;
+          
+          .connections-dialog-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            
+            .connections-grid {
+              flex: 1;
+              overflow-y: auto;
+              
+              .connections-column {
+                background: transparent !important;
+                border: none !important;
+                padding: 0.5rem !important;
+              }
+            }
+          }
+        }
+        
+        // Elimina el espacio sobrante del modal backdrop
+        .p-dialog-mask {
+          background-color: rgba(0, 0, 0, 0.85) !important;
+          
+          .p-dialog {
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
+          }
+        }
+      }
+      
+      // Ajuste extra para pantallas muy pequeñas
+      @media (max-width: 480px) {
+        .user-card {
+          padding: 0.5rem !important;
+          
+          .user-avatar {
+            width: 36px !important;
+            height: 36px !important;
+          }
+          
+          .user-name {
+            font-size: 0.9rem !important;
+          }
+          
+          .user-handle {
+            font-size: 0.75rem !important;
+          }
+        }
+      }
+    }
