@@ -122,6 +122,9 @@ html.custom-dark-mode  .boton-opciones-avatar{
   background-color: rgba(187, 154, 154, 0.438) !important;
 }
 
+
+
+
 html.custom-dark-mode {
   .swal2-container {
     z-index: 5000;
@@ -160,7 +163,15 @@ html.custom-dark-mode .profile-cancel-button{
   background-color: #df9462 !important;
 }
 
+html.custom-dark-mode .emoji-trigger{
+  background-color: transparent !important;
+  border: none !important;
+}
 
+html.custom-dark-mode .dialog__emoticons .p-button{
+  background-color: transparent !important;
+  border: none !important;
+}
 
 ::-webkit-scrollbar {
   width: 6px;

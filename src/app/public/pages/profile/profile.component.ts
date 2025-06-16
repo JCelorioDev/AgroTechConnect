@@ -20,11 +20,13 @@ import { PasswordModule } from 'primeng/password';
 import { passwordMatchValidator } from '../../../core/validation/password repeat/passwordMatchValidator';
 import { TextareaModule } from 'primeng/textarea';
 import { UserInformation } from '../../../core/models/User/showInformationOpcResponse.interface';
+import { EmojiService } from '../../../shared/services/api-emoji/emoji.service';
+import { EmojiResponse } from '../../../core/models/Emoji/emojiResponse.interface';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [
+  imports: [ 
     CommonModule,
     CardModule,
     ButtonModule,
@@ -69,12 +71,9 @@ export class ProfileComponent {
   private updateConfirm:boolean = false;
   @ViewChild('descriptionInput') descriptionInput!: ElementRef<HTMLTextAreaElement>;
   showDialog = false;
+  private readonly emojiService = inject(EmojiService);
 
-  emojis = [
-    '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣',
-    '😊', '😇', '🙂', '🙃', '😉', '😌', '😍', '🥰',
-    '😘', '😗', '😙', '😚', '😋', '😛', '😝', '😜',
-  ];
+  emojis: string[] = [];
 
 
   encryptedId = toSignal(
@@ -122,6 +121,7 @@ export class ProfileComponent {
     if (this.encryptedId()) { 
       this.getInformationnByID();
     } else {
+      this.getAllEmojis();
       this.getInformation();
     }
   }
@@ -551,6 +551,22 @@ export class ProfileComponent {
       textarea.focus();
       textarea.setSelectionRange(startPos + emoji.length, startPos + emoji.length);
     }, 0);
+  }
+
+  // Obtener lista de emojis
+
+  getAllEmojis(): void {
+    this.emojiService.getsAllEmojis().subscribe({
+      next: (response) => {
+        const emojis = response.map(e => e.emoji);
+        // Elimina duplicados usando Set y lo convierte de nuevo a array
+        this.emojis = Array.from(new Set(emojis)).sort(); // Si quieres ordenados alfabéticamente
+        console.log(this.emojis);
+      },
+      error: (err) => {
+        console.error('Error al cargar los emojis', err);
+      }
+    });
   }
 
 }

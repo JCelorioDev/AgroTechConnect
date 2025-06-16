@@ -166,7 +166,7 @@
             
             <button 
               pButton 
-              icon="pi pi-smile" 
+              icon="pi pi-face-smile" 
               class="p-button-text emoji-trigger"
               (click)="showDialog = true"
               type="button"
@@ -174,8 +174,10 @@
           </div>
     
           <p-dialog 
-            header="Seleccionar emoji" 
+            header="Seleccione el emojí" 
             [(visible)]="showDialog"
+            [closable]="true"
+            class="dialog__emoticons"
             [style]="{ width: '350px' }"
             [modal]="true"
           >

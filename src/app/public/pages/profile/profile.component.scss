@@ -655,7 +655,7 @@
 
 
 :host ::ng-deep .p-dialog {
-  background: none !important;
+  background: #c4c3c3fb !important;
   border: none !important;
 }
 
@@ -678,7 +678,7 @@
   width: 5rem;
   height: 5rem;
   animation: global-spin-animation 1.2s linear infinite;
-  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.1)); 
+  filter: drop-shadow(0 0 4px rgba(177, 32, 32, 0.1)); 
 }
 
 @keyframes global-spin-animation {
@@ -713,6 +713,11 @@
       bottom: 10px;
     }
 
+    .emoji-trigger:hover {
+      background-color: #3d3d3d54;
+    }
+
+
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(8, 1fr);
@@ -732,7 +737,7 @@
 
     .emoji-item:hover {
       transform: scale(1.2);
-      background-color: #f0f0f0;
+      background-color: #f0f0f03f;
     }
 
     .profile-error-message {
@@ -740,3 +745,9 @@
       font-size: 0.875rem;
       margin-top: 0.5rem;
     }
+    
+    :host ::ng-deep .p-dialog-header {
+      color: #fff !important;
+      background-color: #646464;
+    }
+  
