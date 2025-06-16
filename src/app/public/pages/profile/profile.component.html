@@ -261,6 +261,24 @@
   </div>
 </p-dialog>
 
+<!-- DIALOGO PARA MIS SEGUIDORES Y SEGUIDOS  -->
+
+<p-dialog
+  [modal]="true"
+  [(visible)]="dialogoFollowers"
+  [position]="'center'"
+  [style]="{ width: '25rem' }"
+  [dismissableMask]="true"
+  contentStyleClass="change-password-dialog"
+  [showHeader]="false"
+>
+  <div class="change-password-dialog-content">
+
+    <div class="change-password-input-group">
+    </div>
+  </div>
+</p-dialog>
+
 <div class="perfil-container" *ngIf="!isLoadingInfoUser; else skeleton_info">
   <button *ngIf="!encryptedId()" (click)="visibleModal=true" pButton type="button" icon="pi pi-ellipsis-h"
           class="boton-opciones-avatar p-button-rounded p-button-text"></button>
@@ -307,7 +325,7 @@
       }
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
       <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
-      <div><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
+      <div style="cursor: pointer;" (click)="encryptedId() ? '' : mefollowers()"><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
     </div>
 
     <p-panel class="perfil-sobremi" header="Sobre mí">

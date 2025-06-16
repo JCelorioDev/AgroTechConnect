@@ -21,7 +21,7 @@ import { passwordMatchValidator } from '../../../core/validation/password repeat
 import { TextareaModule } from 'primeng/textarea';
 import { UserInformation } from '../../../core/models/User/showInformationOpcResponse.interface';
 import { EmojiService } from '../../../shared/services/api-emoji/emoji.service';
-import { EmojiResponse } from '../../../core/models/Emoji/emojiResponse.interface';
+
 
 @Component({
   selector: 'app-profile',
@@ -72,6 +72,8 @@ export class ProfileComponent {
   @ViewChild('descriptionInput') descriptionInput!: ElementRef<HTMLTextAreaElement>;
   showDialog = false;
   private readonly emojiService = inject(EmojiService);
+  public listFollowersMe!:any[];
+  public dialogoFollowers:boolean = false;
 
   emojis: string[] = [];
 
@@ -603,6 +605,21 @@ export class ProfileComponent {
     }
     
     return false; 
+  }
+
+  mefollowers():void{
+    this.loading_spinning2 = true;
+
+    this.userService.mefollowers().subscribe({
+      next: (s) => {
+       this.listFollowersMe = s.data.data;
+       this.loading_spinning2 = false;
+       this.dialogoFollowers = true;
+      },
+      error: (err) => {
+        this.loading_spinning2 = false;
+      }
+    })
   }
 
 }

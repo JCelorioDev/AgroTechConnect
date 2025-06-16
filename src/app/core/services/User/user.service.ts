@@ -10,6 +10,7 @@ import { ShowInformationOpcResponse } from '../../models/User/showInformationOpc
 import { UpdateInformationOpcResponseInterface } from '../../models/User/updateInformationOpcResponse.interface';
 import { updateInformationProfileRequest } from '../../models/User/updateInformationProfileRequest.interface';
 import { FollowUserResponse } from '../../models/User/followUserResponse.interface';
+import { MefollowersResponse } from '../../models/User/mefollowersResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -100,6 +101,10 @@ export class UserService {
   }
 
   // Ver mis seguidores
+
+  mefollowers():Observable<MefollowersResponse>{
+    return this.httpClient.get<MefollowersResponse>(`${environment.apiBaseUrl}me/followers`)
+  }
 
 
   // Ver mis seguidos
