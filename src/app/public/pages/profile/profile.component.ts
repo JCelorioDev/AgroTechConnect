@@ -658,13 +658,31 @@ export class ProfileComponent {
   // Ver seguidores de otro usuario
 
   followers():void{
-    console.log('viendo seguidores de otros');
     this.loading_spinning2 = true;
+    this.followings();
     this.userService.followers(this.encryptedId()).subscribe({
       next: (s) => {
         this.listFollowersMe = s.data.data;
         this.loading_spinning2 = false;
         this.dialogoFollowers = true;
+      },
+      error: (err) => {
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    })
+  }
+
+  // Ver seguidos de otro usuario
+
+  followings():void{
+    this.loading_spinning2 = true;
+    this.userService.followings(this.encryptedId()).subscribe({
+      next: (s) => {
+        this.listFollowingsMe = s.data.data;
       },
       error: (err) => {
         if (err.status === 422) {
