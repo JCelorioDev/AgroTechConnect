@@ -600,7 +600,38 @@ export class ProfileComponent {
         }
       })
     }else{
-      this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta', 'warning', 3000);
+      this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
+    }
+
+  }
+
+  // Método para dejar de seguir a un usuario
+
+  unFollowUser():void{
+    this.loading_spinning2 = true;
+
+    let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
+    console.log('ss');
+
+    if (!!userLogin.token){
+      this.userService.unFollow(this.encryptedId()).subscribe({
+        next: (s) => {
+          this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
+          this.loading_spinning2 = false;
+          this.readyFollowing = false;
+          console.log('jaja');
+        },
+        error: (err) => {
+          this.loading_spinning2 = false;
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
+        }
+      })
+    }else{
+      this.alertService.miniAlert('Para dejar de seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
     }
 
   }

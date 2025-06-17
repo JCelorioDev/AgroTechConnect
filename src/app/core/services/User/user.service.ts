@@ -14,6 +14,7 @@ import { MefollowersResponse } from '../../models/User/mefollowersResponse.inter
 import { MeFollowingResponse } from '../../models/User/mefollowingResponse.interface';
 import { Followers } from '../../models/User/followersResponse.interface';
 import { FollowingResponse } from '../../models/User/followingsResponse.interface';
+import { UnfollowUser } from '../../models/User/unfollowResponse.interface';
 
 
 @Injectable({
@@ -102,6 +103,17 @@ export class UserService {
     return this.httpClient.post<FollowUserResponse>(`${environment.apiBaseUrl}users/follow`, {
       user_id : idUser
     })
+  }
+
+  // Dejar de seguir a un usuario
+
+  unFollow(idUsuario: string): Observable<UnfollowUser> {
+    return this.httpClient.delete<UnfollowUser>(
+      `${environment.apiBaseUrl}users/unfollow`, 
+      {
+        params: { user_id: idUsuario } 
+      }
+    );
   }
 
   // Ver mis seguidores
