@@ -126,7 +126,6 @@ export class ProfileComponent {
   ngOnInit(): void {
     this.getUser();
     if (this.encryptedId()) { 
-      this.verifyFollowUser();
       this.getInformationnByID();
     } else {
       this.getAllEmojis();
@@ -665,7 +664,7 @@ export class ProfileComponent {
 
   // Método para saber si ya el usuario sigue a un usuario
 
-  verifyFollowUser(): boolean {  
+  get verifyFollowUser(): boolean {  
     for (const follow of this.objUsuario?.followings) {
       if (follow.followed.email === this.objUser.email) {
         return true;

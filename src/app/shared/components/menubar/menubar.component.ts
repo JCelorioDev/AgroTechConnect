@@ -292,4 +292,45 @@ export class MenubarComponent {
   goProfil(idUser?:string):void{
     this.router.navigate(['menu/perfil']);
   }
+
+  unreadCount: number = 3;
+showNotifications: boolean = false;
+notifications: any[] = [
+  {
+    id: 1,
+    avatar: 'assets/images/user1.jpg',
+    message: 'Juan Pérez ha respondido a tu pregunta',
+    time: new Date(Date.now() - 1000 * 60 * 5), // 5 minutos atrás
+    read: false
+  },
+  {
+    id: 2,
+    avatar: 'assets/images/user2.jpg',
+    message: 'María Gómez ha votado tu respuesta',
+    time: new Date(Date.now() - 1000 * 60 * 30), // 30 minutos atrás
+    read: false
+  },
+  {
+    id: 3,
+    avatar: 'assets/images/user3.jpg',
+    message: 'Nuevo mensaje en el foro de programación',
+    time: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
+    read: true
+  }
+];
+
+toggleNotifications() {
+  this.showNotifications = !this.showNotifications;
+  
+  // Marcar como leídas al abrir
+  if (this.showNotifications) {
+    this.markAllAsRead();
+  }
+}
+
+markAllAsRead() {
+  this.notifications.forEach(n => n.read = true);
+  this.unreadCount = 0;
+}
+
 }
