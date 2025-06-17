@@ -297,9 +297,15 @@
               <span class="user-name">{{follower?.follower?.name}}{{follower?.follower?.lastname}}</span>
               <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
             </div>
-            <button class="follow-button">
-              <i class="pi pi-user-plus"></i>
-            </button>
+            @if(verifyFollowByUser(follower?.follower?.email)){
+              <button (click)="unFollowUser(follower?.follower?.id)"  class="unfollow-button">
+                <i class="pi pi-user-minus"></i>
+              </button>
+            }@else {
+              <button (click)="followAuser(follower?.follower?.id)" class="follow-button">
+                <i class="pi pi-user-plus"></i>
+              </button>
+            }
           </div>
         </div>
         
@@ -329,9 +335,15 @@
               <span class="user-name">{{following?.followed?.name}} {{following?.followed?.lastname}}</span>
               <span class="user-handle">{{'@' + following?.followed?.username}}</span>
             </div>
-            <button class="unfollow-button">
-              <i class="pi pi-user-minus"></i>
-            </button>
+            @if(verifyFollowByUser(following?.followed?.email)){
+              <button (click)="unFollowUser(following?.followed?.id)"  class="unfollow-button">
+                <i class="pi pi-user-minus"></i>
+              </button>
+            }@else {
+              <button (click)="followAuser(following?.followed?.id)" class="follow-button">
+                <i class="pi pi-user-plus"></i>
+              </button>
+            }
           </div>
         </div>
         

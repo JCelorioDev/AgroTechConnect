@@ -577,14 +577,14 @@ export class ProfileComponent {
 
   // Seguir a un usuario
 
-  followAuser():void{
+  followAuser(idUser?:string):void{
     this.loading_spinning2 = true;
 
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
 
     if (!!userLogin.token){
       //this.getUser();
-      this.userService.followAuser(this.encryptedId()).subscribe({
+      this.userService.followAuser(idUser ? idUser : this.encryptedId()).subscribe({
         next: (s) => {
           this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
           this.loading_spinning2 = false;
@@ -607,19 +607,18 @@ export class ProfileComponent {
 
   // Método para dejar de seguir a un usuario
 
-  unFollowUser():void{
+  unFollowUser(idUser?:string):void{
     this.loading_spinning2 = true;
 
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
-    console.log('ss');
+
 
     if (!!userLogin.token){
-      this.userService.unFollow(this.encryptedId()).subscribe({
+      this.userService.unFollow(idUser ? idUser : this.encryptedId()).subscribe({
         next: (s) => {
           this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
           this.loading_spinning2 = false;
           this.readyFollowing = false;
-          console.log('jaja');
         },
         error: (err) => {
           this.loading_spinning2 = false;
@@ -641,6 +640,15 @@ export class ProfileComponent {
   verifyFollowUser(): boolean {  
     for (const follow of this.objUsuario?.followings) {
       if (follow.followed.email === this.objUser.email) {
+        return true;
+      }
+    }
+    return false; 
+  }
+
+  verifyFollowByUser(emailUser:string): boolean { 
+    for (const follow of this.objUsuario?.followings) {
+      if (follow.followed.email === emailUser) {
         return true;
       }
     }
