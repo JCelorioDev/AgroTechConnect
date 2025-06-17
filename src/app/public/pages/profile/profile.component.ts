@@ -126,6 +126,7 @@ export class ProfileComponent {
   ngOnInit(): void {
     this.getUser();
     if (this.encryptedId()) { 
+      this.verifyFollowUser();
       this.getInformationnByID();
     } else {
       this.getAllEmojis();
@@ -577,62 +578,89 @@ export class ProfileComponent {
 
   // Seguir a un usuario
 
-  followAuser(idUser?:string):void{
+  followAuser(idUser?: string): void {
     this.loading_spinning2 = true;
-
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
 
-    if (!!userLogin.token){
-      //this.getUser();
-      this.userService.followAuser(idUser ? idUser : this.encryptedId()).subscribe({
-        next: (s) => {
-          this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
-          this.loading_spinning2 = false;
-          this.readyFollowing = true;
-        },
-        error: (err) => {
-          this.loading_spinning2 = false;
-          if (err.status === 422) {
-            this.alertService.showValidationErrors(err.error);
-          } else {
-            this.alertService.miniAlert(err.error.message, 'error', 3000);
-          }
-        }
-      })
-    }else{
-      this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
+    if (!!userLogin.token) {
+        this.userService.followAuser(idUser ? idUser : this.encryptedId()).subscribe({
+            next: (s) => {
+                this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
+                this.loading_spinning2 = false;
+                this.readyFollowing = true;
+                
+                // Actualización síncrona - Añadir el seguimiento localmente
+                if (idUser) {
+                    const userToFollow = this.findUserInLists(idUser);
+                    if (userToFollow) {
+                        if (!this.objUsuario.followings) {
+                            this.objUsuario.followings = [];
+                        }
+                        this.objUsuario.followings.push({
+                            followed: userToFollow
+                        });
+                    }
+                }
+            },
+            error: (err) => {
+                this.loading_spinning2 = false;
+                if (err.status === 422) {
+                    this.alertService.showValidationErrors(err.error);
+                } else {
+                    this.alertService.miniAlert(err.error.message, 'error', 3000);
+                }
+            }
+        });
+    } else {
+        this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
     }
-
   }
 
   // Método para dejar de seguir a un usuario
 
-  unFollowUser(idUser?:string):void{
+  unFollowUser(idUser?: string): void {
     this.loading_spinning2 = true;
-
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
 
-
-    if (!!userLogin.token){
-      this.userService.unFollow(idUser ? idUser : this.encryptedId()).subscribe({
-        next: (s) => {
-          this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
-          this.loading_spinning2 = false;
-          this.readyFollowing = false;
-        },
-        error: (err) => {
-          this.loading_spinning2 = false;
-          if (err.status === 422) {
-            this.alertService.showValidationErrors(err.error);
-          } else {
-            this.alertService.miniAlert(err.error.message, 'error', 3000);
-          }
-        }
-      })
-    }else{
-      this.alertService.miniAlert('Para dejar de seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
+    if (!!userLogin.token) {
+        this.userService.unFollow(idUser ? idUser : this.encryptedId()).subscribe({
+            next: (s) => {
+                this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
+                this.loading_spinning2 = false;
+                this.readyFollowing = false;
+                
+                // Actualización síncrona - Eliminar el seguimiento localmente
+                if (idUser && this.objUsuario.followings) {
+                    this.objUsuario.followings = this.objUsuario.followings.filter(
+                        (follow: any) => follow.followed.id !== idUser
+                    );
+                }
+            },
+            error: (err) => {
+                this.loading_spinning2 = false;
+                if (err.status === 422) {
+                    this.alertService.showValidationErrors(err.error);
+                } else {
+                    this.alertService.miniAlert(err.error.message, 'error', 3000);
+                }
+            }
+        });
+    } else {
+        this.alertService.miniAlert('Para dejar de seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
     }
+  }
 
+  // Método auxiliar para encontrar un usuario en las listas
+  private findUserInLists(userId: string): any {
+    // Buscar en seguidores
+    const follower = this.listFollowersMe?.find(f => f.follower.id === userId);
+    if (follower) return follower.follower;
+    
+    // Buscar en seguidos
+    const following = this.listFollowingsMe?.find(f => f.followed.id === userId);
+    if (following) return following.followed;
+    
+    return null;
   }
 
   // Método para saber si ya el usuario sigue a un usuario
@@ -747,15 +775,19 @@ export class ProfileComponent {
 
   public objUsuario:any;
 
-  getUser():void{
+  getUser(): void {
     this.userService.getInformation().subscribe({
-      next: (s) => {
-        this.objUsuario = s.data;
-      },
-      error: (err) => {
-
-      }
-    })
-  }
+        next: (s) => {
+            this.objUsuario = s.data;
+            // Inicializar followings si no existe
+            if (!this.objUsuario.followings) {
+                this.objUsuario.followings = [];
+            }
+        },
+        error: (err) => {
+            console.error('Error al obtener información del usuario', err);
+        }
+    });
+}
 
 }
