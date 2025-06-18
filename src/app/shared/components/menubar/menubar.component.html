@@ -188,12 +188,69 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
   </div>
 
   @if (getLocalStorageToken) {
-    <p-button  class="menubar-container__buttonLogin" label="Añadir pregunta"/>
+
+    <div class="notifications-container">
+      
+      <button class="notifications-trigger" aria-label="Notificaciones">
+        <i class="pi pi-bell notifications-icon"></i>
+        <span class="notifications-badge">3</span>
+      </button>
+      
+      <div class="p-grid p-justify-center notifications-dropdown-wrapper">
+        <div class="p-col-12 p-md-8 p-lg-6">
+          <div class="notifications-dropdown">
+            <div class="notifications-header">
+              <h3 class="notifications-title">Notificaciones</h3>
+              <button class="notifications-mark-all">Marcar todas como leídas</button>
+            </div>
+            
+            <div class="notifications-list">
+              <!-- Notificación no leída -->
+              <div class="notification unread">
+                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Usuario" class="notification-avatar">
+                <div class="notification-content">
+                  <h4 class="notification-user">Juan Pérez</h4>
+                  <p class="notification-text">Ha respondido a tu pregunta sobre Angular</p>
+                  <span class="notification-time">Hace 5 minutos</span>
+                </div>
+              </div>
+              
+              <!-- Notificación no leída -->
+              <div class="notification unread">
+                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Usuario" class="notification-avatar">
+                <div class="notification-content">
+                  <h4 class="notification-user">María Gómez</h4>
+                  <p class="notification-text">Ha votado tu respuesta sobre PrimeNG</p>
+                  <span class="notification-time">Hace 30 minutos</span>
+                </div>
+              </div>
+              
+              <!-- Notificación leída -->
+              <div class="notification">
+                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Usuario" class="notification-avatar">
+                <div class="notification-content">
+                  <h4 class="notification-user">Carlos Rodríguez</h4>
+                  <p class="notification-text">Mencionó tu comentario en el foro</p>
+                  <span class="notification-time">Hace 2 horas</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="notifications-footer">
+              <a href="#" class="notifications-view-all">Ver todas las notificaciones</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p-button class="menubar-container__buttonLogin" icon="pi pi-question" [label]="screenWidth > 600 ? 'Añadir pregunta' : ''">
+    </p-button>
   }@else{
     <p-button (onClick)="goLogin(true);" class="menubar-container__buttonLogin" label="Login" severity="success" />
   }
 
-  <i class="pi pi-bell"></i>
+
 
   <button
     (click)="showDialog()"

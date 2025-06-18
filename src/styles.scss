@@ -122,7 +122,14 @@ html.custom-dark-mode  .boton-opciones-avatar{
   background-color: rgba(187, 154, 154, 0.438) !important;
 }
 
+html.custom-dark-mode .notifications-trigger{
+  background-color: transparent !important;
+  border: none !important;
+}
 
+html.custom-dark-mode .notifications-icon{
+  color: rgb(202, 202, 55)  !important;
+}
 
 
 html.custom-dark-mode {

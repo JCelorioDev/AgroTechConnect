@@ -44,7 +44,8 @@ export class MenubarComponent {
   public formEliminateAccount!:FormGroup;
   public valueCodePasswordConfirmation:string = '';;
   public generatedCode: string = '';
-
+  screenWidth: number;
+  
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
   }
@@ -64,6 +65,11 @@ export class MenubarComponent {
     }, {
       validators: passwordMatchValidator('password', 'password_confirmation')
     });
+
+    this.screenWidth = window.innerWidth;
+    window.onresize = () => {
+      this.screenWidth = window.innerWidth;
+    };
   }
 
 

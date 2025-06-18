@@ -391,6 +391,251 @@ $sidebar-width: 250px;
 }
 
 
+.notifications-container {
+  position: relative;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  z-index: 100;
+
+  .notifications-trigger {
+    position: relative;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &:hover {
+      background-color: rgba(76, 175, 80, 0.1);
+      
+      .notifications-icon {
+        color: #4CAF50;
+        transform: scale(1.1);
+      }
+    }
+  }
+  
+  .notifications-icon {
+    font-size: 1.4rem;
+    color: #5d2e20;
+    transition: all 0.3s ease;
+  }
+  
+  .notifications-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    background: #ff4757;
+    color: white;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: bold;
+    border: 2px solid #818182;
+    animation: notification-pulse 1.5s infinite;
+  }
+  
+  .notifications-dropdown {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 350px;
+    max-width: 90vw;
+    background: #25282E;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid #3a3f47;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  
+  &:hover .notifications-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+  
+  .notifications-header {
+    padding: 1rem;
+    border-bottom: 1px solid #3a3f47;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .notifications-title {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #f1f1f1;
+    font-weight: 500;
+  }
+  
+  .notifications-mark-all {
+    background: none;
+    border: none;
+    color: #4CAF50;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(76, 175, 80, 0.1);
+    }
+  }
+  
+  .notifications-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .notification {
+    display: flex;
+    padding: 1rem;
+    border-bottom: 1px solid #3a3f47;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    &.unread {
+      background-color: rgba(76, 175, 80, 0.08);
+      
+      .notification-user {
+        font-weight: 600;
+      }
+    }
+  }
+  
+  .notification-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .notification-content {
+    flex-grow: 1;
+  }
+  
+  .notification-user {
+    margin: 0 0 0.25rem 0;
+    color: #f1f1f1;
+    font-size: 0.95rem;
+  }
+  
+  .notification-text {
+    margin: 0 0 0.25rem 0;
+    color: #bbb;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .notification-time {
+    display: block;
+    color: #777;
+    font-size: 0.75rem;
+  }
+  
+  .notifications-footer {
+    padding: 0.75rem 1rem;
+    text-align: center;
+    border-top: 1px solid #3a3f47;
+  }
+  
+  .notifications-view-all {
+    color: #4CAF50;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #81c784;
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Animación para el badge */
+@keyframes notification-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .notifications-container {
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    
+    .notifications-trigger {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .notifications-icon {
+      font-size: 1.2rem;
+    }
+    
+    .notifications-badge {
+      width: 16px;
+      height: 16px;
+      font-size: 0.6rem;
+    }
+    
+    .notifications-dropdown {
+      width: 320px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .notifications-container {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    
+    .notifications-dropdown {
+      right: -50px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .notifications-container {
+    .notifications-dropdown {
+      width: 280px;
+      right: -100px;
+    }
+    
+    .notification {
+      padding: 0.75rem;
+    }
+    
+    .notification-avatar {
+      width: 36px;
+      height: 36px;
+      margin-right: 0.75rem;
+    }
+  }
+}
 
 
 
