@@ -1,4 +1,5 @@
-import { Component, inject} from '@angular/core';
+import { Notification } from './../../../core/models/Notifications/notificationsResponse.interface';
+import { Component, ElementRef, inject, ViewChild} from '@angular/core';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -17,6 +18,10 @@ import { InputOtp } from 'primeng/inputotp';
 import { UserService } from '../../../core/services/User/user.service';
 import { RolsService } from '../../../core/utils/Roles/rols.service';
 import { parse } from 'path';
+import { Subscription } from 'rxjs';
+import { NotificationsService } from '../../../core/services/Notifications/notifications.service';
+
+
 
 @Component({
   selector: 'shared-menubar',
@@ -45,6 +50,18 @@ export class MenubarComponent {
   public valueCodePasswordConfirmation:string = '';;
   public generatedCode: string = '';
   screenWidth: number;
+
+  public notifications: Notification[] = [];
+  public unreadCount: number = 0;
+  public showNotificationsDropdown: boolean = false;
+  public isLoadingNotifications: boolean = false;
+  public currentPage: any = 1;
+  public totalPages: number = 1;
+  private notificationsSubscription!: Subscription;
+  @ViewChild('notificationsDropdown') notificationsDropdown!: ElementRef<HTMLDivElement>;
+  public showAllNotifications = false;
+
+  private readonly notificationsService = inject(NotificationsService);
   
   get getLocalStorageToken():any{
     return localStorage.getItem('userLogin')
@@ -56,6 +73,71 @@ export class MenubarComponent {
     if (this.authService.getEmailVerified) {
       this.isEmailVerify();
     }
+
+    // Suscribirse a las notificaciones
+    this.notificationsSubscription = this.notificationsService.notifications$.subscribe(response => {
+      if (response) {
+        if (this.currentPage === 1) {
+          this.notifications = response.data.notifications;
+        } else {
+          this.notifications = [...this.notifications, ...response.data.notifications];
+        }
+        this.unreadCount = response.data.meta.notifications_count.unread;
+        this.totalPages = response.data.meta.pagination.total_pages;
+      }
+    });
+
+    // Cargar notificaciones iniciales
+    this.loadNotifications();
+  }
+
+  ngOnDestroy(): void {
+    const element = this.notificationsDropdown?.nativeElement;
+    if (element) {
+      element.removeEventListener('scroll', this.scrollHandler);
+    }
+    
+    if (this.notificationsSubscription) {
+      this.notificationsSubscription.unsubscribe();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.notificationsDropdown) {
+        this.setupScrollListener();
+      }
+    });
+  }
+
+  private setupScrollListener(): void {
+    const element = this.notificationsDropdown?.nativeElement;
+    if (!element) return;
+  
+    // Limpia cualquier listener previo
+    element.removeEventListener('scroll', this.scrollHandler);
+    
+    this.scrollHandler = () => {
+      if (this.shouldLoadMore(element)) {
+        this.loadMoreNotifications();
+      }
+    };
+  
+    element.addEventListener('scroll', this.scrollHandler);
+  }
+  
+  private scrollHandler = () => {}; // Inicialización vacía
+  
+
+
+ // Inicialización vacía
+
+  private shouldLoadMore(element: HTMLElement): boolean {
+    return (
+      !this.isLoadingNotifications &&
+      this.currentPage < this.totalPages &&
+      element.scrollHeight - element.scrollTop <= element.clientHeight + 100
+    );
   }
 
   constructor(private formBuilder:FormBuilder){
@@ -299,44 +381,91 @@ export class MenubarComponent {
     this.router.navigate(['menu/perfil']);
   }
 
-  unreadCount: number = 3;
-showNotifications: boolean = false;
-notifications: any[] = [
-  {
-    id: 1,
-    avatar: 'assets/images/user1.jpg',
-    message: 'Juan Pérez ha respondido a tu pregunta',
-    time: new Date(Date.now() - 1000 * 60 * 5), // 5 minutos atrás
-    read: false
-  },
-  {
-    id: 2,
-    avatar: 'assets/images/user2.jpg',
-    message: 'María Gómez ha votado tu respuesta',
-    time: new Date(Date.now() - 1000 * 60 * 30), // 30 minutos atrás
-    read: false
-  },
-  {
-    id: 3,
-    avatar: 'assets/images/user3.jpg',
-    message: 'Nuevo mensaje en el foro de programación',
-    time: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 horas atrás
-    read: true
+  private loadMoreNotifications(): void {
+    if (this.isLoadingNotifications || this.currentPage >= this.totalPages) return;
+    
+    this.isLoadingNotifications = true;
+    this.currentPage++;
+    
+    this.notificationsService.getsNotification(this.currentPage).subscribe({
+      next: (response) => {
+        this.notifications = [...this.notifications, ...response.data.notifications];
+        this.unreadCount = response.data.meta.notifications_count.unread;
+        this.totalPages = response.data.meta.pagination.total_pages;
+        this.isLoadingNotifications = false;
+      },
+      error: () => {
+        this.isLoadingNotifications = false;
+      }
+    });
   }
-];
 
-toggleNotifications() {
-  this.showNotifications = !this.showNotifications;
   
-  // Marcar como leídas al abrir
-  if (this.showNotifications) {
-    this.markAllAsRead();
-  }
-}
+  // Obtener todas las notificaciones
 
-markAllAsRead() {
-  this.notifications.forEach(n => n.read = true);
-  this.unreadCount = 0;
-}
+  getsNotification():void{
+
+  }
+
+
+    // Cargar notificaciones
+    loadNotifications(page: number = 1): void {
+      if (this.isLoadingNotifications) return;
+      
+      this.isLoadingNotifications = true;
+      this.currentPage = page;
+    
+      const params = this.showAllNotifications ? { page, show_all: true } : { page };
+      
+      this.notificationsService.getsNotification(params).subscribe({
+        next: (response) => {
+          if (page === 1) {
+            this.notifications = response.data.notifications;
+          } else {
+            this.notifications = [...this.notifications, ...response.data.notifications];
+          }
+          
+          this.unreadCount = response.data.meta.notifications_count.unread;
+          this.totalPages = response.data.meta.pagination.total_pages;
+          this.isLoadingNotifications = false;
+        },
+        error: () => {
+          this.isLoadingNotifications = false;
+        }
+      });
+    }
+
+    // Scroll infinito
+  onScroll(): void {
+    if (this.currentPage < this.totalPages && !this.isLoadingNotifications) {
+      this.currentPage++;
+      this.loadNotifications(this.currentPage);
+    }
+  }
+
+  // Mostrar/ocultar dropdown de notificaciones
+  toggleNotifications(showAll = false): void {
+    this.showAllNotifications = showAll;
+    this.showNotificationsDropdown = !this.showNotificationsDropdown;
+    
+    if (this.showNotificationsDropdown) {
+      this.currentPage = 1;
+      this.loadNotifications();
+    }
+  }
+
+  // Marcar notificación como leída
+  markAsRead(notification: Notification): void {
+    if (!notification.is_read) {
+      this.notificationsService.markAsRead(notification.id).subscribe();
+    }
+  }
+
+  // Marcar todas como leídas
+  markAllAsRead(): void {
+    if (this.unreadCount > 0) {
+      this.notificationsService.markAllAsRead().subscribe();
+    }
+  }
 
 }
