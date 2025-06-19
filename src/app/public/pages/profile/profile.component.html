@@ -276,7 +276,12 @@
     <div class="dialog-header">
       <h2>
         <i class="pi pi-users"></i>
-        <span>Conexiones de <span class="username">{{'@'}}{{objUser?.username}}</span></span>
+        @if(encryptedId()){
+          <span>Conexiones de <span class="username">{{'@'}}{{objUser?.username}}</span></span>
+        }@else{
+          <span>Mi red de amigos</span>
+        }
+
       </h2>
       <p-divider></p-divider>
     </div>
@@ -291,18 +296,18 @@
         
         <div class="user-list">
           <!-- Usuarios -->
-          <div *ngFor="let follower of listFollowersMe" class="user-card">
+          <div style="cursor: pointer;" (click)="getInformationnByID(follower?.follower?.id)" *ngFor="let follower of listFollowersMe" class="user-card">
             <img [src]="follower.follower.image.url" alt="Avatar" class="user-avatar">
             <div class="user-details">
               <span class="user-name">{{follower?.follower?.name}}{{follower?.follower?.lastname}}</span>
               <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
             </div>
             @if(verifyFollowByUser(follower?.follower?.email)){
-              <button (click)="unFollowUser(follower?.follower?.id)"  class="unfollow-button">
+              <button (click)="unFollowUser(follower?.follower?.id); $event.stopPropagation()"  class="unfollow-button">
                 <i class="pi pi-user-minus"></i>
               </button>
             }@else {
-              <button (click)="followAuser(follower?.follower?.id)" class="follow-button">
+              <button (click)="followAuser(follower?.follower?.id); $event.stopPropagation()" class="follow-button">
                 <i class="pi pi-user-plus"></i>
               </button>
             }
@@ -329,18 +334,18 @@
         
         <div class="user-list">
           <!-- Usuarios -->
-          <div *ngFor="let following of listFollowingsMe" class="user-card">
+          <div style="cursor: pointer;" (click)="getInformationnByID(following?.followed?.id)" *ngFor="let following of listFollowingsMe" class="user-card">
             <img [src]="following.followed.image.url"alt="Avatar" class="user-avatar">
             <div class="user-details">
               <span class="user-name">{{following?.followed?.name}} {{following?.followed?.lastname}}</span>
               <span class="user-handle">{{'@' + following?.followed?.username}}</span>
             </div>
             @if(verifyFollowByUser(following?.followed?.email)){
-              <button (click)="unFollowUser(following?.followed?.id)"  class="unfollow-button">
+              <button (click)="unFollowUser(following?.followed?.id); $event.stopPropagation()"  class="unfollow-button">
                 <i class="pi pi-user-minus"></i>
               </button>
             }@else {
-              <button (click)="followAuser(following?.followed?.id)" class="follow-button">
+              <button (click)="followAuser(following?.followed?.id); $event.stopPropagation()" class="follow-button">
                 <i class="pi pi-user-plus"></i>
               </button>
             }
@@ -397,9 +402,10 @@
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
 
     <div class="perfil-metricas">
-      @if(encryptedId() && !verifyFollowUser || !readyFollowing){
+      
+      @if(encryptedId() && !verifyFollowUser  && !readyFollowing){
         <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
-      }@else {
+      }@else if(encryptedId()) {
         <div (click)="unFollowUser()"  style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Dejar de seguir</span></div>
       }
 

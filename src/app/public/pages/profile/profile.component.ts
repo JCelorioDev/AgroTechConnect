@@ -151,12 +151,18 @@ export class ProfileComponent {
   }
 
 
-  getInformationnByID(): void {
-    this.userService.getInformationnByID(this.encryptedId()!).subscribe({
+  getInformationnByID(idUsuario?:string): void {
+    if (idUsuario) {
+      this.loading_spinning2 = true;
+      this.dialogoFollowers = false;
+    }
+
+    this.userService.getInformationnByID(idUsuario ? idUsuario : this.encryptedId()!).subscribe({
       next: (s) => {
         this.objUser = s.data;
         this.processRanges();
         this.isLoadingInfoUser = false;
+        this.loading_spinning2 = false;
       },
       error: (err) => this.handleError(err)
     });
@@ -581,7 +587,7 @@ export class ProfileComponent {
     this.loading_spinning2 = true;
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
 
-    if (!!userLogin.token) {
+    if (!!userLogin.token && this.encryptedId() || idUser) {
         this.userService.followAuser(idUser ? idUser : this.encryptedId()).subscribe({
             next: (s) => {
                 this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
@@ -600,6 +606,7 @@ export class ProfileComponent {
                         });
                     }
                 }
+
             },
             error: (err) => {
                 this.loading_spinning2 = false;
@@ -610,7 +617,11 @@ export class ProfileComponent {
                 }
             }
         });
-    } else {
+   } else if (!this.encryptedId() && !!userLogin.token ){
+        this.loading_spinning2 = false;
+        this.alertService.miniAlert('No te puedes seguir a ti mismo.', 'warning', 3000);
+   } else {
+        this.loading_spinning2 = false;
         this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
     }
   }
@@ -634,6 +645,8 @@ export class ProfileComponent {
                         (follow: any) => follow.followed.id !== idUser
                     );
                 }
+
+
             },
             error: (err) => {
                 this.loading_spinning2 = false;
@@ -645,6 +658,7 @@ export class ProfileComponent {
             }
         });
     } else {
+        this.loading_spinning2 = false;
         this.alertService.miniAlert('Para dejar de seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
     }
   }
