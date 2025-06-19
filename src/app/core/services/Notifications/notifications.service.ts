@@ -10,80 +10,111 @@ import { NotificationsUnreadResponse } from '../../models/Notifications/notifica
 })
 export class NotificationsService {
   private readonly httpClient = inject(HttpClient);
+  
+  // Subjects para manejar el estado de las notificaciones
   private notificationsSubject = new BehaviorSubject<NotificationResponse | null>(null);
-  private pollingInterval = 30000; // 30 segundos
+  private unreadNotificationsSubject = new BehaviorSubject<NotificationsUnreadResponse | null>(null);
+  
+  // Intervalo de polling (30 segundos)
+  private pollingInterval = 30000;
 
-  // Observable público para componentes
-  notifications$ = this.notificationsSubject.asObservable();
+  // Observables públicos para los componentes
+  public notifications$ = this.notificationsSubject.asObservable();
+  public unreadNotifications$ = this.unreadNotificationsSubject.asObservable();
 
   constructor() {
-    // Iniciar polling automáticamente al inyectar el servicio
     this.startPolling();
   }
 
-  // Obtener notificaciones con polling
+  /**
+   * Inicia el polling automático para mantener actualizadas las notificaciones
+   */
   private startPolling(): void {
     interval(this.pollingInterval)
       .pipe(
-        startWith(0), // Ejecutar inmediatamente
-        switchMap(() => this.fetchNotifications()),
+        startWith(0), // Ejecutar inmediatamente al iniciar
+        switchMap(() => this.fetchAllNotifications()),
         catchError(error => {
-          console.error('Error fetching notifications:', error);
-          return of(null); // Continuar el polling incluso si hay error
+          console.error('Error en polling de notificaciones:', error);
+          return of(null);
         })
       )
-      .subscribe(response => {
-        if (response) {
-          this.notificationsSubject.next(response);
-        }
+      .subscribe({
+        next: (response) => {
+          if (response) {
+            this.notificationsSubject.next(response);
+          }
+        },
+        error: (err) => console.error('Error en polling:', err)
       });
   }
 
-  getsNotification(page: number = 1): Observable<NotificationResponse> {
+  /**
+   * Obtiene todas las notificaciones (para polling y carga manual)
+   */
+  private fetchAllNotifications(): Observable<NotificationResponse> {
+    return this.httpClient.get<NotificationResponse>(
+      `${environment.apiBaseUrl}notifications`
+    );
+  }
+
+  /**
+   * Obtiene notificaciones paginadas
+   * @param page Número de página
+   */
+  getNotifications(page: number = 1): Observable<NotificationResponse> {
     return this.httpClient.get<NotificationResponse>(
       `${environment.apiBaseUrl}notifications?page=${page}`
+    ).pipe(
+      tap(response => this.notificationsSubject.next(response))
     );
   }
 
-
-  // Fetch actual de notificaciones
-  private fetchNotifications(): Observable<NotificationResponse> {
-    return this.httpClient.get<NotificationResponse>(`${environment.apiBaseUrl}notifications`).pipe(
-      tap(response => {
-        // Aquí puedes agregar lógica adicional si es necesario
-      })
+  /**
+   * Obtiene notificaciones no leídas
+   */
+  getUnreadNotifications(): Observable<NotificationsUnreadResponse> {
+    return this.httpClient.get<NotificationsUnreadResponse>(
+      `${environment.apiBaseUrl}notifications/unread`
+    ).pipe(
+      tap(response => this.unreadNotificationsSubject.next(response))
     );
   }
 
-  // Forzar actualización manual
-  refreshNotifications(): void {
-    this.fetchNotifications().subscribe(response => {
-      this.notificationsSubject.next(response);
-    });
-  }
-
-  // Marcar notificación como leída
-
+  /**
+   * Marca una notificación como leída
+   * @param notificationId ID de la notificación
+   */
   markAsRead(notificationId: string): Observable<any> {
     return this.httpClient.patch(
-      `${environment.apiBaseUrl}notifications/${notificationId}/read`, 
+      `${environment.apiBaseUrl}notifications/${notificationId}/read`,
       {}
+    ).pipe(
+      tap(() => this.refreshNotifications())
     );
   }
-  // Marcar todas como leídas
+
+  /**
+   * Marca todas las notificaciones como leídas
+   */
   markAllAsRead(): Observable<any> {
     return this.httpClient.patch(
-      `${environment.apiBaseUrl}notifications/read-all
-`, 
+      `${environment.apiBaseUrl}notifications/read-all`,
       {}
+    ).pipe(
+      tap(() => this.refreshNotifications())
     );
   }
-  
 
-  // Obtener notificaciones no leidas
-
-  getsNotificationUnread():Observable<NotificationsUnreadResponse>{
-    return this.httpClient.get<NotificationsUnreadResponse>( `${environment.apiBaseUrl}notifications/unread
-      `)
+  /**
+   * Actualiza manualmente todas las notificaciones
+   */
+  refreshNotifications(): void {
+    this.fetchAllNotifications().subscribe(response => {
+      if (response) {
+        this.notificationsSubject.next(response);
+      }
+    });
+    this.getUnreadNotifications().subscribe();
   }
 }

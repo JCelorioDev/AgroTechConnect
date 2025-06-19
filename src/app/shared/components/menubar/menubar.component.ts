@@ -58,6 +58,8 @@ export class MenubarComponent {
   public currentPage: any = 1;
   public totalPages: number = 1;
   private notificationsSubscription!: Subscription;
+  public activeTab: 'all' | 'unread' = 'unread';
+  public unreadNotifications: Notification[] = [];
   @ViewChild('notificationsDropdown') notificationsDropdown!: ElementRef<HTMLDivElement>;
   public showAllNotifications = false;
 
@@ -87,6 +89,17 @@ export class MenubarComponent {
       }
     });
 
+  // Suscripción a notificaciones no leídas
+  this.notificationsService.unreadNotifications$.subscribe(response => {
+    if (response) {
+      this.unreadNotifications = response.data.notifications;
+      this.unreadCount = response.data.meta.notifications_count.unread;
+    }
+  });
+  
+  // Carga inicial
+  this.loadUnreadNotifications();
+
     // Cargar notificaciones iniciales
     this.loadNotifications();
   }
@@ -99,6 +112,24 @@ export class MenubarComponent {
     
     if (this.notificationsSubscription) {
       this.notificationsSubscription.unsubscribe();
+    }
+  }
+
+   // Nuevo método para cargar no leídas
+  loadUnreadNotifications(): void {
+    this.isLoadingNotifications = true;
+    this.notificationsService.getUnreadNotifications().subscribe({
+      complete: () => this.isLoadingNotifications = false
+    });
+  }
+
+  // Cambio entre pestañas
+  switchTab(tab: 'all' | 'unread'): void {
+    this.activeTab = tab;
+    if (tab === 'unread') {
+      this.loadUnreadNotifications();
+    } else {
+      this.loadNotifications();
     }
   }
 
@@ -376,7 +407,7 @@ export class MenubarComponent {
     this.router.navigate(['menu/perfil']);
   }
 
-  private loadMoreNotifications(): void {
+  public loadMoreNotifications(): void {
     if (this.isLoadingNotifications || this.currentPage >= this.totalPages) return;
     
     this.currentPage++;
@@ -398,7 +429,7 @@ export class MenubarComponent {
       this.isLoadingNotifications = true;
       this.currentPage = page;
   
-      this.notificationsService.getsNotification(page).subscribe({
+      this.notificationsService.getNotifications(page).subscribe({
         next: (response) => {
           if (page === 1) {
             this.notifications = response.data.notifications;
@@ -425,27 +456,39 @@ export class MenubarComponent {
     }
   }
 
-  // Mostrar/ocultar dropdown de notificaciones
+  // Modifica toggleNotifications para manejar las pestañas
   toggleNotifications(): void {
     this.showNotificationsDropdown = !this.showNotificationsDropdown;
     if (this.showNotificationsDropdown) {
-      this.currentPage = 1;
-      this.loadNotifications();
+      if (this.activeTab === 'unread') {
+        this.loadUnreadNotifications();
+      } else {
+        this.loadNotifications();
+      }
     }
   }
 
   // Marcar notificación como leída
   markAsRead(notification: Notification): void {
     if (!notification.is_read) {
-      this.notificationsService.markAsRead(notification.id).subscribe();
+      this.notificationsService.markAsRead(notification.id).subscribe({
+        next: () => {
+          this.loadUnreadNotifications();
+          this.loadNotifications();
+        }
+      });
     }
   }
 
   // Marcar todas como leídas
   markAllAsRead(): void {
     if (this.unreadCount > 0) {
-      this.notificationsService.markAllAsRead().subscribe();
+      this.notificationsService.markAllAsRead().subscribe({
+        next: () => {
+          this.loadUnreadNotifications();
+          this.loadNotifications();
+        }
+      });
     }
   }
-
 }
