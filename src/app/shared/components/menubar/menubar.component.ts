@@ -113,17 +113,12 @@ export class MenubarComponent {
   private setupScrollListener(): void {
     const element = this.notificationsDropdown?.nativeElement;
     if (!element) return;
-  
-    // Limpia cualquier listener previo
-    element.removeEventListener('scroll', this.scrollHandler);
-    
-    this.scrollHandler = () => {
+
+    element.addEventListener('scroll', () => {
       if (this.shouldLoadMore(element)) {
         this.loadMoreNotifications();
       }
-    };
-  
-    element.addEventListener('scroll', this.scrollHandler);
+    });
   }
   
   private scrollHandler = () => {}; // Inicialización vacía
@@ -132,13 +127,13 @@ export class MenubarComponent {
 
  // Inicialización vacía
 
-  private shouldLoadMore(element: HTMLElement): boolean {
-    return (
-      !this.isLoadingNotifications &&
-      this.currentPage < this.totalPages &&
-      element.scrollHeight - element.scrollTop <= element.clientHeight + 100
-    );
-  }
+ private shouldLoadMore(element: HTMLElement): boolean {
+  return (
+    !this.isLoadingNotifications &&
+    this.currentPage < this.totalPages &&
+    element.scrollHeight - element.scrollTop <= element.clientHeight + 100
+  );
+}
 
   constructor(private formBuilder:FormBuilder){
     this.formEliminateAccount = this.formBuilder.group({
@@ -384,20 +379,8 @@ export class MenubarComponent {
   private loadMoreNotifications(): void {
     if (this.isLoadingNotifications || this.currentPage >= this.totalPages) return;
     
-    this.isLoadingNotifications = true;
     this.currentPage++;
-    
-    this.notificationsService.getsNotification(this.currentPage).subscribe({
-      next: (response) => {
-        this.notifications = [...this.notifications, ...response.data.notifications];
-        this.unreadCount = response.data.meta.notifications_count.unread;
-        this.totalPages = response.data.meta.pagination.total_pages;
-        this.isLoadingNotifications = false;
-      },
-      error: () => {
-        this.isLoadingNotifications = false;
-      }
-    });
+    this.loadNotifications(this.currentPage);
   }
 
   
@@ -414,10 +397,8 @@ export class MenubarComponent {
       
       this.isLoadingNotifications = true;
       this.currentPage = page;
-    
-      const params = this.showAllNotifications ? { page, show_all: true } : { page };
-      
-      this.notificationsService.getsNotification(params).subscribe({
+  
+      this.notificationsService.getsNotification(page).subscribe({
         next: (response) => {
           if (page === 1) {
             this.notifications = response.data.notifications;
@@ -434,6 +415,7 @@ export class MenubarComponent {
         }
       });
     }
+  
 
     // Scroll infinito
   onScroll(): void {
@@ -444,10 +426,8 @@ export class MenubarComponent {
   }
 
   // Mostrar/ocultar dropdown de notificaciones
-  toggleNotifications(showAll = false): void {
-    this.showAllNotifications = showAll;
+  toggleNotifications(): void {
     this.showNotificationsDropdown = !this.showNotificationsDropdown;
-    
     if (this.showNotificationsDropdown) {
       this.currentPage = 1;
       this.loadNotifications();

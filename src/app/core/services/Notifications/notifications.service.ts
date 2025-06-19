@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, tap, interval, switchMap, startWith, catchError, of } from 'rxjs';
 import { NotificationResponse } from '../../models/Notifications/notificationsResponse.interface';
 import { environment } from '../../../../environments/environment';
+import { NotificationsUnreadResponse } from '../../models/Notifications/notificationsUnreadResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -38,13 +39,12 @@ export class NotificationsService {
       });
   }
 
-  getsNotification(params: {page: number, show_all?: boolean}): Observable<NotificationResponse> {
-    let url = `${environment.apiBaseUrl}notifications?page=${params.page}`;
-    if (params.show_all) {
-      url += '&show_all=true';
-    }
-    return this.httpClient.get<NotificationResponse>(url);
+  getsNotification(page: number = 1): Observable<NotificationResponse> {
+    return this.httpClient.get<NotificationResponse>(
+      `${environment.apiBaseUrl}notifications?page=${page}`
+    );
   }
+
 
   // Fetch actual de notificaciones
   private fetchNotifications(): Observable<NotificationResponse> {
@@ -63,22 +63,27 @@ export class NotificationsService {
   }
 
   // Marcar notificación como leída
+
   markAsRead(notificationId: string): Observable<any> {
-    return this.httpClient.patch(`${environment.apiBaseUrl}notifications/${notificationId}/read`, {}).pipe(
-      tap(() => {
-        // Actualizar el estado local después de marcar como leída
-        this.refreshNotifications();
-      })
+    return this.httpClient.patch(
+      `${environment.apiBaseUrl}notifications/${notificationId}/read`, 
+      {}
     );
   }
-
   // Marcar todas como leídas
   markAllAsRead(): Observable<any> {
-    return this.httpClient.patch(`${environment.apiBaseUrl}notifications/mark-all-read`, {}).pipe(
-      tap(() => {
-        // Actualizar el estado local después de marcar todas como leídas
-        this.refreshNotifications();
-      })
+    return this.httpClient.patch(
+      `${environment.apiBaseUrl}notifications/read-all
+`, 
+      {}
     );
+  }
+  
+
+  // Obtener notificaciones no leidas
+
+  getsNotificationUnread():Observable<NotificationsUnreadResponse>{
+    return this.httpClient.get<NotificationsUnreadResponse>( `${environment.apiBaseUrl}notifications/unread
+      `)
   }
 }

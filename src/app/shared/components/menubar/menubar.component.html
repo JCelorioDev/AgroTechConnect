@@ -202,35 +202,37 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
           <div class="notifications-dropdown" #notificationsDropdown>
             <div class="notifications-header">
               <h3 class="notifications-title">Notificaciones</h3>
-              <div class="notifications-actions">
-                @if (unreadCount > 0) {
-                  <button class="notifications-mark-all" (click)="markAllAsRead()">
-                    Marcar como leídas
-                  </button>
-                }
-                <button class="notifications-toggle-view" (click)="toggleNotifications(!showAllNotifications)">
-                  {{ showAllNotifications ? 'Ver recientes' : 'Ver todas' }}
+              @if (unreadCount > 0) {
+                <button class="notifications-mark-all" (click)="markAllAsRead()">
+                  Marcar todas como leídas
                 </button>
-              </div>
+              }
             </div>
             
             <div class="notifications-list">
-              <!-- ... contenido de notificaciones existente ... -->
+              @for (notification of notifications; track notification.id) {
+                <div class="notification" [class.unread]="!notification.is_read" (click)="markAsRead(notification)">
+                  <img [src]="notification.sender.avatar" alt="Usuario" class="notification-avatar">
+                  <div class="notification-content">
+                    <h4 class="notification-user">{{ notification.sender.name }}</h4>
+                    <p class="notification-text">{{ notification.message }}</p>
+                    <span class="notification-time">{{ notification.created_at }}</span>
+                  </div>
+                </div>
+              }
+              
+              @if (isLoadingNotifications) {
+                <div class="loading-spinner">
+                  <i class="pi pi-spinner pi-spin"></i> Cargando más notificaciones...
+                </div>
+              }
+              
+              @if (notifications.length === 0 && !isLoadingNotifications) {
+                <div class="empty-notifications">
+                  No tienes notificaciones
+                </div>
+              }
             </div>
-            
-            @if (!showAllNotifications) {
-              <div class="notifications-footer">
-                <a (click)="toggleNotifications(true)" class="notifications-view-all">
-                  Ver todas las notificaciones
-                </a>
-              </div>
-            } @else {
-              <div class="notifications-footer">
-                <a (click)="toggleNotifications(false)" class="notifications-view-recent">
-                  Ver solo recientes
-                </a>
-              </div>
-            }
           </div>
         </div>
       }
