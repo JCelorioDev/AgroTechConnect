@@ -801,6 +801,6 @@ export class ProfileComponent {
             console.error('Error al obtener información del usuario', err);
         }
     });
-}
+  }
 
 }

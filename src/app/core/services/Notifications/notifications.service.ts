@@ -86,7 +86,7 @@ export class NotificationsService {
    * @param notificationId ID de la notificación
    */
   markAsRead(notificationId: string): Observable<any> {
-    return this.httpClient.patch(
+    return this.httpClient.put(
       `${environment.apiBaseUrl}notifications/${notificationId}/read`,
       {}
     ).pipe(
@@ -98,7 +98,7 @@ export class NotificationsService {
    * Marca todas las notificaciones como leídas
    */
   markAllAsRead(): Observable<any> {
-    return this.httpClient.patch(
+    return this.httpClient.put(
       `${environment.apiBaseUrl}notifications/read-all`,
       {}
     ).pipe(

@@ -475,6 +475,14 @@ export class MenubarComponent {
         next: () => {
           this.loadUnreadNotifications();
           this.loadNotifications();
+          this.alertService.miniAlert('La notificación se marcó como leida correctamente.', 'success', 3000);
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          }else{
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
         }
       });
     }
@@ -487,6 +495,14 @@ export class MenubarComponent {
         next: () => {
           this.loadUnreadNotifications();
           this.loadNotifications();
+          this.alertService.miniAlert('Todas las notificaciones se marcaron como leídas correctamente.', 'success', 3000);
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          }else{
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
         }
       });
     }

@@ -265,6 +265,8 @@
 
 <p-dialog
   [modal]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
   [(visible)]="dialogoFollowers"
   [position]="'center'"
   [style]="{ width: '42rem' }"
@@ -385,7 +387,7 @@
                 tooltipPosition="top">
         </button>
  
-        <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger" 
+        <button *ngIf="objUser?.image?.url !== null" pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger" 
                 (click)="deletePhoto()" pTooltip="Eliminar foto" tooltipPosition="top"></button>
       </div>
     </div> 

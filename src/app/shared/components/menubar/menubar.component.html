@@ -298,7 +298,7 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
         </div>
       }
     </div>
-    <p-button class="menubar-container__buttonLogin" icon="pi pi-question" [label]="screenWidth > 600 ? 'Añadir pregunta' : ''">
+    <p-button class="menubar-container__buttonLogin" [label]="screenWidth > 600 ? 'Añadir pregunta' : 'Preguntar'">
     </p-button>
   }@else{
     <p-button (onClick)="goLogin(true);" class="menubar-container__buttonLogin" label="Login" severity="success" />
