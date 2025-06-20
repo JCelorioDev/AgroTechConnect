@@ -180,6 +180,11 @@ html.custom-dark-mode .dialog__emoticons .p-button{
   border: none !important;
 }
 
+html.custom-dark-mode .notifications-container button {
+  background-color: transparent !important;
+  border: none !important;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
