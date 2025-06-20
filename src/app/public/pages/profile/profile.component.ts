@@ -11,7 +11,7 @@ import { Data } from '../../../core/models/User/userResponse.interface';
 import { SkeletonModule } from 'primeng/skeleton';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop'; 
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -128,11 +128,30 @@ export class ProfileComponent {
 
   ngOnInit(): void {
     this.getUser();
-    if (this.encryptedId()) { 
-      this.getInformationnByID();
-    } else {
+  
+    this.route.params.pipe(
+      switchMap(params => {
+        const id = params['id'];
+        // Verificar si viene del state para evitar recarga
+        const navigationState = this.router.getCurrentNavigation()?.extras?.state;
+        if (navigationState && navigationState['preventReload']) {
+          return of(null); // No recargar datos
+        }
+        return id ? this.userService.getInformationnByID(id) : this.userService.getInformation();
+      })
+    ).subscribe({
+      next: (response) => {
+        if (response) {
+          this.objUser = response.data;
+          this.processRanges();
+        }
+        this.isLoadingInfoUser = false;
+      },
+      error: (err) => this.handleError(err)
+    });
+  
+    if (!this.encryptedId()) {
       this.getAllEmojis();
-      this.getInformation();
     }
   }
 
@@ -158,6 +177,7 @@ export class ProfileComponent {
     if (idUsuario) {
       this.loading_spinning2 = true;
       this.dialogoFollowers = false;
+      this.hasIdUser = true;
     }
 
     this.userService.getInformationnByID(idUsuario ? idUsuario : this.encryptedId()!).subscribe({
@@ -584,49 +604,56 @@ export class ProfileComponent {
     });
   }
 
+  public hasIdUser:boolean = false;
+
   // Seguir a un usuario
 
   followAuser(idUser?: string): void {
     this.loading_spinning2 = true;
-    let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
-
-    if (!!userLogin.token && this.encryptedId() || idUser) {
-        this.userService.followAuser(idUser ? idUser : this.encryptedId()).subscribe({
-            next: (s) => {
-                this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
-                this.loading_spinning2 = false;
-                this.readyFollowing = true;
-                
-                // Actualización síncrona - Añadir el seguimiento localmente
-                if (idUser) {
-                    const userToFollow = this.findUserInLists(idUser);
-                    if (userToFollow) {
-                        if (!this.objUsuario.followings) {
-                            this.objUsuario.followings = [];
-                        }
-                        this.objUsuario.followings.push({
-                            followed: userToFollow
-                        });
-                    }
-                }
-
-            },
-            error: (err) => {
-                this.loading_spinning2 = false;
-                if (err.status === 422) {
-                    this.alertService.showValidationErrors(err.error);
-                } else {
-                    this.alertService.miniAlert(err.error.message, 'error', 3000);
-                }
-            }
-        });
-   } else if (!this.encryptedId() && !!userLogin.token ){
-        this.loading_spinning2 = false;
-        this.alertService.miniAlert('No te puedes seguir a ti mismo.', 'warning', 3000);
-   } else {
-        this.loading_spinning2 = false;
-        this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
+    const userLoginString = localStorage.getItem('userLogin');
+    const userLogin = userLoginString ? JSON.parse(userLoginString) : {};
+  
+    // Verificar autenticación primero
+    if (!userLogin.token) {
+      this.loading_spinning2 = false;
+      this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
+      return;
     }
+  
+    const targetId = idUser || this.encryptedId() || this.objUser.id;
+    
+    // Navegar primero (sin recargar el componente)
+    if (idUser) {
+      this.router.navigate(['menu/perfil', idUser], {
+        replaceUrl: true,  // Evita acumulación en el historial
+        state: { preventReload: true }  // Usaremos esto para evitar recarga
+      });
+    }
+  
+    this.userService.followAuser(targetId).subscribe({
+      next: (s) => {
+        this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
+        this.loading_spinning2 = false;
+        this.readyFollowing = true;
+        
+        // Actualización local
+        if (targetId) {
+          const userToFollow = this.findUserInLists(targetId);
+          if (userToFollow) {
+            this.objUsuario.followings = this.objUsuario.followings || [];
+            this.objUsuario.followings.push({ followed: userToFollow });
+          }
+        }
+      },
+      error: (err) => {
+        this.loading_spinning2 = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    });
   }
 
   // Método para dejar de seguir a un usuario

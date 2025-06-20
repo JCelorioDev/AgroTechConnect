@@ -406,11 +406,15 @@
     <div class="perfil-metricas">
 
       
-      @if(hisToken){
-        @if(encryptedId() && !verifyFollowUser  && !readyFollowing){
-          <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
-        }@else if(encryptedId()) {
-          <div (click)="unFollowUser()"  style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Dejar de seguir</span></div>
+      @if(encryptedId() || hasIdUser){
+        @if(!verifyFollowUser && !readyFollowing){
+          <div (click)="followAuser()" style="cursor: pointer;">
+            <i class="pi pi-user-plus"></i><span> Seguir</span>
+          </div>
+        } @else {
+          <div (click)="unFollowUser()" style="cursor: pointer;">
+            <i class="pi pi-user-plus"></i><span> Dejar de seguir</span>
+          </div>
         }
       }
 
