@@ -77,7 +77,7 @@ export class ProfileComponent {
   public listFollowingsMe!:any[];
   public dialogoFollowers:boolean = false;
   public readyFollowing:boolean = false;
-
+  public hisToken!:boolean;
 
   emojis: string[] = [];
 
@@ -97,6 +97,9 @@ export class ProfileComponent {
     }, {
         validators: passwordMatchValidator('new_password', 'new_password_confirmation')
     });
+    
+    const userLogin = localStorage.getItem('userLogin');
+    this.hisToken = userLogin ? !!JSON.parse(userLogin)?.token : false;
 
     this.formUpdateinformationAdictional = this.formBuilder.group({
       description: ['', [Validators.required, Validators.maxLength(500)]],
@@ -679,21 +682,25 @@ export class ProfileComponent {
   // Método para saber si ya el usuario sigue a un usuario
 
   get verifyFollowUser(): boolean {  
-    for (const follow of this.objUsuario?.followings) {
-      if (follow.followed.email === this.objUser.email) {
-        return true;
-      }
+    // Verifica primero si hay usuario logueado y datos necesarios
+    if (!this.objUsuario?.followings || !this.objUser?.email) {
+      return false;
     }
-    return false; 
+    
+    return this.objUsuario.followings.some(
+      (follow: any) => follow.followed?.email === this.objUser.email
+    );
   }
 
-  verifyFollowByUser(emailUser:string): boolean { 
-    for (const follow of this.objUsuario?.followings) {
-      if (follow.followed.email === emailUser) {
-        return true;
-      }
+  verifyFollowByUser(emailUser: string): boolean { 
+    // Verifica primero si el usuario está logueado y tiene followings
+    if (!this.objUsuario || !this.objUsuario.followings) {
+      return false;
     }
-    return false; 
+    
+    return this.objUsuario.followings.some(
+      (follow: any) => follow.followed?.email === emailUser
+    );
   }
 
   mefollowers():void{
@@ -790,16 +797,16 @@ export class ProfileComponent {
 
   getUser(): void {
     this.userService.getInformation().subscribe({
-        next: (s) => {
-            this.objUsuario = s.data;
-            // Inicializar followings si no existe
-            if (!this.objUsuario.followings) {
-                this.objUsuario.followings = [];
-            }
-        },
-        error: (err) => {
-            console.error('Error al obtener información del usuario', err);
-        }
+      next: (s) => {
+        this.objUsuario = s.data;
+        // Inicializa followings como array vacío si no existe
+        this.objUsuario.followings = this.objUsuario.followings || [];
+      },
+      error: (err) => {
+        // Si hay error (usuario no logueado), inicializa objUsuario
+        this.objUsuario = { followings: [] };
+        console.error('Error al obtener información del usuario', err);
+      }
     });
   }
 

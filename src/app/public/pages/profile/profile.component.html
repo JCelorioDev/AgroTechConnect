@@ -404,12 +404,16 @@
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
 
     <div class="perfil-metricas">
+
       
-      @if(encryptedId() && !verifyFollowUser  && !readyFollowing){
-        <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
-      }@else if(encryptedId()) {
-        <div (click)="unFollowUser()"  style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Dejar de seguir</span></div>
+      @if(hisToken){
+        @if(encryptedId() && !verifyFollowUser  && !readyFollowing){
+          <div (click)="followAuser()" style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Seguir</span></div>
+        }@else if(encryptedId()) {
+          <div (click)="unFollowUser()"  style="cursor: pointer;"><i class="pi pi-user-plus"></i><span> Dejar de seguir</span></div>
+        }
       }
+
 
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
       <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
