@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { AvatarModule } from 'primeng/avatar';
@@ -258,7 +258,7 @@ export class ProfileComponent {
   }
 
 
-
+  public isUpdatePhoto:boolean = false;
 
 
   onFileSelected(event: Event): void {
@@ -297,6 +297,7 @@ export class ProfileComponent {
               this.alertService.miniAlert('Tu foto de perfil se actualizó correctamente.', 'success', 3000);
               this.resetFileInput();
               this.getInformation();
+              this.isUpdatePhoto = true;
             },
             error: (err) => {
               this.loading_spinning = false;
@@ -316,6 +317,8 @@ export class ProfileComponent {
   
     reader.readAsDataURL(file);
   }
+
+
   
 
   deletePhoto() {
@@ -593,10 +596,13 @@ export class ProfileComponent {
   // Obtener lista de emojis
 
   getAllEmojis(): void {
+    this.loading_spinning2 = true;
+
     this.emojiService.getsAllEmojis().subscribe({
       next: (response) => {
         const emojis = response.map(e => e.emoji);
         this.emojis = Array.from(new Set(emojis)).sort(); 
+        this.loading_spinning2 = false;
       },
       error: (err) => {
         console.error('Error al cargar los emojis', err);
@@ -835,6 +841,15 @@ export class ProfileComponent {
         console.error('Error al obtener información del usuario', err);
       }
     });
+  }
+
+  get descriptionControl() {
+    return this.formUpdateinformationAdictional.get('description');
+  }
+
+
+  get _isUpdatePhoto():boolean{
+    return this.isUpdatePhoto;
   }
 
 }

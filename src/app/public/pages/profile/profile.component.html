@@ -156,21 +156,26 @@
           <label class="profile-field-label">Descripción</label>
           
           <div class="emoji-input-container">
-            <textarea 
-              pInputTextarea 
-              formControlName="description" 
-              rows="5"
-              class="profile-description-input"
-              #descriptionInput
-            ></textarea>
+              <textarea 
+                pInputTextarea 
+                formControlName="description" 
+                rows="5"
+                maxlength="500"
+                class="profile-description-input"
+                #descriptionInput
+              ></textarea>
             
-            <button 
-              pButton 
-              icon="pi pi-face-smile" 
-              class="p-button-text emoji-trigger"
-              (click)="showDialog = true"
-              type="button"
-            ></button>
+              <div class="char-counter">
+                <button 
+                pButton 
+                icon="pi pi-face-smile" 
+                class="p-button-text emoji-trigger"
+                (click)="showDialog = true"
+                type="button"
+                >
+                </button>
+                {{ descriptionControl?.value?.length || 0 }}/500
+              </div>
           </div>
     
           <p-dialog 
@@ -387,7 +392,7 @@
                 tooltipPosition="top">
         </button>
  
-        <button *ngIf="objUser?.image?.url !== null" pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger" 
+        <button *ngIf="objUser?.image?.url !== null || currentPhotoUrl" pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-danger" 
                 (click)="deletePhoto()" pTooltip="Eliminar foto" tooltipPosition="top"></button>
       </div>
     </div> 
