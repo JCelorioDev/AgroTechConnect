@@ -325,7 +325,7 @@ export class MenubarComponent {
       if (registration_method.registration_method !== 'local') {
         this.userService.deleteAccountUserbySocialNetwork().subscribe({
           next: (s) => {
-            this.alertService.miniAlert('Tu cuenta se ha borrado de manera permanente, lamentamos tu perdida. =)', 'success', 3000);
+            this.alertService.miniAlert('Tu cuenta se ha borrado de manera permanente, lamentamos tu perdida.', 'success', 3000);
             this.isLoadingLogout = false;
             this.activeDialogEliminate2 = false;
             this.valueCodePasswordConfirmation = '';

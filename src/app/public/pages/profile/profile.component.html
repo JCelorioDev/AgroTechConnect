@@ -306,13 +306,14 @@
           <div style="cursor: pointer;" (click)="getInformationnByID(follower?.follower?.id)" *ngFor="let follower of listFollowersMe" class="user-card">
             <img [src]="follower.follower.image.url" alt="Avatar" class="user-avatar">
             <div class="user-details">
-              <span class="user-name">{{follower?.follower?.name}}{{follower?.follower?.lastname}}</span>
+              <span class="user-name">{{follower?.follower?.name}} {{follower?.follower?.lastname}}</span>
               <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
             </div>
             @if(verifyFollowByUser(follower?.follower?.email)){
-              <button (click)="unFollowUser(follower?.follower?.id); $event.stopPropagation()"  class="unfollow-button">
+              <button (click)="unFollowUser(follower?.follower?.id); $event.stopPropagation()" class="unfollow-button">
                 <i class="pi pi-user-minus"></i>
               </button>
+              
             }@else {
               <button (click)="followAuser(follower?.follower?.id); $event.stopPropagation()" class="follow-button">
                 <i class="pi pi-user-plus"></i>
@@ -342,7 +343,7 @@
         <div class="user-list">
           <!-- Usuarios -->
           <div style="cursor: pointer;" (click)="getInformationnByID(following?.followed?.id)" *ngFor="let following of listFollowingsMe" class="user-card">
-            <img [src]="following.followed.image.url"alt="Avatar" class="user-avatar">
+            <img [src]="following.followed.image.url" alt="Avatar" class="user-avatar">
             <div class="user-details">
               <span class="user-name">{{following?.followed?.name}} {{following?.followed?.lastname}}</span>
               <span class="user-handle">{{'@' + following?.followed?.username}}</span>

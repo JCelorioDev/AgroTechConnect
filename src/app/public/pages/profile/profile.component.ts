@@ -619,7 +619,6 @@ export class ProfileComponent {
     const userLoginString = localStorage.getItem('userLogin');
     const userLogin = userLoginString ? JSON.parse(userLoginString) : {};
   
-    // Verificar autenticación primero
     if (!userLogin.token) {
       this.loading_spinning2 = false;
       this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
@@ -628,11 +627,11 @@ export class ProfileComponent {
   
     const targetId = idUser || this.encryptedId() || this.objUser.id;
     
-    // Navegar primero (sin recargar el componente)
-    if (idUser) {
+    // Eliminar la navegación automática cuando se llama desde el diálogo
+    if (!this.dialogoFollowers && idUser) {
       this.router.navigate(['menu/perfil', idUser], {
-        replaceUrl: true,  // Evita acumulación en el historial
-        state: { preventReload: true }  // Usaremos esto para evitar recarga
+        replaceUrl: true,
+        state: { preventReload: true }
       });
     }
   
@@ -642,8 +641,8 @@ export class ProfileComponent {
         this.loading_spinning2 = false;
         this.readyFollowing = true;
         
-        // Actualización local
-        if (targetId) {
+        // Actualización local solo si estamos en el diálogo
+        if (this.dialogoFollowers && targetId) {
           const userToFollow = this.findUserInLists(targetId);
           if (userToFollow) {
             this.objUsuario.followings = this.objUsuario.followings || [];
