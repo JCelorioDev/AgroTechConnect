@@ -330,9 +330,9 @@ export class MenubarComponent {
             this.activeDialogEliminate2 = false;
             this.valueCodePasswordConfirmation = '';
             localStorage.removeItem('userLogin');
+            this.router.navigate(['menu/publicaciones']);
           },
           error: (err) => {
-            console.log(err);
             this.activeDialogEliminate2 = false;
             this.activeDialogEliminate = true;
             this.formEliminateAccount.reset();
@@ -354,6 +354,8 @@ export class MenubarComponent {
               this.isLoadingLogout = false;
               this.activeDialogEliminate2 = false;
               this.valueCodePasswordConfirmation = '';
+              this.router.navigate(['menu/publicaciones']);
+              this.formEliminateAccount.reset();
               localStorage.removeItem('userLogin');
             },
             error: (err) => {
