@@ -298,7 +298,7 @@
       <div class="connections-column">
         <div class="column-header">
           <h3>Seguidores</h3>
-          <span class="counter-badge">{{objUser?.followers?.length}}</span>
+          <span class="counter-badge">{{TotalRegisterFollowers()}}</span>
         </div>
         
         <div class="user-list">
@@ -322,10 +322,16 @@
           </div>
         </div>
         
-        <button class="view-all">
-          Ver todos los seguidores
-          <i class="pi pi-chevron-down"></i>
-        </button>
+        <div *ngIf="currentPageFollowers <= lastPageFollowers" class="load-more">
+          <button 
+              class="view-all"
+              pButton 
+              pRipple 
+              [label]="loadingMoreFollowers ? 'Cargando...' : 'Ver todos los seguidores'" 
+              (click)="loadMoreFollowers()"
+              [disabled]="loadingMoreFollowers"
+          ><i class="pi pi-chevron-down"></i></button>
+        </div>
       </div>
       
       <!-- Divisor vertical -->
@@ -337,7 +343,7 @@
       <div class="connections-column">
         <div class="column-header">
           <h3>Siguiendo</h3>
-          <span class="counter-badge">{{listFollowingsMe?.length}}</span>
+          <span class="counter-badge">{{TotalRegisterFollowings()}}</span>
         </div>
         
         <div class="user-list">
@@ -359,11 +365,20 @@
             }
           </div>
         </div>
-        
-        <button class="view-all">
-          Ver todos los seguidos
-          <i class="pi pi-chevron-down"></i>
-        </button>
+
+
+        <div *ngIf="currentPageMeFollowing <= lastPageMeFollowing" class="load-more">
+          <button 
+          class="view-all"
+          pButton 
+          pRipple 
+          [label]="loadingMoreMeFollowing ? 'Cargando...' : 'Ver todos los seguidos'" 
+          (click)="loadMoreMeFollowing()"
+          [disabled]="loadingMoreMeFollowing"
+          >
+            <i class="pi pi-chevron-down"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>

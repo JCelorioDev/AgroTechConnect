@@ -118,26 +118,30 @@ export class UserService {
 
   // Ver mis seguidores
 
-  mefollowers():Observable<MefollowersResponse>{
-    return this.httpClient.get<MefollowersResponse>(`${environment.apiBaseUrl}me/followers`)
+  mefollowers(page: number = 1):Observable<MefollowersResponse>{
+      return this.httpClient.get<MefollowersResponse>(`${environment.apiBaseUrl}me/followers?page=${page}`);
   }
 
 
   // Ver mis seguidos
 
-  meFollowing():Observable<MeFollowingResponse>{
-    return this.httpClient.get<MeFollowingResponse>(`${environment.apiBaseUrl}me/following`);
+  meFollowing(page:number = 1):Observable<MeFollowingResponse>{
+    return this.httpClient.get<MeFollowingResponse>(`${environment.apiBaseUrl}me/following?page=${page}`);
   }
 
   // Ver seguidores de otro usuario
 
-  followers(idUser:string):Observable<Followers>{
-    return this.httpClient.get<Followers>(`${environment.apiBaseUrl}users/${idUser}/followers`)
-  }
+  followers(idUser: string, page: number = 1): Observable<Followers> {
+    return this.httpClient.get<Followers>(
+        `${environment.apiBaseUrl}users/${idUser}/followers?page=${page}`
+    );
+}
 
   // Ver seguidos de otro usuario
 
-  followings(idUser:string):Observable<FollowingResponse>{
-    return this.httpClient.get<FollowingResponse>(`${environment.apiBaseUrl}users/${idUser}/following`)
-  }
+  followings(idUser: string, page: number = 1): Observable<FollowingResponse> {
+    return this.httpClient.get<FollowingResponse>(
+        `${environment.apiBaseUrl}users/${idUser}/following?page=${page}`
+    );
+}
 }

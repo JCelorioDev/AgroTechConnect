@@ -88,6 +88,21 @@ export class ProfileComponent {
     )
   );
 
+
+  public TotalRegisterFollowings = signal<number>(0);
+  public TotalRegisterFollowers = signal<number>(0);
+
+
+  // Variables para controlar la paginación de followers
+  public currentPageFollowers: number = 1;
+  public lastPageFollowers: number = 1;
+  public loadingMoreFollowers: boolean = false;
+
+  // Variables para controlar la paginación de following
+  public currentPageMeFollowing: number = 1;
+  public lastPageMeFollowing: number = 1;
+  public loadingMoreMeFollowing: boolean = false;
+
   constructor(){
 
     this.formChangePassword = this.formBuilder.group({
@@ -735,44 +750,118 @@ export class ProfileComponent {
     );
   }
 
-  mefollowers():void{
-    this.loading_spinning2 = true;
 
-    this.meFollowing();
-    this.userService.mefollowers().subscribe({
-      next: (s) => {
-       this.listFollowersMe = s.data.data;
-       this.loading_spinning2 = false;
-       this.dialogoFollowers = true;
-      },
-      error: (err) => {
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
-        }
+  mefollowers(loadMore: boolean = false): void {
+      // Configuración de estados de carga
+      if (loadMore) {
+          this.currentPageFollowers++;
+          this.loadingMoreFollowers = true;
+      } else {
+          this.currentPageFollowers = 1;
+          this.loading_spinning2 = true;
       }
-    })
 
+      // Opcional: si necesitas cargar también los followings
+      if (!loadMore) {
+          this.meFollowing();
+      }
+
+      this.userService.mefollowers(this.currentPageFollowers).subscribe({
+          next: (response) => {
+            this.TotalRegisterFollowers.set(response.data.total);
+              // Actualización de la lista según si es carga inicial o adicional
+              if (loadMore) {
+                  this.listFollowersMe = [...this.listFollowersMe, ...response.data.data];
+              } else {
+                  this.listFollowersMe = response.data.data;
+              }
+              
+              // Actualización de metadatos de paginación
+              this.lastPageFollowers = response.data.last_page;
+              
+              // Reset de estados de carga
+              this.loading_spinning2 = false;
+              this.loadingMoreFollowers = false;
+              
+              // Mostrar diálogo solo si no es carga adicional
+              if (!loadMore) {
+                  this.dialogoFollowers = true;
+              }
+          },
+          error: (err) => {
+              // Manejo de errores
+              this.loading_spinning2 = false;
+              this.loadingMoreFollowers = false;
+              
+              if (err.status === 422) {
+                  this.alertService.showValidationErrors(err.error);
+              } else {
+                  this.alertService.miniAlert(err.error.message, 'error', 3000);
+              }
+          }
+      });
   }
 
-  // Ver mis seguidos
-
-  meFollowing():void{
-    this.loading_spinning2 = true;
-    this.userService.meFollowing().subscribe({
-      next: (s) => {
-       this.listFollowingsMe = s.data.data;
-      },
-      error: (err) => {
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
-        }
+  // Método para cargar más followers
+  loadMoreFollowers(): void {
+      if (this.currentPageFollowers < this.lastPageFollowers) {
+          this.mefollowers(true);
+      }else{
+        this.alertService.miniAlert('No hay más seguidos para cargar', 'warning', 3000);
       }
-    })
   }
+
+
+
+meFollowing(loadMore: boolean = false): void {
+    // Configuración de estados de carga
+    if (loadMore) {
+        this.currentPageMeFollowing++;
+        this.loadingMoreMeFollowing = true;
+    } else {
+        this.currentPageMeFollowing = 1;
+        this.loading_spinning2 = true;
+    }
+
+    this.userService.meFollowing(this.currentPageMeFollowing).subscribe({
+        next: (response) => {
+          this.TotalRegisterFollowings.set(response.data.total);
+            // Actualización de la lista según si es carga inicial o adicional
+            if (loadMore) {
+                this.listFollowingsMe = [...this.listFollowingsMe, ...response.data.data];
+            } else {
+                this.listFollowingsMe = response.data.data;
+            }
+            
+            // Actualización de metadatos de paginación
+            this.lastPageMeFollowing = response.data.last_page;
+            
+            // Reset de estados de carga
+            this.loading_spinning2 = false;
+            this.loadingMoreMeFollowing = false;
+        },
+        error: (err) => {
+            // Manejo de errores
+            this.loading_spinning2 = false;
+            this.loadingMoreMeFollowing = false;
+            
+            if (err.status === 422) {
+                this.alertService.showValidationErrors(err.error);
+            } else {
+                this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
+        }
+    });
+}
+
+// Método para cargar más resultados
+loadMoreMeFollowing(): void {
+    if (this.currentPageMeFollowing < this.lastPageMeFollowing) {
+        this.meFollowing(true);
+    }else{
+      this.alertService.miniAlert('No hay más seguidos para cargar', 'warning', 3000);
+    }
+}
 
   // Verificar si ya el response de seguidor y seguidores esta listo
 
@@ -785,41 +874,100 @@ export class ProfileComponent {
 
   // Ver seguidores de otro usuario
 
-  followers():void{
-    this.loading_spinning2 = true;
-    this.followings();
-    this.userService.followers(this.encryptedId()).subscribe({
-      next: (s) => {
-        this.listFollowersMe = s.data.data;
-        this.loading_spinning2 = false;
-        this.dialogoFollowers = true;
-      },
-      error: (err) => {
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
+  followers(loadMore: boolean = false): void {
+    // Configuración de estados de carga
+    if (loadMore) {
+        this.currentPageFollowers++;
+        this.loadingMoreFollowers = true;
+    } else {
+        this.currentPageFollowers = 1;
+        this.loading_spinning2 = true;
+    }
+
+    // Opcional: si necesitas cargar también los followings
+    if (!loadMore) {
+        this.followings();
+    }
+
+    this.userService.followers(this.encryptedId(), this.currentPageFollowers).subscribe({
+        next: (response) => {
+            this.TotalRegisterFollowers.set(response.data.total);
+            // Actualización de la lista según si es carga inicial o adicional
+            if (loadMore) {
+                this.listFollowersMe = [...this.listFollowersMe, ...response.data.data];
+            } else {
+                this.listFollowersMe = response.data.data;
+            }
+            
+            // Actualización de metadatos de paginación
+            this.lastPageFollowers = response.data.last_page;
+            
+            // Reset de estados de carga
+            this.loading_spinning2 = false;
+            this.loadingMoreFollowers = false;
+            
+            // Mostrar diálogo solo si no es carga adicional
+            if (!loadMore) {
+                this.dialogoFollowers = true;
+            }
+        },
+        error: (err) => {
+            // Manejo de errores
+            this.loading_spinning2 = false;
+            this.loadingMoreFollowers = false;
+            
+            if (err.status === 422) {
+                this.alertService.showValidationErrors(err.error);
+            } else {
+                this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
         }
-      }
-    })
+    });
   }
+
+
 
   // Ver seguidos de otro usuario
 
-  followings():void{
-    this.loading_spinning2 = true;
-    this.userService.followings(this.encryptedId()).subscribe({
-      next: (s) => {
-        this.listFollowingsMe = s.data.data;
-      },
-      error: (err) => {
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
+  followings(loadMore: boolean = false): void {
+    // Configuración de estados de carga
+    if (loadMore) {
+        this.currentPageMeFollowing++;
+        this.loadingMoreMeFollowing = true;
+    } else {
+        this.currentPageMeFollowing = 1;
+        this.loading_spinning2 = true;
+    }
+
+    this.userService.followings(this.encryptedId(), this.currentPageMeFollowing).subscribe({
+        next: (response) => {
+          this.TotalRegisterFollowings.set(response.data.total);
+            // Actualización de la lista según si es carga inicial o adicional
+            if (loadMore) {
+                this.listFollowingsMe = [...this.listFollowingsMe, ...response.data.data];
+            } else {
+                this.listFollowingsMe = response.data.data;
+            }
+            
+            // Actualización de metadatos de paginación
+            this.lastPageMeFollowing = response.data.last_page;
+            
+            // Reset de estados de carga
+            this.loading_spinning2 = false;
+            this.loadingMoreMeFollowing = false;
+        },
+        error: (err) => {
+            // Manejo de errores
+            this.loading_spinning2 = false;
+            this.loadingMoreMeFollowing = false;
+            
+            if (err.status === 422) {
+                this.alertService.showValidationErrors(err.error);
+            } else {
+                this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
         }
-      }
-    })
+    });
   }
 
 
