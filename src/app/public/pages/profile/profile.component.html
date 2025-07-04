@@ -283,7 +283,7 @@
     <div class="dialog-header">
       <h2>
         <i class="pi pi-users"></i>
-        @if(encryptedId()){
+        @if(encryptedId() || objUser?.email !== objUsuario?.email){
           <span>Conexiones de <span class="username">{{'@'}}{{objUser?.username}}</span></span>
         }@else{
           <span>Mi red de amigos</span>
@@ -442,7 +442,7 @@
 
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
       <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
-      <div style="cursor: pointer;" (click)="encryptedId() ? followers() : mefollowers()"><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
+      <div style="cursor: pointer;" (click)="encryptedId() ||  objUser.email !== objUsuario.email ? followers() : mefollowers()"><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
     </div>
 
     <p-panel class="perfil-sobremi" header="Sobre mí">

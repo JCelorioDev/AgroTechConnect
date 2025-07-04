@@ -144,7 +144,7 @@ export class ProfileComponent {
   ngOnInit(): void {
     this.getUser();
   
-    this.route.params.pipe(
+     this.route.params.pipe(
       switchMap(params => {
         const id = params['id'];
         // Verificar si viene del state para evitar recarga
@@ -896,7 +896,7 @@ loadMoreMeFollowing(): void {
         this.followings();
     }
 
-    this.userService.followers(this.encryptedId(), this.currentPageFollowers).subscribe({
+    this.userService.followers(this.encryptedId() ? this.encryptedId() : this.objUser.id, this.currentPageFollowers).subscribe({
         next: (response) => {
             this.TotalRegisterFollowers.set(response.data.total);
             // Actualización de la lista según si es carga inicial o adicional
@@ -946,7 +946,7 @@ loadMoreMeFollowing(): void {
         this.loading_spinning2 = true;
     }
 
-    this.userService.followings(this.encryptedId(), this.currentPageMeFollowing).subscribe({
+    this.userService.followings(this.encryptedId() ? this.encryptedId() : this.objUser.id, this.currentPageMeFollowing).subscribe({
         next: (response) => {
           this.TotalRegisterFollowings.set(response.data.total);
             // Actualización de la lista según si es carga inicial o adicional
