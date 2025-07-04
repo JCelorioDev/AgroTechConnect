@@ -805,9 +805,12 @@ export class ProfileComponent {
   // Método para cargar más followers
   loadMoreFollowers(): void {
       if (this.currentPageFollowers < this.lastPageFollowers) {
-          this.mefollowers(true);
+        if(this.encryptedId()){
+          this.followers(true); return ;
+        }
+        this.mefollowers(true);
       }else{
-        this.alertService.miniAlert('No hay más seguidos para cargar', 'warning', 3000);
+        this.alertService.miniAlert('No hay más seguidores para cargar', 'warning', 3000);
       }
   }
 
@@ -857,7 +860,11 @@ meFollowing(loadMore: boolean = false): void {
 // Método para cargar más resultados
 loadMoreMeFollowing(): void {
     if (this.currentPageMeFollowing < this.lastPageMeFollowing) {
-        this.meFollowing(true);
+      if(this.encryptedId()){
+        this.followings(true); return ;
+      }
+
+      this.meFollowing(true);
     }else{
       this.alertService.miniAlert('No hay más seguidos para cargar', 'warning', 3000);
     }
