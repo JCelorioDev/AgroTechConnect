@@ -1,21 +1,42 @@
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PostInterfaceI } from '../../models/Post/postRespone.interface';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PostService {
+  constructor(private httpClient: HttpClient) {}
 
-  private readonly httpClient = inject(HttpClient);
+  getsPost(page: number = 1, perPage: number = 10): Observable<PostInterfaceI> {
+    return this.httpClient.get<PostInterfaceI>(
+      `${environment.apiBaseUrl}posts?page=${page}&per_page=${perPage}`
+    );
+  }
 
-  constructor() { }
+  getPostById(id: string): Observable<any> {
+    return this.httpClient.get(`${environment.apiBaseUrl}posts/${id}`);
+  }
 
-  // Obtener todas las publicaciones
+  getPostComments(postId: string, page: number = 1): Observable<any> {
+    return this.httpClient.get(
+      `${environment.apiBaseUrl}posts/${postId}/comments?page=${page}`
+    );
+  }
 
-  getsPost():Observable<PostInterfaceI>{
-    return this.httpClient.get<PostInterfaceI>(`${environment.apiBaseUrl}posts`)
+  addComment(postId: string, comment: string): Observable<any> {
+    return this.httpClient.post(
+      `${environment.apiBaseUrl}posts/${postId}/comments`,
+      { comment }
+    );
+  }
+
+  addReaction(postId: string, reactionType: 'positive' | 'negative'): Observable<any> {
+    return this.httpClient.post(
+      `${environment.apiBaseUrl}posts/${postId}/reactions`,
+      { type: reactionType }
+    );
   }
 }

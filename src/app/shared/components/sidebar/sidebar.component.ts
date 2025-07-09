@@ -33,7 +33,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-book' },
     { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-users' },
     { label: 'Preguntas sin resolver', route: 'preguntas', icon: 'pi-question' },
-    { label: 'Mis preguntas', route: 'preguntas', icon: 'pi-receipt' },
+    { label: 'Mis publicaciones', route: 'preguntas', icon: 'pi-receipt' },
     { label: 'Logros', route: 'logros', icon: 'pi-trophy' }
   ];
 
