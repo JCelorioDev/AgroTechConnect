@@ -19,7 +19,7 @@
                 <h3>{{ post?.user?.name }} {{ post?.user?.lastname }}</h3>
                 <div class="post-meta">
                   <span class="post-date">
-                    <i class="pi pi-calendar"></i> {{ post?.created_at | date:'shortDate' }}
+                    <i class="pi pi-calendar"></i> {{ post?.created_at  }}
                   </span>
                   <p-tag 
                     [value]="post?.user?.ranges?.[0]?.name" 
