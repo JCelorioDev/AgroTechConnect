@@ -8,23 +8,24 @@
     <p-button label="Reintentar" icon="pi pi-refresh" (click)="getsPost()"></p-button>
   </div>
 
-  <div *ngIf="!loading && !error">
-    <div class="grid">
-      <div *ngFor="let post of listPost; trackBy: trackByPostId" class="col-12 md:col-6 lg:col-4">
-        <div class="post-card p-card">
+  <div *ngIf="!loading && !error" class="posts-wrapper">
+    <div class="posts-grid">
+      <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item">
+        <div class="post-card">
           <div class="post-header">
-            <p-avatar [image]="post?.user?.image?.url" [shape]="'circle'" size="large"></p-avatar>
             <div class="post-user-info">
-              <h3>{{ post?.user?.name }} {{ post?.user?.lastname }}</h3>
-              <div class="post-meta">
-                <span class="post-date">
-                  <i class="pi pi-calendar"></i> {{ post?.created_at | date:'mediumDate' }}
-                </span>
-                <p-tag 
-                  [value]="post?.user?.ranges?.[0]?.name" 
-                  [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)" 
-                  styleClass="user-range">
-                </p-tag>
+              <p-avatar [image]="post?.user?.image?.url" [shape]="'circle'" size="large"></p-avatar>
+              <div>
+                <h3>{{ post?.user?.name }} {{ post?.user?.lastname }}</h3>
+                <div class="post-meta">
+                  <span class="post-date">
+                    <i class="pi pi-calendar"></i> {{ post?.created_at | date:'shortDate' }}
+                  </span>
+                  <p-tag 
+                    [value]="post?.user?.ranges?.[0]?.name" 
+                    [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)">
+                  </p-tag>
+                </div>
               </div>
             </div>
           </div>
@@ -47,20 +48,8 @@
                 <i class="pi pi-thumbs-down"></i> {{ post?.negative_reactions_count }}
               </span>
               <span class="post-comments">
-                <i class="pi pi-comments"></i> {{ post?.comments_count }} comentarios
+                <i class="pi pi-comments"></i> {{ post?.comments_count }}
               </span>
-            </div>
-
-            <div class="comments-section">
-              <h4>Comentarios</h4>
-              <div class="comment" *ngFor="let comment of mockComments">
-                <p-avatar [image]="comment?.userImage" [shape]="'circle'" size="normal"></p-avatar>
-                <div class="comment-content">
-                  <span class="comment-user">{{ comment?.userName }}</span>
-                  <p class="comment-text">{{ comment?.text }}</p>
-                </div>
-              </div>
-              <p-button label="Cargar más comentarios" icon="pi pi-plus" styleClass="p-button-text p-button-sm"></p-button>
             </div>
           </div>
         </div>
@@ -71,8 +60,8 @@
       [rows]="10" 
       [totalRecords]="totalRecords" 
       (onPageChange)="onPageChange($event)" 
-      [rowsPerPageOptions]="[10, 20, 30]" 
-      styleClass="custom-paginator">
+      [rowsPerPageOptions]="[10, 20, 30]"
+      [first]="(currentPage - 1) * 10">
     </p-paginator>
   </div>
 </div>
