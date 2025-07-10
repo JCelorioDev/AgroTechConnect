@@ -13,17 +13,20 @@
       <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item">
         <div class="post-card">
           <div class="post-header">
-            <div class="post-user-info">
-              <p-avatar [image]="post?.user?.image?.url" [shape]="'circle'" size="large"></p-avatar>
-              <div>
+            <div class="user-profile-container">
+              <p-avatar [image]="post?.user?.image?.url" 
+                        [shape]="'circle'" 
+                        size="large"
+                        class="user-avatar-side">
+              </p-avatar>
+              <div class="user-info-side">
                 <h3>{{ post?.user?.name }} {{ post?.user?.lastname }}</h3>
                 <div class="post-meta">
                   <span class="post-date">
-                    <i class="pi pi-calendar"></i> {{ post?.created_at  }}
+                    <i class="pi pi-calendar"></i> {{ post?.created_at }}
                   </span>
-                  <p-tag 
-                    [value]="post?.user?.ranges?.[0]?.name" 
-                    [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)">
+                  <p-tag [value]="post?.user?.ranges?.[0]?.name" 
+                        [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)">
                   </p-tag>
                 </div>
               </div>

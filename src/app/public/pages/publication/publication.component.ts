@@ -10,6 +10,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { PostService } from '../../../core/services/Post/post.service';
 import { Datum } from '../../../core/models/Post/postRespone.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-publication',
@@ -30,6 +31,8 @@ import { AlertService } from '../../../shared/alerts/alert.service';
 export class PublicationComponent implements OnInit {
   private readonly postService = inject(PostService);
   private readonly alertService = inject(AlertService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   listPost: Datum[] = [];
   loading = true;
@@ -38,7 +41,10 @@ export class PublicationComponent implements OnInit {
   currentPage = 1;
 
   ngOnInit(): void {
-    this.getsPost();
+    this.route.queryParams.subscribe(params => {
+      this.currentPage = params['page'] ? Number(params['page']) : 1;
+      this.getsPost();
+    });
   }
 
   getsPost(): void {
@@ -53,14 +59,18 @@ export class PublicationComponent implements OnInit {
       },
       error: (err) => {
         this.loading = false;
-        this.error = 'Error al cargar las publicaciones';
-        this.alertService.miniAlert(err.error.message || 'Error desconocido', 'error', 3000);
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
       }
     });
   }
 
   onPageChange(event: any): void {
     this.currentPage = event.page + 1;
+    this.updateUrl();
     this.getsPost();
   }
 
@@ -78,5 +88,13 @@ export class PublicationComponent implements OnInit {
       case 'Experto': return 'danger';
       default: return 'info';
     }
+  }
+
+  private updateUrl(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: this.currentPage },
+      queryParamsHandling: 'merge'
+    });
   }
 }
