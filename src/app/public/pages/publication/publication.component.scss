@@ -105,6 +105,8 @@
         .post-content {
           padding: 0 1rem 0.5rem;
           flex: 1;
+          display: flex;
+          flex-direction: column;
 
           .post-title {
             margin: 0.5rem 0;
@@ -119,13 +121,27 @@
           }
 
           .post-image-container {
-            margin: 0.5rem 0;
+            margin: 0 -1rem; // Elimina el padding lateral
+            order: 1; // Mueve la imagen arriba del título
+            width: calc(100% + 2rem); // Compensa el padding
+            max-height: 400px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
 
             .post-image {
               width: 100%;
-              height: 180px;
-              object-fit: cover;
-              border-radius: 6px;
+              height: auto;
+              max-height: 400px;
+              object-fit: contain;
+              display: block;
+              transition: transform 0.3s ease;
+              
+              &:hover {
+                transform: scale(1.01);
+              }
             }
           }
         }
@@ -213,17 +229,5 @@
       align-items: center;
       margin-top: 0.25rem;
     }
-  }
-}
-
-.post-image-container {
-  margin: 0.5rem 0;
-  
-  .post-image {
-    width: 100%;
-    height: 200px; 
-    object-fit: cover;
-    border-radius: 6px;
-    display: block;
   }
 }
