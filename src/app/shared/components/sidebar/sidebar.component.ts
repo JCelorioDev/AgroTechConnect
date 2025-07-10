@@ -31,9 +31,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   menuItems = [
     { label: 'Publicaciones', route: 'publicaciones', icon: 'pi-book' },
-    { label: 'Siguiendo', route: 'siguiendo', icon: 'pi-users' },
+    { label: 'Comunidad', route: 'comunidad', icon: 'pi-users' },
     { label: 'Preguntas sin resolver', route: 'preguntas', icon: 'pi-question' },
-    { label: 'Mis publicaciones', route: 'preguntas', icon: 'pi-receipt' },
+    { label: 'Mis publicaciones', route: 'mis-publicaciones', icon: 'pi-receipt' },
     { label: 'Logros', route: 'logros', icon: 'pi-trophy' }
   ];
 

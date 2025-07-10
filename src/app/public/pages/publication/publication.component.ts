@@ -56,33 +56,47 @@ export class PublicationComponent implements OnInit {
     this.getsPost();
   }
 
-  getsPost(): void {
-    this.loading = true;
-    this.error = null;
+// En tu publication.component.ts
+getsPost(): void {
+  this.loading = true;
+  this.error = null;
+  
+  // Fuerza detección de cambios después de la carga
+  this.postService.getsPost(this.currentPage).subscribe({
+    next: (response) => {
+      this.listPost = response.data.data;
+      this.totalRecords = response.data.total;
+      this.loading = false;
+      
+      // Fuerza recálculo del layout
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    },
+    error: (err) => {
+      this.loading = false;
+      this.error = 'Error al cargar las publicaciones';
+      this.alertService.miniAlert(err.error.message || 'Error desconocido', 'error', 3000);
+    }
+  });
+}
+// Cambia el onPageChange para cargar incrementalmente
+onPageChange(event: any): void {
+  this.currentPage = event.page + 1;
+  this.getsPost(); // Esto reemplazará los posts actuales
+}
 
-    this.postService.getsPost(this.currentPage).subscribe({
-      next: (response) => {
-        this.listPost = response.data.data;
-        this.totalRecords = response.data.total;
-        this.loading = false;
-      },
-      error: (err) => {
-        this.loading = false;
-        this.error = 'Error al cargar las publicaciones';
-        
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message || 'Error desconocido', 'error', 3000);
-        }
-      }
-    });
-  }
+// O para carga infinita (scroll infinito):
+onScroll(): void {
+  this.currentPage++;
+  this.getsPost(); // Esto añadirá a los posts existentes
+}
 
-  onPageChange(event: any): void {
-    this.currentPage = event.page + 1;
-    this.getsPost();
-  }
+trackByPostId(index: number, post: Datum): string {
+  return post.id; // Asegúrate de que tu modelo Datum tenga un id único
+}
+
+
 
   getRangeSeverity(rangeName: string | undefined): any {
     if (!rangeName) return 'info';

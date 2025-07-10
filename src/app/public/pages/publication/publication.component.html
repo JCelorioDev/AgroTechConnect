@@ -10,7 +10,7 @@
 
   <div *ngIf="!loading && !error">
     <div class="grid">
-      <div *ngFor="let post of listPost" class="col-12 md:col-6 lg:col-4">
+      <div *ngFor="let post of listPost; trackBy: trackByPostId" class="col-12 md:col-6 lg:col-4">
         <div class="post-card p-card">
           <div class="post-header">
             <p-avatar [image]="post?.user?.image?.url" [shape]="'circle'" size="large"></p-avatar>
