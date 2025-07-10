@@ -10,9 +10,20 @@ import { PostInterfaceI } from '../../models/Post/postRespone.interface';
 export class PostService {
   constructor(private httpClient: HttpClient) {}
 
+
+  // Obtener todas las publicaciones
+
   getsPost(page: number = 1, perPage: number = 10): Observable<PostInterfaceI> {
     return this.httpClient.get<PostInterfaceI>(
       `${environment.apiBaseUrl}posts?page=${page}&per_page=${perPage}`
+    );
+  }
+
+  // Obtener mis publicaciones
+
+  getsMePost(page: number = 1, perPage: number = 10): Observable<PostInterfaceI>{
+    return this.httpClient.get<PostInterfaceI>(
+      `${environment.apiBaseUrl}me/posts?page=${page}&per_page=${perPage}`
     );
   }
 

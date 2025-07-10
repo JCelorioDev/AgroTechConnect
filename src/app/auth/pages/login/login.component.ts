@@ -98,6 +98,7 @@ export class LoginComponent {
         this.onDialogHide();
         localStorage.setItem('userLogin', JSON.stringify(s.data)); 
         this.alertService.miniAlert('Inicio de sesión exitoso', 'success', 2500);
+        this.router.navigate(['menu/publicaciones']);
 
         if (!s.data.email_verified_at) {
           this.alertService.miniAlert('Cuenta sin verificar, verifica tu cuenta primero.', 'warning', 3000);
