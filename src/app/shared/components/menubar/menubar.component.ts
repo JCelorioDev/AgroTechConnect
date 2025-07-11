@@ -20,6 +20,7 @@ import { RolsService } from '../../../core/utils/Roles/rols.service';
 import { parse } from 'path';
 import { Subscription } from 'rxjs';
 import { NotificationsService } from '../../../core/services/Notifications/notifications.service';
+import { PostService } from '../../../core/services/Post/post.service';
 
 
 
@@ -50,6 +51,7 @@ export class MenubarComponent {
   public valueCodePasswordConfirmation:string = '';;
   public generatedCode: string = '';
   screenWidth: number;
+  private readonly postService = inject(PostService);
 
   public notifications: Notification[] = [];
   public unreadCount: number = 0;
@@ -508,5 +510,21 @@ export class MenubarComponent {
         }
       });
     }
+  }
+
+  public onSearchChange(): void {
+    const query = this.searchQuery.trim();
+    // Si el input está vacío, reseteamos la búsqueda
+    if (query === '') {
+      this.resetSearch();
+    } else {
+      this.postService.setSearchQuery(query);
+    }
+  }
+
+  resetSearch(): void {
+    this.searchQuery = '';
+    this.postService.setSearchQuery(''); // Forza un reset completo
+    this.postService.cancelPendingRequests$.next(); // Cancela peticiones pendientes
   }
 }

@@ -131,6 +131,11 @@ html.custom-dark-mode .notifications-icon{
   color: rgb(202, 202, 55)  !important;
 }
 
+html.custom-dark-mode .p-paginator {
+  background-color: transparent !important;
+}
+
+
 
 html.custom-dark-mode {
   .swal2-container {

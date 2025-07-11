@@ -179,11 +179,13 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
     <span class="p-input-icon-left">
       <i class="pi pi-search"></i>
       <input
-        pInputText
-        type="text"
-        placeholder="Busca una pregunta..."
-        [(ngModel)]="searchQuery"
-      />
+      pInputText
+      type="text"
+      placeholder="Busca una pregunta..."
+      [(ngModel)]="searchQuery"
+      (input)="onSearchChange()"
+      (keyup.escape)="resetSearch()"
+    />
     </span>
   </div>
 
