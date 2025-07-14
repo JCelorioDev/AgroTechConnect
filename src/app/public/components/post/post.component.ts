@@ -43,7 +43,6 @@ export class PostComponent implements OnInit, OnDestroy {
   private currentRoute!:string;
   private segments!:string[];
   searchQuery: string = '';
-  private previousRoute = '';
 
   private destroy$ = new Subject<void>();
 
@@ -55,27 +54,18 @@ export class PostComponent implements OnInit, OnDestroy {
       this.verifyRoute();
     });
 
-    // Escuchar cambios de ruta
-    this.postService.currentRoute.pipe(
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(route => {
-      if (this.previousRoute && this.previousRoute !== route) {
-        this.postService.handleRouteChange();
-      }
-      this.previousRoute = route;
-    });
-
-    this.postService.searchQuery$.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      takeUntil(this.destroy$)
-    ).subscribe(query => {
-      this.searchQuery = query;
-      this.currentPage = 1;
-      this.updateUrl();
-      this.verifyRoute();
-    });
+    this.postService.searchQuery$
+      .pipe(
+        debounceTime(300), // Espera 300ms después de la última tecla
+        distinctUntilChanged(), // Solo emite si el valor cambió
+        takeUntil(this.destroy$)
+      )
+      .subscribe(query => {
+        this.searchQuery = query;
+        this.currentPage = 1;
+        this.updateUrl();
+        this.verifyRoute();
+      });
   }
 
   ngOnDestroy(): void {
@@ -84,9 +74,7 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   verifyRoute(): void {
-    this.currentRoute = this.router.url;
-    // Extraer la ruta base sin parámetros de consulta
-    const baseRoute = this.currentRoute.split('?')[0];
+    const baseRoute = this.router.url.split('?')[0];
     this.segments = baseRoute.split('/');
 
     if(this.segments[2] === 'publicaciones'){
@@ -94,6 +82,7 @@ export class PostComponent implements OnInit, OnDestroy {
     } else {
       const userLogin = localStorage.getItem('userLogin');
       const hisToken = userLogin ? !!JSON.parse(userLogin)?.token : false;
+      
       if(!hisToken){
         this.validation = true;
         this.loading = false;
@@ -102,11 +91,8 @@ export class PostComponent implements OnInit, OnDestroy {
         return;
       }
 
-      this.postService.resetSearch();
       this.getsMePost();
     }
-
-
   }
 
   onPageChange(event: any): void {

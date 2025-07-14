@@ -1,55 +1,78 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, filter, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PostInterfaceI } from '../../models/Post/postRespone.interface';
+import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PostService {
-  
+export class PostService implements OnDestroy {
   private searchQuerySubject = new BehaviorSubject<string>('');
   public searchQuery$ = this.searchQuerySubject.asObservable();
   public cancelPendingRequests$ = new Subject<void>();
-  public currentRoute = new BehaviorSubject<string>('');
   private destroy$ = new Subject<void>();
+  private currentView: 'public' | 'private' = 'public';
 
   constructor(private httpClient: HttpClient, private router: Router) {
-        // Escuchar cambios de ruta
-        this.router.events.pipe(
-          filter(event => event instanceof NavigationEnd),
-          takeUntil(this.destroy$)
-        ).subscribe((event: any) => {
-          this.currentRoute.next(event.urlAfterRedirects || event.url);
-        });
+    this.setupRouteListener();
+    this.setupViewChangeHandler();
   }
 
-  setSearchQuery(query: string, forceReset = false): void {
-    // Si la ruta cambió y no es forzado, resetea
-    if (forceReset) {
-      this.searchQuerySubject.next('');
-      return;
-    }
-    
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.cancelPendingRequests$.next();
-    this.searchQuerySubject.next(query);
+    this.cancelPendingRequests$.complete();
   }
 
-  // Resetear búsqueda cuando la ruta cambia
-  handleRouteChange(): void {
-    this.setSearchQuery('', true);
+  private setupRouteListener(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) => 
+        prev.url === curr.url),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      const newView = event.url.includes('mis-publicaciones') ? 'private' : 'public';
+      
+      // Resetear solo si cambia el tipo de vista
+      if (this.currentView !== newView) {
+        this.resetSearch();
+      }
+      
+      this.currentView = newView;
+    });
   }
-  
+
+  private setupViewChangeHandler(): void {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) => 
+        prev.urlAfterRedirects === curr.urlAfterRedirects),
+      takeUntil(this.destroy$)
+    ).subscribe((event: NavigationEnd) => {
+      const newView = event.url.includes('mis-publicaciones') ? 'private' : 'public';
+      if (this.currentView !== newView) {
+        this.resetSearch();
+      }
+      this.currentView = newView;
+    });
+  }
+
+  setSearchQuery(query: string): void {
+    this.cancelPendingRequests$.next();
+    this.searchQuerySubject.next(query.trim());
+  }
+
   resetSearch(): void {
-    this.searchQuerySubject.next(''); // Emite un string vacío para resetear
+    this.searchQuerySubject.next('');
+    this.cancelPendingRequests$.next();
   }
-
-  // Obtener todas las publicaciones
 
   getsPost(page: number = 1, perPage: number = 10, searchQuery: string = ''): Observable<PostInterfaceI> {
-    this.cancelPendingRequests$.next(); // Cancela peticiones anteriores
+    this.cancelPendingRequests$.next();
     
     let params = new HttpParams()
       .set('page', page.toString())
@@ -63,10 +86,8 @@ export class PostService {
       .pipe(takeUntil(this.cancelPendingRequests$));
   }
 
-  // Obtener mis publicaciones
-
   getsMePost(page: number = 1, perPage: number = 10, searchQuery: string = ''): Observable<PostInterfaceI> {
-    this.cancelPendingRequests$.next(); // Cancela peticiones anteriores
+    this.cancelPendingRequests$.next();
     
     let params = new HttpParams()
       .set('page', page.toString())
@@ -102,10 +123,5 @@ export class PostService {
       `${environment.apiBaseUrl}posts/${postId}/reactions`,
       { type: reactionType }
     );
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

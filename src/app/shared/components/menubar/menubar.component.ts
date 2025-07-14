@@ -18,21 +18,23 @@ import { InputOtp } from 'primeng/inputotp';
 import { UserService } from '../../../core/services/User/user.service';
 import { RolsService } from '../../../core/utils/Roles/rols.service';
 import { parse } from 'path';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription, takeUntil } from 'rxjs';
 import { NotificationsService } from '../../../core/services/Notifications/notifications.service';
 import { PostService } from '../../../core/services/Post/post.service';
+import { FiltersSearchComponent } from "../filter-search/filters-search/filters-search.component";
 
 
 
 @Component({
   selector: 'shared-menubar',
-  imports: [InputTextModule, ButtonModule, TooltipModule, CommonModule, FormsModule, Dialog, LoginComponent, RegisterComponent, ReactiveFormsModule, PasswordModule, InputOtp],
+  imports: [InputTextModule, ButtonModule, TooltipModule, CommonModule, FormsModule, Dialog, LoginComponent, RegisterComponent, ReactiveFormsModule, PasswordModule, InputOtp, FiltersSearchComponent],
   standalone: true,
   templateUrl: './menubar.component.html',
   styleUrl: './menubar.component.scss'
 })
 export class MenubarComponent {
   public searchQuery: string = '';
+  private destroy$ = new Subject<void>();
 
   public visible: boolean = false;
   private readonly router = inject(Router);
@@ -104,6 +106,12 @@ export class MenubarComponent {
 
     // Cargar notificaciones iniciales
     this.loadNotifications();
+
+    this.postService.searchQuery$.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.searchQuery = query;
+    });
   }
 
   ngOnDestroy(): void {
@@ -115,6 +123,9 @@ export class MenubarComponent {
     if (this.notificationsSubscription) {
       this.notificationsSubscription.unsubscribe();
     }
+
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
    // Nuevo método para cargar no leídas
@@ -512,18 +523,14 @@ export class MenubarComponent {
     }
   }
 
-  public onSearchChange(): void {
-    const query = this.searchQuery.trim();
-    if (query === '') {
-      this.resetSearch();
-    } else {
-      this.postService.setSearchQuery(query);
-    }
+  onSearchChange(): void {
+    this.postService.setSearchQuery(this.searchQuery);
   }
 
   resetSearch(): void {
     this.searchQuery = '';
-    this.postService.setSearchQuery('', true); // Forza reset
-    this.postService.cancelPendingRequests$.next();
+    this.postService.resetSearch();
   }
+
+  
 }
