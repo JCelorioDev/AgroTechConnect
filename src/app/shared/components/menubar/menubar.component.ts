@@ -532,5 +532,9 @@ export class MenubarComponent {
     this.postService.resetSearch();
   }
 
+  onFilterChange(filters: {year: number | null, month: number | null}): void {
+    this.postService.setFilters(filters);
+  }
+
   
 }

@@ -175,7 +175,7 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
 </p-dialog>
 
 <div class="menubar-container">
-  <shared-filters-search></shared-filters-search>
+  <shared-filters-search (filterChange)="onFilterChange($event)"></shared-filters-search>
   
   <!-- Contenedor principal de búsqueda -->
   <div class="search-container">

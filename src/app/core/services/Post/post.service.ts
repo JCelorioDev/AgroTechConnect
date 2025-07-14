@@ -11,7 +11,9 @@ import { NavigationEnd, Router } from '@angular/router';
 })
 export class PostService implements OnDestroy {
   private searchQuerySubject = new BehaviorSubject<string>('');
+  private filtersSubject = new BehaviorSubject<{year: number | null, month: number | null}>({year: null, month: null});
   public searchQuery$ = this.searchQuerySubject.asObservable();
+  public filters$ = this.filtersSubject.asObservable();
   public cancelPendingRequests$ = new Subject<void>();
   private destroy$ = new Subject<void>();
   private currentView: 'public' | 'private' = 'public';
@@ -37,9 +39,9 @@ export class PostService implements OnDestroy {
     ).subscribe((event: NavigationEnd) => {
       const newView = event.url.includes('mis-publicaciones') ? 'private' : 'public';
       
-      // Resetear solo si cambia el tipo de vista
       if (this.currentView !== newView) {
         this.resetSearch();
+        this.resetFilters();
       }
       
       this.currentView = newView;
@@ -56,14 +58,24 @@ export class PostService implements OnDestroy {
       const newView = event.url.includes('mis-publicaciones') ? 'private' : 'public';
       if (this.currentView !== newView) {
         this.resetSearch();
+        this.resetFilters();
       }
       this.currentView = newView;
     });
   }
 
+
   setSearchQuery(query: string): void {
     this.cancelPendingRequests$.next();
     this.searchQuerySubject.next(query.trim());
+  }
+
+  setFilters(filters: {year: number | null, month: number | null}): void {
+    this.filtersSubject.next(filters);
+  }
+
+  resetFilters(): void {
+    this.filtersSubject.next({year: null, month: null});
   }
 
   resetSearch(): void {
@@ -71,7 +83,13 @@ export class PostService implements OnDestroy {
     this.cancelPendingRequests$.next();
   }
 
-  getsPost(page: number = 1, perPage: number = 10, searchQuery: string = ''): Observable<PostInterfaceI> {
+  getsPost(
+    page: number = 1, 
+    perPage: number = 10, 
+    searchQuery: string = '',
+    year: number | null = null,
+    month: number | null = null
+  ): Observable<PostInterfaceI> {
     this.cancelPendingRequests$.next();
     
     let params = new HttpParams()
@@ -82,11 +100,25 @@ export class PostService implements OnDestroy {
       params = params.set('search', searchQuery);
     }
 
+    if (year) {
+      params = params.set('year', year.toString());
+    }
+
+    if (month) {
+      params = params.set('month', month.toString());
+    }
+
     return this.httpClient.get<PostInterfaceI>(`${environment.apiBaseUrl}posts`, { params })
       .pipe(takeUntil(this.cancelPendingRequests$));
   }
 
-  getsMePost(page: number = 1, perPage: number = 10, searchQuery: string = ''): Observable<PostInterfaceI> {
+  getsMePost(
+    page: number = 1, 
+    perPage: number = 10, 
+    searchQuery: string = '',
+    year: number | null = null,
+    month: number | null = null
+  ): Observable<PostInterfaceI> {
     this.cancelPendingRequests$.next();
     
     let params = new HttpParams()
@@ -95,6 +127,14 @@ export class PostService implements OnDestroy {
     
     if (searchQuery) {
       params = params.set('search', searchQuery);
+    }
+
+    if (year) {
+      params = params.set('year', year.toString());
+    }
+
+    if (month) {
+      params = params.set('month', month.toString());
     }
 
     return this.httpClient.get<PostInterfaceI>(`${environment.apiBaseUrl}me/posts`, { params })
