@@ -1,1 +1,90 @@
-<p>filters-search works!</p>
+<div class="filters-container">
+    <!-- Versión desktop -->
+    <div class="filters-desktop">
+      <div class="filter-controls">
+        <p-dropdown
+          [options]="yearOptions"
+          [(ngModel)]="selectedYear"
+          placeholder="Año"
+          [showClear]="true"
+          (onChange)="onFilterChange()"
+          [style]="{ width: '100px' }"
+        ></p-dropdown>
+  
+        <p-dropdown
+          [options]="monthOptions"
+          [(ngModel)]="selectedMonth"
+          placeholder="Mes"
+          [showClear]="true"
+          (onChange)="onFilterChange()"
+          [style]="{ width: '120px' }"
+        ></p-dropdown>
+  
+        <button
+          pButton
+          icon="pi pi-filter-slash"
+          label="Limpiar"
+          class="p-button-outlined clear-filters"
+          (click)="clearFilters()"
+          [disabled]="!hasActiveFilters"
+        ></button>
+      </div>
+    </div>
+  
+    <!-- Versión móvil mejorada -->
+    <div class="filters-mobile">
+      <div class="mobile-filter-controls">
+        <button
+          pButton
+          icon="pi pi-filter"
+          label="{{selectedYear || 'Año'}}"
+          class="p-button-outlined mobile-filter-button"
+          (click)="showYearDropdown = !showYearDropdown"
+        ></button>
+  
+        <button
+          pButton
+          icon="pi pi-filter"
+          label="{{selectedMonthLabel}}"
+          class="p-button-outlined mobile-filter-button"
+          (click)="showMonthDropdown = !showMonthDropdown"
+        ></button>
+  
+        <button
+          pButton
+          icon="pi pi-filter-slash"
+          class="p-button-outlined mobile-filter-button"
+          (click)="clearFilters()"
+          [disabled]="!hasActiveFilters"
+          pTooltip="Limpiar filtros"
+          tooltipPosition="top"
+        ></button>
+      </div>
+  
+      <!-- Dropdowns flotantes para móvil -->
+      <div class="mobile-dropdown-overlay" *ngIf="showYearDropdown || showMonthDropdown" 
+           (click)="closeAllDropdowns()"></div>
+  
+      <div class="mobile-dropdown" *ngIf="showYearDropdown">
+        <p-dropdown
+          [options]="yearOptions"
+          [(ngModel)]="selectedYear"
+          placeholder="Selecciona año"
+          [showClear]="true"
+          (onChange)="onYearSelect()"
+          [style]="{ width: '100%' }"
+        ></p-dropdown>
+      </div>
+  
+      <div class="mobile-dropdown" *ngIf="showMonthDropdown">
+        <p-dropdown
+          [options]="monthOptions"
+          [(ngModel)]="selectedMonth"
+          placeholder="Selecciona mes"
+          [showClear]="true"
+          (onChange)="onMonthSelect()"
+          [style]="{ width: '100%' }"
+        ></p-dropdown>
+      </div>
+    </div>
+  </div>

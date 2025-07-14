@@ -176,18 +176,22 @@ DIALOGO PARA LA CONFIRMACION DE LA CUENTA DE USUARIO
 
 <div class="menubar-container">
   <shared-filters-search></shared-filters-search>
-  <div class="search-wrapper">
-    <span class="p-input-icon-left">
-      <i class="pi pi-search"></i>
-      <input
-      pInputText
-      type="text"
-      placeholder="Busca una pregunta..."
-      [(ngModel)]="searchQuery"
-      (input)="onSearchChange()"
-      (keyup.escape)="resetSearch()"
-    />
-    </span>
+  
+  <!-- Contenedor principal de búsqueda -->
+  <div class="search-container">
+    <div class="search-wrapper">
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          placeholder="Busca una pregunta..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          (keyup.escape)="resetSearch()"
+        />
+      </span>
+    </div>
   </div>
 
   @if (getLocalStorageToken) {

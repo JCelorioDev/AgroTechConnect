@@ -918,3 +918,165 @@ $sidebar-width: 250px;
     }
   }
 }
+
+
+.menubar-container {
+  position: static;
+  width: 100%;
+  padding: 10px 20px;
+  margin-top: -3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  z-index: auto;
+  flex-wrap: wrap; /* Permite que los elementos se ajusten en móvil */
+}
+
+.search-container {
+  order: 1; /* Mueve el buscador a la primera posición */
+  width: 100%; /* Ocupa todo el ancho en móvil */
+  margin-bottom: 10px; /* Espacio entre el buscador y los otros elementos */
+}
+
+.search-wrapper {
+  width: 100%;
+  
+  .p-input-icon-left {
+    width: 100%;
+    
+    input {
+      width: 100%;
+      padding: 12px 16px 12px 40px;
+      border-radius: 8px;
+      border: 1px solid #3f3c3c38;
+      color: rgb(75, 73, 73);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      
+      &:focus {
+        border-color: #198754;
+        box-shadow: 0 0 5px 2px rgba(110, 228, 127, 0.815);
+      }
+    }
+    
+    i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+  }
+}
+
+/* Estilos para tablet */
+@media (min-width: 600px) {
+  .search-container {
+    order: 0; /* Vuelve al orden original */
+    width: auto;
+    margin-bottom: 0;
+    flex: 1;
+  }
+  
+  .search-wrapper {
+    .p-input-icon-left {
+      max-width: 400px;
+    }
+  }
+}
+
+/* Estilos para móvil pequeño */
+@media (max-width: 480px) {
+  .menubar-container {
+    padding: 10px;
+  }
+  
+  .search-wrapper {
+    .p-input-icon-left {
+      input {
+        padding: 10px 10px 10px 36px;
+        font-size: 0.9rem;
+      }
+      
+      i {
+        left: 10px;
+      }
+    }
+  }
+}
+
+/* Ajustes para los otros elementos del menú */
+.notifications-container {
+  order: 2;
+  margin: 0 5px;
+}
+
+.menubar-container__buttonLogin {
+  order: 3;
+}
+
+.menu-icon {
+  order: 4;
+}
+
+@media (min-width: 600px) {
+  .notifications-container {
+    order: 2;
+  }
+  
+  .menubar-container__buttonLogin {
+    order: 3;
+    margin-left: 10px;
+  }
+  
+  .menu-icon {
+    order: 4;
+  }
+}
+
+/* Para pantallas medianas y grandes */
+@media (min-width: 768px) {
+  .menubar-container {
+    flex-wrap: nowrap;
+  }
+  
+  .search-container {
+    flex: 1;
+    margin-right: 15px;
+    margin-bottom: 0;
+  }
+  
+  .search-wrapper {
+    .p-input-icon-left {
+      max-width: 500px;
+    }
+  }
+}
+
+/* Para pantallas pequeñas (móviles) */
+@media (max-width: 767px) {
+  .menubar-container {
+    justify-content: center;
+  }
+  
+  .search-container {
+    margin-bottom: 10px;
+  }
+  
+  /* Ocultar elementos menos importantes en móvil */
+  .notifications-container .notifications-trigger {
+    padding: 8px;
+    width: 36px;
+    height: 36px;
+    
+    .notifications-icon {
+      font-size: 1.2rem;
+    }
+  }
+  
+  .menubar-container__buttonLogin {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
