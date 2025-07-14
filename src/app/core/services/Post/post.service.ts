@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, filter, Observable, Subject, takeUntil } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { PostInterfaceI } from '../../models/Post/postRespone.interface';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,12 +13,33 @@ export class PostService {
   private searchQuerySubject = new BehaviorSubject<string>('');
   public searchQuery$ = this.searchQuerySubject.asObservable();
   public cancelPendingRequests$ = new Subject<void>();
+  public currentRoute = new BehaviorSubject<string>('');
+  private destroy$ = new Subject<void>();
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private router: Router) {
+        // Escuchar cambios de ruta
+        this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd),
+          takeUntil(this.destroy$)
+        ).subscribe((event: any) => {
+          this.currentRoute.next(event.urlAfterRedirects || event.url);
+        });
+  }
 
-  setSearchQuery(query: string): void {
-    this.cancelPendingRequests$.next(); // Cancela peticiones pendientes
+  setSearchQuery(query: string, forceReset = false): void {
+    // Si la ruta cambió y no es forzado, resetea
+    if (forceReset) {
+      this.searchQuerySubject.next('');
+      return;
+    }
+    
+    this.cancelPendingRequests$.next();
     this.searchQuerySubject.next(query);
+  }
+
+  // Resetear búsqueda cuando la ruta cambia
+  handleRouteChange(): void {
+    this.setSearchQuery('', true);
   }
   
   resetSearch(): void {
@@ -80,5 +102,10 @@ export class PostService {
       `${environment.apiBaseUrl}posts/${postId}/reactions`,
       { type: reactionType }
     );
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

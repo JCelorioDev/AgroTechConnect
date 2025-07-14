@@ -43,27 +43,39 @@ export class PostComponent implements OnInit, OnDestroy {
   private currentRoute!:string;
   private segments!:string[];
   searchQuery: string = '';
+  private previousRoute = '';
 
   private destroy$ = new Subject<void>();
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.pipe(
+      takeUntil(this.destroy$)
+    ).subscribe(params => {
       this.currentPage = params['page'] ? Number(params['page']) : 1;
       this.verifyRoute();
     });
 
-    this.postService.searchQuery$
-      .pipe(
-        debounceTime(300), // Espera 300ms después de la última tecla
-        distinctUntilChanged(), // Solo emite si el valor cambió
-        takeUntil(this.destroy$)
-      )
-      .subscribe(query => {
-        this.searchQuery = query;
-        this.currentPage = 1;
-        this.updateUrl();
-        this.verifyRoute();
-      });
+    // Escuchar cambios de ruta
+    this.postService.currentRoute.pipe(
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(route => {
+      if (this.previousRoute && this.previousRoute !== route) {
+        this.postService.handleRouteChange();
+      }
+      this.previousRoute = route;
+    });
+
+    this.postService.searchQuery$.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      takeUntil(this.destroy$)
+    ).subscribe(query => {
+      this.searchQuery = query;
+      this.currentPage = 1;
+      this.updateUrl();
+      this.verifyRoute();
+    });
   }
 
   ngOnDestroy(): void {

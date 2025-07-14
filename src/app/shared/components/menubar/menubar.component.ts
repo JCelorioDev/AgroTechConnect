@@ -514,7 +514,6 @@ export class MenubarComponent {
 
   public onSearchChange(): void {
     const query = this.searchQuery.trim();
-    // Si el input está vacío, reseteamos la búsqueda
     if (query === '') {
       this.resetSearch();
     } else {
@@ -524,7 +523,7 @@ export class MenubarComponent {
 
   resetSearch(): void {
     this.searchQuery = '';
-    this.postService.setSearchQuery(''); // Forza un reset completo
-    this.postService.cancelPendingRequests$.next(); // Cancela peticiones pendientes
+    this.postService.setSearchQuery('', true); // Forza reset
+    this.postService.cancelPendingRequests$.next();
   }
 }
