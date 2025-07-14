@@ -1,0 +1,41 @@
+<div class="post-editor-container">
+    <!-- Campo para el título -->
+    <div class="field">
+      <label for="title">Título de la publicación</label>
+      <input id="title" type="text" [(ngModel)]="title" pInputText placeholder="Escribe un título llamativo" />
+    </div>
+  
+    <!-- Editor de PrimeNG -->
+    <div class="field">
+      <label>Contenido de la publicación</label>
+      <p-editor [(ngModel)]="htmlContent" [style]="{'height':'320px'}" placeholder="Escribe tu publicación aquí..."></p-editor>
+    </div>
+  
+    <!-- Subida de imágenes -->
+    <div class="field">
+      <label>Imágenes de la publicación</label>
+      <p-fileUpload 
+        name="images" 
+        (onSelect)="onFileSelect($event)" 
+        [multiple]="true" 
+        accept="image/*" 
+        [maxFileSize]="10000000"
+        chooseLabel="Seleccionar imágenes">
+      </p-fileUpload>
+  
+      <!-- Vista previa de imágenes seleccionadas -->
+      <div class="image-previews" *ngIf="uploadedFiles.length > 0">
+        <div class="image-preview" *ngFor="let file of uploadedFiles; let i = index">
+          <img [src]="getObjectUrl(file)" alt="Preview" class="preview-image">
+          <button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger remove-btn" 
+                  (click)="removeFile(i)"></button>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Botón de enviar -->
+    <div class="field">
+      <button pButton pRipple type="button" label="Publicar" icon="pi pi-send" 
+              (click)="submitPost()" [loading]="isLoading"></button>
+    </div>
+  </div>

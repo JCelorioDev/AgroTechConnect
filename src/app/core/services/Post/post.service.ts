@@ -5,6 +5,8 @@ import { environment } from '../../../../environments/environment';
 import { PostInterfaceI } from '../../models/Post/postRespone.interface';
 import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
+import { AddedPostRequestI } from '../../models/Post/addedPostRequest.interface';
+import { AddedPostI } from '../../models/Post/addedPost.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -141,27 +143,19 @@ export class PostService implements OnDestroy {
       .pipe(takeUntil(this.cancelPendingRequests$));
   }
 
-  getPostById(id: string): Observable<any> {
-    return this.httpClient.get(`${environment.apiBaseUrl}posts/${id}`);
-  }
+  // Crear una publicacion
+  addPost(formPost: AddedPostRequestI): Observable<AddedPostI> {
+    const formData = new FormData();
+    
+    // Agregar campos al FormData
+    formData.append('title', formPost.title);
+    formData.append('description', formPost.description);
+    
+    // Agregar cada imagen al FormData
+    formPost.images.forEach((file, index) => {
+      formData.append(`images[${index}]`, file, file.name);
+    });
 
-  getPostComments(postId: string, page: number = 1): Observable<any> {
-    return this.httpClient.get(
-      `${environment.apiBaseUrl}posts/${postId}/comments?page=${page}`
-    );
-  }
-
-  addComment(postId: string, comment: string): Observable<any> {
-    return this.httpClient.post(
-      `${environment.apiBaseUrl}posts/${postId}/comments`,
-      { comment }
-    );
-  }
-
-  addReaction(postId: string, reactionType: 'positive' | 'negative'): Observable<any> {
-    return this.httpClient.post(
-      `${environment.apiBaseUrl}posts/${postId}/reactions`,
-      { type: reactionType }
-    );
+    return this.httpClient.post<AddedPostI>(`${environment.apiBaseUrl}posts`, formData);
   }
 }
