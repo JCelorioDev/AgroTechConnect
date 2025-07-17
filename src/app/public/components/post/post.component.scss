@@ -47,8 +47,23 @@
       margin: 0 auto;
   
       .post-item {
+        position: relative; 
         min-width: 0;
         width: 100%;
+
+        .post-menu {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          z-index: 10;
+          cursor: pointer;
+          color: var(--text-color-secondary);
+    
+          &:hover {
+            color: var(--primary-color);
+          }
+        }
+    
   
         .post-card {
           width: 100%;
@@ -199,6 +214,13 @@
       .posts-grid {
         grid-template-columns: 1fr;
       }
+
+      .post-item {
+        .post-menu {
+          top: 0.75rem;
+          right: 0.75rem;
+        }
+      }
     }
   }
   
@@ -229,5 +251,116 @@
         align-items: center;
         margin-top: 0.25rem;
       }
+    }
+  }
+
+
+  .premium-dialog {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+    background: #ffffff;
+  }
+  
+  .premium-dialog .p-dialog-header {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .premium-dialog .p-dialog-header .p-dialog-title {
+    font-weight: 600;
+    color: #333333;
+    font-size: 1.25rem;
+  }
+  
+  .premium-dialog .p-dialog-header .p-dialog-header-icon {
+    color: #6c757d;
+    transition: all 0.3s;
+  }
+  
+  .premium-dialog .p-dialog-header .p-dialog-header-icon:hover {
+    color: #3b82f6;
+    background: transparent;
+  }
+  
+  .premium-dialog .p-dialog-content {
+    padding: 1.5rem;
+    background: #ffffff;
+  }
+  
+  .premium-dialog .dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .premium-dialog .dialog-option {
+    justify-content: flex-start;
+    padding: 0.875rem 1.25rem;
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
+    margin: 0.25rem 0;
+    background: transparent;
+    border: none;
+    text-align: left;
+  }
+  
+  .premium-dialog .dialog-option .pi {
+    margin-right: 0.875rem;
+    font-size: 1.1rem;
+  }
+  
+  .premium-dialog .edit-option {
+    color: #3b82f6;
+  }
+  
+  .premium-dialog .edit-option:hover {
+    background: rgba(59, 130, 246, 0.08);
+    transform: translateX(4px);
+  }
+  
+  .premium-dialog .delete-option {
+    color: #ef4444;
+  }
+  
+  .premium-dialog .delete-option:hover {
+    background: rgba(239, 68, 68, 0.08);
+    transform: translateX(4px);
+  }
+  
+  .premium-dialog .p-dialog-footer {
+    padding: 1.25rem 1.5rem;
+    background: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .premium-dialog .dialog-cancel {
+    color: #6c757d;
+    background: transparent;
+    border: none;
+  }
+  
+  .premium-dialog .dialog-cancel:hover {
+    color: #3b82f6;
+    background: transparent;
+  }
+  
+  /* Efecto de overlay premium */
+  ::ng-deep .p-dialog-mask {
+    backdrop-filter: blur(4px);
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Responsive */
+  @media (max-width: 640px) {
+    .premium-dialog .p-dialog-content {
+      padding: 1.25rem;
+    }
+    
+    .premium-dialog .dialog-option {
+      padding: 0.75rem 1rem;
     }
   }

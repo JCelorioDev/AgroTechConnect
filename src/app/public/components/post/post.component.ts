@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -12,6 +12,9 @@ import { Datum } from '../../../core/models/Post/postRespone.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil, combineLatest } from 'rxjs';
+import { User } from '../../../core/models/Post/addedPost.interface';
+import { Dialog } from 'primeng/dialog';
+
 
 @Component({
   selector: 'public-post',
@@ -24,7 +27,9 @@ import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil, c
     AvatarModule,
     DividerModule,
     ProgressSpinnerModule,
-    PaginatorModule],
+    PaginatorModule,
+    Dialog
+  ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss'
 })
@@ -35,6 +40,8 @@ export class PostComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   public validation:boolean = false;
   public msjValidation:string = '';
+  public userLogin = signal<User|null>(null);
+  visible: boolean = false;
   
   listPost: Datum[] = [];
   loading = true;
@@ -45,6 +52,7 @@ export class PostComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   yearFilter: number | null = null;
   monthFilter: number | null = null;
+  private idPublication!:string;
 
   private destroy$ = new Subject<void>();
 
@@ -82,14 +90,16 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   verifyRoute(): void {
+    this.loading = true;
     const baseRoute = this.router.url.split('?')[0];
     this.segments = baseRoute.split('/');
+
+    this.userLogin.set(JSON.parse(localStorage.getItem('userLogin')!));
+    const hisToken = this.userLogin() ? !!this.userLogin()?.token : false;
 
     if(this.segments[2] === 'publicaciones'){
       this.getPosts();
     } else {
-      const userLogin = localStorage.getItem('userLogin');
-      const hisToken = userLogin ? !!JSON.parse(userLogin)?.token : false;
       
       if(!hisToken){
         this.validation = true;
@@ -203,4 +213,39 @@ export class PostComponent implements OnInit, OnDestroy {
       }
     });
   }
+
+  
+  setIdPublication(idPublication:string):void {
+    this.idPublication = idPublication;
+
+    console.log(this.idPublication);
+  }
+
+  // Eliminar publicacion
+
+  deletePost() {
+    this.visible = false;
+
+
+    this.alertService.alertwithDialogs('Estas seguro de eliminar la publicación?', 'Después no podrás revertir esta acción.', 'warning', 3000, (() => {
+      this.loading = true;
+      this.postService.deleteMePost(this.idPublication).subscribe({
+        next: (s) => {
+          this.alertService.miniAlert('La publicación se eliminó correctamente.', 'success', 3000);
+          this.verifyRoute();
+          this.loading = false;
+        },
+        error: (err) => {
+          this.loading = false;
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
+        }
+      })
+    }))
+  }
+
+
 }

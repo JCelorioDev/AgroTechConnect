@@ -38,4 +38,5 @@ export interface User {
     created_at:          string;
     updated_at:          string;
     image:               Image;
+    token ?: string;
 }

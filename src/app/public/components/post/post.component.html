@@ -1,3 +1,19 @@
+<p-dialog header="Opciones de publicación" [(visible)]="visible" [modal]="true" 
+          [style]="{ width: '25rem' }" [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+          class="premium-dialog">
+  <div class="dialog-content">
+    <button pButton pRipple type="button" icon="pi pi-pencil" label="Editar publicación" 
+            class="p-button-text dialog-option edit-option"></button>
+    <button (click)="deletePost()" pButton pRipple type="button" icon="pi pi-trash" label="Borrar publicación" 
+            class="p-button-text dialog-option delete-option"></button>
+  </div>
+  <p-footer>
+    <button pButton pRipple type="button" label="Cancelar" icon="pi pi-times" 
+            class="p-button-text dialog-cancel"></button>
+  </p-footer>
+</p-dialog>
+
+
 @if(validation){
     {{msjValidation}}
 }@else{
@@ -9,7 +25,11 @@
       
         <div *ngIf="!loading" class="posts-wrapper">
           <div class="posts-grid">
-            <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item">
+            <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item" >
+              <div 
+              *ngIf="post.user.email ===  userLogin()?.email" class="post-menu" (click)="visible=true; setIdPublication(post.id)">
+                <i class="pi pi-ellipsis-h" style="font-size: 1.5rem"></i>
+              </div>
               <div class="post-card">
                 <div class="post-header">
                   <div class="user-profile-container">

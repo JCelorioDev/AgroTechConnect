@@ -7,6 +7,7 @@ import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 import { AddedPostRequestI } from '../../models/Post/addedPostRequest.interface';
 import { AddedPostI } from '../../models/Post/addedPost.interface';
+import { DeleteMePostResponseI } from '../../models/Post/deleteMePost.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -157,5 +158,11 @@ export class PostService implements OnDestroy {
     });
 
     return this.httpClient.post<AddedPostI>(`${environment.apiBaseUrl}posts`, formData);
+  }
+
+  // Eliminr una publicación
+
+  deleteMePost(idPublicacion:string):Observable<DeleteMePostResponseI>{
+    return this.httpClient.delete<DeleteMePostResponseI>(`${environment.apiBaseUrl}posts/${idPublicacion}`)
   }
 }
