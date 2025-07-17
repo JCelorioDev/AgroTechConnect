@@ -90,7 +90,6 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   verifyRoute(): void {
-    this.loading = true;
     const baseRoute = this.router.url.split('?')[0];
     this.segments = baseRoute.split('/');
 
@@ -223,16 +222,41 @@ export class PostComponent implements OnInit, OnDestroy {
 
   // Eliminar publicacion
 
-  deletePost() {
-    this.visible = false;
+// Método deletePost mejorado
+deletePost() {
+  this.visible = false;
 
-
-    this.alertService.alertwithDialogs('Estas seguro de eliminar la publicación?', 'Después no podrás revertir esta acción.', 'warning', 3000, (() => {
+  this.alertService.alertwithDialogs(
+    '¿Estás seguro de eliminar la publicación?', 
+    'Después no podrás revertir esta acción.', 
+    'warning', 
+    3000, 
+    (() => {
       this.loading = true;
       this.postService.deleteMePost(this.idPublication).subscribe({
         next: (s) => {
           this.alertService.miniAlert('La publicación se eliminó correctamente.', 'success', 3000);
-          this.verifyRoute();
+          
+          // Eliminación local inmediata sin recargar toda la lista
+          const index = this.listPost.findIndex(post => post.id === this.idPublication);
+          if (index !== -1) {
+            this.listPost.splice(index, 1);
+            this.totalRecords--; // Actualizamos el contador total
+            
+            // Si la lista queda vacía y estamos en la página 1, mostramos mensaje
+            if (this.listPost.length === 0 && this.currentPage === 1) {
+              this.msjValidation = 'Crea tu primera publicación.';
+              this.validation = true;
+            }
+            
+            // Si la lista queda vacía pero no estamos en página 1, volvemos a la anterior
+            if (this.listPost.length === 0 && this.currentPage > 1) {
+              this.currentPage--;
+              this.updateUrl();
+              this.verifyRoute(); // Recargamos la página anterior
+            }
+          }
+          
           this.loading = false;
         },
         error: (err) => {
@@ -243,9 +267,9 @@ export class PostComponent implements OnInit, OnDestroy {
             this.alertService.miniAlert(err.error.message, 'error', 3000);
           }
         }
-      })
-    }))
-  }
-
+      });
+    })
+  );
+}
 
 }
