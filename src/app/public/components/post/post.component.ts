@@ -253,7 +253,7 @@ deletePost() {
             if (this.listPost.length === 0 && this.currentPage > 1) {
               this.currentPage--;
               this.updateUrl();
-              this.verifyRoute(); // Recargamos la página anterior
+              //this.verifyRoute(); // Recargamos la página anterior
             }
           }
           

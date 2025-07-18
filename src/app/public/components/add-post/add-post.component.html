@@ -1,41 +1,75 @@
-<div class="post-editor-container">
-    <!-- Campo para el título -->
-    <div class="field">
-      <label for="title">Título de la publicación</label>
-      <input id="title" type="text" [(ngModel)]="title" pInputText placeholder="Escribe un título llamativo" />
-    </div>
-  
-    <!-- Editor de PrimeNG -->
-    <div class="field">
-      <label>Contenido de la publicación</label>
-      <p-editor [(ngModel)]="htmlContent" [style]="{'height':'320px'}" placeholder="Escribe tu publicación aquí..."></p-editor>
-    </div>
-  
-    <!-- Subida de imágenes -->
-    <div class="field">
-      <label>Imágenes de la publicación</label>
-      <p-fileUpload 
-        name="images" 
-        (onSelect)="onFileSelect($event)" 
-        [multiple]="true" 
-        accept="image/*" 
-        [maxFileSize]="10000000"
-        chooseLabel="Seleccionar imágenes">
-      </p-fileUpload>
-  
-      <!-- Vista previa de imágenes seleccionadas -->
-      <div class="image-previews" *ngIf="uploadedFiles.length > 0">
-        <div class="image-preview" *ngFor="let file of uploadedFiles; let i = index">
-          <img [src]="getObjectUrl(file)" alt="Preview" class="preview-image">
-          <button pButton pRipple type="button" icon="pi pi-times" class="p-button-rounded p-button-danger remove-btn" 
-                  (click)="removeFile(i)"></button>
+<p-accordion  class="post-creator-accordion">
+  <p-accordionTab>
+    <ng-template pTemplate="header">
+      <div class="accordion-header">
+        <i class="pi pi-plus-circle"></i>
+        <span>Crear nueva publicación</span>
+      </div>
+    </ng-template>
+    <div class="social-post-editor">
+      <div class="editor-body">
+        <!-- Sección izquierda (formulario) -->
+        <div class="form-section">
+          <input type="text" [(ngModel)]="title" pInputText 
+                placeholder="¿Qué título llevará tu publicación?" 
+                class="post-title-input">
+    
+          <div class="post-content-editor">
+            <p-editor [(ngModel)]="htmlContent" 
+                      [style]="{'min-height':'300px', 'border':'none'}"
+                      placeholder="Comparte tus ideas..."
+                      class="social-editor">
+              <ng-template pTemplate="header">
+                <span class="ql-formats">
+                  <button class="ql-bold"></button>
+                  <button class="ql-italic"></button>
+                  <button class="ql-underline"></button>
+                  <button class="ql-list" value="bullet"></button>
+                  <button class="ql-link"></button>
+                  <button class="ql-image"></button>
+                </span>
+              </ng-template>
+            </p-editor>
+          </div>
+        </div>
+    
+        <!-- Sección derecha (previsualización) -->
+        <div class="preview-section">
+          <div class="media-upload">
+            <h4><i class="pi pi-images"></i> Imágenes adjuntas</h4>
+            <p-fileUpload name="images[]" 
+                        (onSelect)="onFileSelect($event)"
+                        [multiple]="true" 
+                        accept="image/*"
+                        chooseLabel="Agregar imágenes"
+                        mode="basic"
+                        class="uploader">
+            </p-fileUpload>
+          </div>
+    
+          <div class="image-gallery" *ngIf="uploadedFiles.length > 0">
+            <div class="gallery-grid">
+              <div *ngFor="let file of uploadedFiles; let i = index" class="gallery-item">
+                <img [src]="getObjectUrl(file)" [alt]="file.name">
+                <div class="item-footer">
+                  <span class="file-name">{{file.name}}</span>
+                  <button pButton icon="pi pi-times" 
+                          class="p-button-rounded p-button-danger p-button-sm remove-btn" 
+                          (click)="removeFile(i)"></button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+    
+      <div class="editor-footer">
+        <button pButton label="Publicar" 
+                icon="pi pi-send" 
+                (click)="submitPost()" 
+                [loading]="isLoading"
+                class="post-button"></button>
+      </div>
     </div>
-  
-    <!-- Botón de enviar -->
-    <div class="field">
-      <button pButton pRipple type="button" label="Publicar" icon="pi pi-send" 
-              (click)="submitPost()" [loading]="isLoading"></button>
-    </div>
-  </div>
+  </p-accordionTab>
+</p-accordion>

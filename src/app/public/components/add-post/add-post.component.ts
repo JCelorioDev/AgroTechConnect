@@ -1,16 +1,26 @@
 import { Component } from '@angular/core';
-import { Editor, EditorModule } from 'primeng/editor';
+import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
 import { PostService } from '../../../core/services/Post/post.service';
+import { InputTextModule } from 'primeng/inputtext';
+import { AccordionModule } from 'primeng/accordion';
+
 
 @Component({
   selector: 'public-add-post',
   standalone: true,
-  imports: [EditorModule, FileUploadModule, ButtonModule, CommonModule, FormsModule],
+  imports: [
+    EditorModule, 
+    FileUploadModule, 
+    ButtonModule, 
+    CommonModule, 
+    FormsModule, 
+    InputTextModule,
+    AccordionModule
+  ],
   templateUrl: './add-post.component.html',
   styleUrl: './add-post.component.scss'
 })
@@ -22,26 +32,27 @@ export class AddPostComponent {
 
   constructor(private postsService: PostService) {}
 
-  // Método para generar URLs de objeto para vista previa
   getObjectUrl(file: File): string {
     return URL.createObjectURL(file);
   }
 
-  // Método para liberar las URLs cuando ya no se necesiten
-  ngOnDestroy() {
+  generateImageFormatPreview(): string {
+    let preview = 'images[]: [\n';
     this.uploadedFiles.forEach(file => {
-      URL.revokeObjectURL(this.getObjectUrl(file));
+      preview += `  "${file.name}",\n`;
     });
+    preview += ']';
+    return preview;
   }
 
   onFileSelect(event: any) {
-    for (let file of event.files) {
-      this.uploadedFiles.push(file);
+    const files: File[] = event.files;
+    if (files && files.length > 0) {
+      this.uploadedFiles = [...this.uploadedFiles, ...files];
     }
   }
 
   removeFile(index: number) {
-    // Liberar la URL de objeto antes de eliminar el archivo
     URL.revokeObjectURL(this.getObjectUrl(this.uploadedFiles[index]));
     this.uploadedFiles.splice(index, 1);
   }
@@ -64,18 +75,15 @@ export class AddPostComponent {
 
     this.postsService.addPost(postData).subscribe({
       next: (response) => {
-        console.log('Post creado exitosamente:', response);
         this.resetForm();
       },
       error: (error) => {
-        console.error('Error al crear el post:', error);
         this.isLoading = false;
       }
     });
   }
 
   private resetForm() {
-    // Liberar todas las URLs de objeto
     this.uploadedFiles.forEach(file => {
       URL.revokeObjectURL(this.getObjectUrl(file));
     });
