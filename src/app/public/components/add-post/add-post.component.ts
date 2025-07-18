@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { PostService } from '../../../core/services/Post/post.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccordionModule } from 'primeng/accordion';
+import { AlertService } from '../../../shared/alerts/alert.service';
 
 
 @Component({
@@ -29,6 +30,9 @@ export class AddPostComponent {
   title: string = '';
   uploadedFiles: File[] = [];
   isLoading: boolean = false;
+  private readonly alertService = inject(AlertService);
+
+  
 
   constructor(private postsService: PostService) {}
 
@@ -76,9 +80,16 @@ export class AddPostComponent {
     this.postsService.addPost(postData).subscribe({
       next: (response) => {
         this.resetForm();
+        this.alertService.miniAlert('La publicación se creó correctamente', 'success', 3000);
       },
       error: (error) => {
         this.isLoading = false;
+
+        if (error.status === 422) {
+          this.alertService.showValidationErrors(error.error);
+        } else {
+          this.alertService.miniAlert(error.error.message, 'error', 3000);
+        }
       }
     });
   }

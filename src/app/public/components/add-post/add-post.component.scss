@@ -1,9 +1,9 @@
 .social-post-editor {
   max-width: 1200px;
   margin: 0 auto;
-  background: #ffffff;
+  background-color: transparent !important;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: none !important;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -82,7 +82,7 @@
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      background: #fafafa;
+      background: transparent !important;
       overflow-y: auto;
 
       .media-upload {
@@ -198,7 +198,7 @@
     padding: 1rem 1.5rem;
     border-top: 1px solid #f0f0f0;
     text-align: right;
-    background: #f8f9fa;
+    background: transparent !important;
 
     .post-button {
       background: #1877f2;
@@ -324,6 +324,15 @@
 
 :host ::ng-deep {
   .p-icon {
+    display: none !important;
+  }
+
+  
+}
+
+
+::ng-deep .p-fileupload-basic {
+  .p-fileupload-filename {
     display: none !important;
   }
 }

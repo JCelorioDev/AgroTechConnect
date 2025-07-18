@@ -204,6 +204,10 @@ html.custom-dark-mode .p-paginator {
         color: #e0e0e0 !important;
       }
     }
+
+    .editor-footer {
+      border-top : transparent !important;
+    }
     
     .post-title-input {
       background: transparent !important;
@@ -222,7 +226,10 @@ html.custom-dark-mode .p-paginator {
     .social-editor {
       .ql-toolbar {
         background: rgba(40, 40, 40, 0.8) !important;
-        border-bottom-color: #444 !important;
+        border-top-color: transparent !important;
+        border-bottom-color: transparent !important;
+        border-left-color: transparent !important;
+        border-right-color: transparent !important;
         
         button {
           color: #e0e0e0 !important;
@@ -296,6 +303,15 @@ html.custom-dark-mode .p-paginator {
 }
 
 
+html.custom-dark-mode .p-editor .p-editor-content .ql-editor{
+  background-color: #42424221 !important;
+  color: white;
+}
+
+html.custom-dark-mode .p-editor .custom-dark-mode .social-post-editor .social-editor .ql-toolbar{
+  border-color: none !important;
+}
+
 html.custom-dark-mode {
   .swal2-container {
     z-index: 5000;
@@ -326,6 +342,27 @@ html.custom-dark-mode {
       border-radius: 8px;
       transition: background-color 0.3s;
     }
+  }
+
+  .p-dialog {
+    background-color: #25282E !important;
+
+      .edit-option{
+        background-color: #d1892b !important;
+      }
+
+      .delete-option{
+        background-color: #d42525 !important;
+      }
+
+      .p-dialog-title {
+        color: #fff
+      }
+
+      button {
+        background-color: transparent !important;
+        border: none !important;
+      }
   }
 }
 
