@@ -2,8 +2,8 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { PostInterfaceI } from '../../models/Post/postRespone.interface';
-import { filter, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { Datum, PostInterfaceI } from '../../models/Post/postRespone.interface';
+import { filter, takeUntil, distinctUntilChanged, tap } from 'rxjs/operators';
 import { NavigationEnd, Router } from '@angular/router';
 import { AddedPostRequestI } from '../../models/Post/addedPostRequest.interface';
 import { AddedPostI } from '../../models/Post/addedPost.interface';
@@ -145,19 +145,26 @@ export class PostService implements OnDestroy {
   }
 
   // Crear una publicacion
+  private newPostSubject = new BehaviorSubject<any | null>(null);
+  public newPost$ = this.newPostSubject.asObservable();
+  
+  // Modifica el método addPost para emitir el nuevo post
   addPost(formPost: AddedPostRequestI): Observable<AddedPostI> {
     const formData = new FormData();
     
-    // Agregar campos al FormData
     formData.append('title', formPost.title);
     formData.append('description', formPost.description);
     
-    // Agregar cada imagen al FormData
     formPost.images.forEach((file, index) => {
       formData.append(`images[${index}]`, file, file.name);
     });
-
-    return this.httpClient.post<AddedPostI>(`${environment.apiBaseUrl}posts`, formData);
+  
+    return this.httpClient.post<AddedPostI>(`${environment.apiBaseUrl}posts`, formData).pipe(
+      tap(response => {
+        // Emitimos el nuevo post creado
+        this.newPostSubject.next(response.data);
+      })
+    );
   }
 
   // Eliminr una publicación

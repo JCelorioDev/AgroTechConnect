@@ -11,7 +11,7 @@ import { PostService } from '../../../core/services/Post/post.service';
 import { Datum } from '../../../core/models/Post/postRespone.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil, combineLatest } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil, combineLatest, filter } from 'rxjs';
 import { User } from '../../../core/models/Post/addedPost.interface';
 import { Dialog } from 'primeng/dialog';
 
@@ -81,6 +81,21 @@ export class PostComponent implements OnInit, OnDestroy {
       this.currentPage = 1;
       this.updateUrl();
       this.verifyRoute();
+    });
+
+    this.postService.newPost$.pipe(
+      filter(newPost => newPost !== null),
+      takeUntil(this.destroy$)
+    ).subscribe(newPost => {
+      if (this.segments[2] === 'mis-publicaciones') {
+        // Si estamos en "mis publicaciones", agregamos al inicio
+        this.listPost.unshift(newPost!);
+        this.totalRecords++;
+      } else {
+        // Si estamos en el feed público, recargamos la primera página
+        this.currentPage = 1;
+        this.getPosts();
+      }
     });
   }
 

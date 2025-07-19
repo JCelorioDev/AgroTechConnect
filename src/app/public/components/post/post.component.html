@@ -23,7 +23,7 @@
         </div>
       
       
-        <div *ngIf="!loading" class="posts-wrapper">
+        <div  class="posts-wrapper">
           <div class="posts-grid">
             <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item" >
               <div 
@@ -79,6 +79,7 @@
           </div>
       
           <p-paginator 
+            *ngIf="!loading"
             [rows]="10" 
             [totalRecords]="totalRecords" 
             (onPageChange)="onPageChange($event)" 

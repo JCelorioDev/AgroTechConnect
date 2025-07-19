@@ -70,21 +70,26 @@ export class AddPostComponent {
       const firstParagraph = tempDiv.querySelector('p, h1, h2, h3, h4, h5, h6');
       this.title = firstParagraph?.textContent?.substring(0, 100) || 'Sin título';
     }
-
+  
     const postData = {
       title: this.title,
       description: this.htmlContent,
       images: this.uploadedFiles
     };
-
+  
     this.postsService.addPost(postData).subscribe({
       next: (response) => {
         this.resetForm();
         this.alertService.miniAlert('La publicación se creó correctamente', 'success', 3000);
+        
+        // Cierra el acordeón después de crear el post
+        const accordion = document.querySelector('.post-creator-accordion');
+        if (accordion) {
+          accordion.classList.remove('p-accordion-tab-active');
+        }
       },
       error: (error) => {
         this.isLoading = false;
-
         if (error.status === 422) {
           this.alertService.showValidationErrors(error.error);
         } else {
