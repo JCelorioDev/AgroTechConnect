@@ -25,6 +25,10 @@ export default [
         component: PublicationComponent
       },
       {
+        path: 'publicaciones/:id',
+        component: PublicationComponent
+      },
+      {
         path: 'preguntas',
         component: PreguntasComponent
       },

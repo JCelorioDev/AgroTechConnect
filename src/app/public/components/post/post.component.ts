@@ -121,7 +121,12 @@ export class PostComponent implements OnInit, OnDestroy {
     this.userLogin.set(JSON.parse(localStorage.getItem('userLogin')!));
     const hasToken = this.userLogin() ? !!this.userLogin()?.token : false;
 
-    if (this.segments[2] === 'publicaciones') {
+    console.log();
+
+    if (this.route.snapshot.paramMap.get('id')){
+      this.getPostsByUser(
+      this.route.snapshot.paramMap.get('id')!);
+    } else if (this.segments[2] === 'publicaciones') {
       this.getPosts();
     } else {
       if (!hasToken) {
@@ -196,6 +201,45 @@ export class PostComponent implements OnInit, OnDestroy {
         this.validation = false;
       },
       error: (err: any) => {
+        this.loading = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    });
+  }
+
+  // Obtener publicaciones de un usuario en especifico
+
+  getPostsByUser(idPublication:string): void {
+    if (!this.isHandlingNewPost) {
+      this.loading = true;
+    }
+
+    
+    this.listPost = [];
+    
+    this.postService.getPublicationbyID(
+      this.currentPage, 
+      10, 
+      this.searchQuery,
+      this.yearFilter,
+      this.monthFilter,
+      idPublication
+    ).pipe(takeUntil(this.destroy$))
+    .subscribe({
+      next: (response) => {
+        this.listPost = response.data.data;
+        this.totalRecords = response.data.total;
+        this.loading = false;
+        
+        if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
+          this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
+        }
+      },
+      error: (err) => {
         this.loading = false;
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
@@ -293,5 +337,11 @@ export class PostComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  // Ir al perfil de un usuario en especifico
+
+  goPerfilUser(idUser:string):void{
+    this.router.navigate(['menu/perfil', idUser]);
   }
 }

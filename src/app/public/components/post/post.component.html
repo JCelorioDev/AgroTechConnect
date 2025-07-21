@@ -32,7 +32,7 @@
               </div>
               <div class="post-card">
                 <div class="post-header">
-                  <div class="user-profile-container">
+                  <div (click)="goPerfilUser(post.user.id)" class="user-profile-container">
                     <p-avatar [image]="post?.user?.image?.url" 
                               [shape]="'circle'" 
                               size="large"

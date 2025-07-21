@@ -144,6 +144,37 @@ export class PostService implements OnDestroy {
       .pipe(takeUntil(this.cancelPendingRequests$));
   }
 
+  // Obtener publicaciones de un usuario en especifico
+  
+  getPublicationbyID(page: number = 1, 
+    perPage: number = 10, 
+    searchQuery: string = '',
+    year: number | null = null,
+    month: number | null = null,
+    idPublication:string
+    ):Observable<PostInterfaceI>{
+    this.cancelPendingRequests$.next();
+    
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+    
+    if (searchQuery) {
+      params = params.set('search', searchQuery);
+    }
+
+    if (year) {
+      params = params.set('year', year.toString());
+    }
+
+    if (month) {
+      params = params.set('month', month.toString());
+    }
+
+    return this.httpClient.get<PostInterfaceI>(`${environment.apiBaseUrl}users/${idPublication}/posts`, { params })
+      .pipe(takeUntil(this.cancelPendingRequests$));
+  }
+
   // Crear una publicacion
   private newPostSubject = new BehaviorSubject<any | null>(null);
   public newPost$ = this.newPostSubject.asObservable();
@@ -172,4 +203,8 @@ export class PostService implements OnDestroy {
   deleteMePost(idPublicacion:string):Observable<DeleteMePostResponseI>{
     return this.httpClient.delete<DeleteMePostResponseI>(`${environment.apiBaseUrl}posts/${idPublicacion}`)
   }
+
+  // Obtener perfil de usuario por ID
+
+
 }

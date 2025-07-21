@@ -441,7 +441,7 @@
 
 
       <div><i class="pi pi-thumbs-up"></i><span>{{objUser?.reactions?.length || 0}}</span></div>
-      <div><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
+      <div (click)="goPostUser()"><i class="pi pi-comments"></i><span>{{objUser?.posts?.length || 0}}</span></div>
       <div style="cursor: pointer;" (click)="encryptedId() ||  objUser.email !== objUsuario.email ? followers() : mefollowers()"><i class="pi pi-users"></i><span>{{objUser?.followers?.length || 0}}</span></div>
     </div>
 

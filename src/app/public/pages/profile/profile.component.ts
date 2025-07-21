@@ -1006,4 +1006,11 @@ loadMoreMeFollowing(): void {
     return this.isUpdatePhoto;
   }
 
+  // Ir a publicaciones de un usuario en especifico
+
+  goPostUser():void{
+    console.log(this.objUser.id);
+    this.router.navigate(['menu/publicaciones', this.encryptedId() ?? this.objUser.id]);
+  }
+
 }
