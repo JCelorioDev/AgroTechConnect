@@ -167,7 +167,7 @@ export class PostService implements OnDestroy {
     );
   }
 
-  // Eliminr una publicación
+  // Eliminar una publicación
 
   deleteMePost(idPublicacion:string):Observable<DeleteMePostResponseI>{
     return this.httpClient.delete<DeleteMePostResponseI>(`${environment.apiBaseUrl}posts/${idPublicacion}`)

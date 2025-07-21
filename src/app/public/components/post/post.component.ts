@@ -11,10 +11,9 @@ import { PostService } from '../../../core/services/Post/post.service';
 import { Datum } from '../../../core/models/Post/postRespone.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { debounceTime, distinctUntilChanged, Subject, Subscription, takeUntil, combineLatest, filter } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil, combineLatest, filter } from 'rxjs';
 import { User } from '../../../core/models/Post/addedPost.interface';
 import { Dialog } from 'primeng/dialog';
-
 
 @Component({
   selector: 'public-post',
@@ -38,23 +37,23 @@ export class PostComponent implements OnInit, OnDestroy {
   private readonly alertService = inject(AlertService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  public validation:boolean = false;
-  public msjValidation:string = '';
-  public userLogin = signal<User|null>(null);
-  visible: boolean = false;
   
-  listPost: Datum[] = [];
-  loading = true;
-  totalRecords = 0;
-  currentPage = 1;
-  private currentRoute!:string;
-  private segments!:string[];
-  searchQuery: string = '';
-  yearFilter: number | null = null;
-  monthFilter: number | null = null;
-  private idPublication!:string;
-
+  public validation: boolean = false;
+  public msjValidation: string = '';
+  public userLogin = signal<User | null>(null);
+  public visible: boolean = false;
+  public listPost: Datum[] = [];
+  public loading = true;
+  public totalRecords = 0;
+  public currentPage = 1;
+  
+  private segments!: string[];
+  private idPublication!: string;
   private destroy$ = new Subject<void>();
+  private isHandlingNewPost = false;
+  private searchQuery: string = '';
+  private yearFilter: number | null = null;
+  private monthFilter: number | null = null;
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
@@ -87,21 +86,32 @@ export class PostComponent implements OnInit, OnDestroy {
       filter(newPost => newPost !== null),
       takeUntil(this.destroy$)
     ).subscribe(newPost => {
-      if (this.segments[2] === 'mis-publicaciones') {
-        // Si estamos en "mis publicaciones", agregamos al inicio
-        this.listPost.unshift(newPost!);
-        this.totalRecords++;
-      } else {
-        // Si estamos en el feed público, recargamos la primera página
-        this.currentPage = 1;
-        this.getPosts();
-      }
+      this.isHandlingNewPost = true;
+      this.handleNewPost(newPost!);
+      this.isHandlingNewPost = false;
     });
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+  private handleNewPost(newPost: any): void {
+    if (this.segments[2] === 'mis-publicaciones') {
+      this.listPost.unshift(newPost);
+      this.totalRecords++;
+      
+      // Mantenemos solo los posts que caben en la página actual
+      if (this.listPost.length > 10) {
+        this.listPost.pop();
+      }
+    } else {
+      // Para el feed público solo actualizamos si estamos en página 1
+      if (this.currentPage === 1) {
+        this.listPost.unshift(newPost);
+        this.totalRecords++;
+        
+        if (this.listPost.length > 10) {
+          this.listPost.pop();
+        }
+      }
+    }
   }
 
   verifyRoute(): void {
@@ -109,61 +119,26 @@ export class PostComponent implements OnInit, OnDestroy {
     this.segments = baseRoute.split('/');
 
     this.userLogin.set(JSON.parse(localStorage.getItem('userLogin')!));
-    const hisToken = this.userLogin() ? !!this.userLogin()?.token : false;
+    const hasToken = this.userLogin() ? !!this.userLogin()?.token : false;
 
-    if(this.segments[2] === 'publicaciones'){
+    if (this.segments[2] === 'publicaciones') {
       this.getPosts();
     } else {
-      
-      if(!hisToken){
+      if (!hasToken) {
         this.validation = true;
         this.loading = false;
         this.msjValidation = 'Ingresa una cuenta primero para realizar una publicación.';
         this.alertService.miniAlert('Ingresa una cuenta primero', 'warning', 3000);
         return;
       }
-
       this.getsMePost();
     }
-  }
-
-  onPageChange(event: any): void {
-    this.currentPage = event.page + 1;
-    this.updateUrl();
-    
-    if(this.segments[2] === 'publicaciones'){
-      this.getPosts();
-    }else{
-      this.getsMePost();
-    }
-  }
-
-  trackByPostId(index: number, post: Datum): string {
-    return post.id;
-  }
-
-  getRangeSeverity(rangeName: string | undefined): any {
-    if (!rangeName) return 'info';
-    
-    switch(rangeName) {
-      case 'Novato': return 'info';
-      case 'Aprendiz': return 'success';
-      case 'Iniciado': return 'warning';
-      case 'Experto': return 'danger';
-      default: return 'info';
-    }
-  }
-
-  private updateUrl(): void {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { page: this.currentPage },
-      queryParamsHandling: 'merge'
-    });
   }
 
   getPosts(): void {
-    this.loading = true;
+    if (!this.isHandlingNewPost) {
+      this.loading = true;
+    }
     this.listPost = [];
     
     this.postService.getsPost(
@@ -195,7 +170,10 @@ export class PostComponent implements OnInit, OnDestroy {
   }
 
   getsMePost(): void {
-    this.loading = true;
+    if (!this.isHandlingNewPost) {
+      this.loading = true;
+    }
+
     this.postService.getsMePost(
       this.currentPage, 
       10, 
@@ -204,9 +182,9 @@ export class PostComponent implements OnInit, OnDestroy {
       this.monthFilter
     ).subscribe({
       next: (response) => {
-        if(response.data.data.length === 0){
+        if (response.data.data.length === 0) {
           this.alertService.miniAlert('No tienes publicaciones aún', 'warning', 3000);
-          this.msjValidation = 'Crea tu primera publicación.'
+          this.msjValidation = 'Crea tu primera publicación.';
           this.validation = true; 
           this.loading = false;
           return;
@@ -217,7 +195,7 @@ export class PostComponent implements OnInit, OnDestroy {
         this.loading = false;
         this.validation = false;
       },
-      error: (err:any) => {
+      error: (err: any) => {
         this.loading = false;
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
@@ -228,63 +206,92 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
-  
-  setIdPublication(idPublication:string):void {
-    this.idPublication = idPublication;
-
-    console.log(this.idPublication);
+  onPageChange(event: any): void {
+    this.currentPage = event.page + 1;
+    this.updateUrl();
+    
+    if (this.segments[2] === 'publicaciones') {
+      this.getPosts();
+    } else {
+      this.getsMePost();
+    }
   }
 
-  // Eliminar publicacion
+  trackByPostId(index: number, post: Datum): string {
+    return post.id;
+  }
 
-// Método deletePost mejorado
-deletePost() {
-  this.visible = false;
+  getRangeSeverity(rangeName: string | undefined): any {
+    if (!rangeName) return 'info';
+    
+    switch(rangeName) {
+      case 'Novato': return 'info';
+      case 'Aprendiz': return 'success';
+      case 'Iniciado': return 'warning';
+      case 'Experto': return 'danger';
+      default: return 'info';
+    }
+  }
 
-  this.alertService.alertwithDialogs(
-    '¿Estás seguro de eliminar la publicación?', 
-    'Después no podrás revertir esta acción.', 
-    'warning', 
-    3000, 
-    (() => {
-      this.loading = true;
-      this.postService.deleteMePost(this.idPublication).subscribe({
-        next: (s) => {
-          this.alertService.miniAlert('La publicación se eliminó correctamente.', 'success', 3000);
-          
-          // Eliminación local inmediata sin recargar toda la lista
-          const index = this.listPost.findIndex(post => post.id === this.idPublication);
-          if (index !== -1) {
-            this.listPost.splice(index, 1);
-            this.totalRecords--; // Actualizamos el contador total
+  private updateUrl(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { page: this.currentPage },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  setIdPublication(idPublication: string): void {
+    this.idPublication = idPublication;
+  }
+
+  deletePost() {
+    this.visible = false;
+
+    this.alertService.alertwithDialogs(
+      '¿Estás seguro de eliminar la publicación?', 
+      'Después no podrás revertir esta acción.', 
+      'warning', 
+      3000, 
+      (() => {
+        this.loading = true;
+        this.postService.deleteMePost(this.idPublication).subscribe({
+          next: (s) => {
+            this.alertService.miniAlert('La publicación se eliminó correctamente.', 'success', 3000);
             
-            // Si la lista queda vacía y estamos en la página 1, mostramos mensaje
-            if (this.listPost.length === 0 && this.currentPage === 1) {
-              this.msjValidation = 'Crea tu primera publicación.';
-              this.validation = true;
+            const index = this.listPost.findIndex(post => post.id === this.idPublication);
+            if (index !== -1) {
+              this.listPost.splice(index, 1);
+              this.totalRecords--;
+              
+              if (this.listPost.length === 0 && this.currentPage === 1) {
+                this.msjValidation = 'Crea tu primera publicación.';
+                this.validation = true;
+              }
+              
+              if (this.listPost.length === 0 && this.currentPage > 1) {
+                this.currentPage--;
+                this.updateUrl();
+              }
             }
             
-            // Si la lista queda vacía pero no estamos en página 1, volvemos a la anterior
-            if (this.listPost.length === 0 && this.currentPage > 1) {
-              this.currentPage--;
-              this.updateUrl();
-              //this.verifyRoute(); // Recargamos la página anterior
+            this.loading = false;
+          },
+          error: (err) => {
+            this.loading = false;
+            if (err.status === 422) {
+              this.alertService.showValidationErrors(err.error);
+            } else {
+              this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
-          
-          this.loading = false;
-        },
-        error: (err) => {
-          this.loading = false;
-          if (err.status === 422) {
-            this.alertService.showValidationErrors(err.error);
-          } else {
-            this.alertService.miniAlert(err.error.message, 'error', 3000);
-          }
-        }
-      });
-    })
-  );
-}
+        });
+      })
+    );
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 }
