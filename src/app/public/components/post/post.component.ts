@@ -407,4 +407,10 @@ export class PostComponent implements OnInit, OnDestroy {
   get userRole(): string {
     return this.userLogin()?.roles?.[0]?.name || '';
   }
+
+  // Ir para ver una publicacion
+
+  goShowPost(idPublicacion:string):void{
+    this.router.navigate(['menu/mostrar-publicacion', idPublicacion])
+  }
 }

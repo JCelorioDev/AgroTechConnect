@@ -46,7 +46,7 @@
         &:focus {
           outline: none;
           box-shadow: none;
-          border-bottom-color: #1877f2;
+          border-bottom-color: #6eca82 !important;
         }
       }
 
@@ -366,3 +366,8 @@
     height: 80px;
   }
 }
+
+:host ::ng-deep .p-accordionpanel {
+  border-style: none !important;
+}
+

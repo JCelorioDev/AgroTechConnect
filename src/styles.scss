@@ -302,6 +302,81 @@ html.custom-dark-mode .p-paginator {
   }
 }
 
+.custom-dark-mode .p-editor .ql-editor::before {
+  color: #cccccc; 
+}
+
+.custom-dark-mode .form-title{
+  color : #fff !important
+}
+
+.custom-dark-mode {
+
+  .form-title,
+  .form-label,
+  .file-hint,
+  .error-message,
+  .file-item,
+  .not-found-message p,
+  .p-fileupload .p-button {
+    color: #ffffff !important;
+  }
+
+  input,
+  textarea {
+    background-color: #4a5568 !important;
+    color: #ffffff !important;
+    border-color: #4a5568 !important;
+
+    &::placeholder {
+      color: #a0aec0 !important;
+    }
+  }
+
+  .p-fileupload-content,
+  .p-fileupload-buttonbar {
+    background-color: transparent !important;
+    border-color: #4a5568 !important;
+  }
+
+  .file-list {
+    .file-item {
+      background-color: #4a5568 !important;
+    }
+  }
+
+  .current-images-grid {
+    .image-container {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .form-actions {
+    border-top-color: #4a5568 !important;
+  }
+
+  /* Estilos específicos para los mensajes de error */
+  .error-message {
+    i {
+      color: #fc8181 !important;
+    }
+  }
+
+  /* Estilos para el file upload */
+  .custom-file-upload {
+    .p-fileupload-filename {
+      color: #ffffff !important;
+    }
+  }
+}
+
+.custom-dark-mode .form-actions .p_cancelar  {
+  background-color: #b62828 !important;
+} 
+
+.custom-dark-mode .form-actions .p_aceptar  {
+  background-color: #858f2a !important;
+} 
 
 html.custom-dark-mode .p-editor .p-editor-content .ql-editor{
   background-color: #42424221 !important;

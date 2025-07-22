@@ -54,7 +54,7 @@
                   </div>
                 </div>
 
-                <div class="post-content">
+                <div (click)="goShowPost(post.id)" class="post-content">
                   <h2 class="post-title">{{ post?.title }}</h2>
                   <p class="post-description">{{ post?.description }}</p>
 
@@ -63,7 +63,7 @@
                   </div>
                 </div>
 
-                <div class="post-footer">
+                <div (click)="goShowPost(post.id)"  class="post-footer">
                   <div class="post-reactions">
                     <span class="positive-reactions">
                       <i class="pi pi-thumbs-up"></i> {{ post?.positive_reactions_count }}

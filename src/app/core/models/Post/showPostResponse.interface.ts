@@ -17,6 +17,21 @@ export interface Data {
     images:                   Image[];
     comments_count:           number;
     reactions_count:          number;
+    comments: Comment[];
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  created_at: string;
+  user: {
+    id: string;
+    name: string;
+    lastname: string;
+    image?: {
+      url: string;
+    };
+  };
 }
 
 export interface Image {

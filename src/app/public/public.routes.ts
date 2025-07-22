@@ -5,6 +5,7 @@ import { privateRoutes } from "../private/private.routes";
 import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
 import { noVerificationGuard } from "../core/guards/no-verification.guard";
 import { ProfileComponent } from "./pages/profile/profile.component";
+import { ShowPostComponent } from "./components/show-post/show-post.component";
 
 
 
@@ -39,6 +40,10 @@ export default [
       {
         path: 'perfil/:id',
         component: ProfileComponent
+      },
+      {
+        path: 'mostrar-publicacion/:id',
+        component: ShowPostComponent
       },
       ...privateRoutes
     ]

@@ -1,0 +1,110 @@
+<div class="post-container">
+  <!-- Spinner de carga -->
+  <div class="loading-spinner" *ngIf="loading">
+    <img src="anim/spinnin_loading2.svg" alt="spinning loading">
+  </div>
+
+
+  <!-- Contenido principal -->
+  <div *ngIf="!loading && objPublication" class="post-content">
+    <!-- Card de la publicación -->
+    <p-card class="post-card">
+      <!-- Header con información del usuario -->
+      <ng-template pTemplate="header">
+        <div class="post-header">
+          <div class="user-info">
+            <p-avatar [image]="objPublication.user.image?.url"
+                     [label]="getAvatarLabel(objPublication.user)"
+                     size="large"
+                     shape="circle"
+                     class="user-avatar"></p-avatar>
+            <div class="user-details">
+              <h3 class="user-name">{{ objPublication.user.name }} {{ objPublication.user.lastname }}</h3>
+              <div class="user-meta">
+                <p-tag [value]="objPublication.user.ranges?.[0]?.name"
+                      [severity]="getRangeSeverity(objPublication.user.ranges?.[0]?.name)"
+                      class="user-range"></p-tag>
+                <span class="post-date">{{ objPublication.created_at }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Contenido del post -->
+      <div class="post-body">
+        <h2 class="post-title">{{ objPublication.title }}</h2>
+        <p class="post-description">{{ objPublication.description }}</p>
+
+        <!-- Galería de imágenes -->
+        <p-galleria *ngIf="objPublication.images.length > 0"
+                   [value]="objPublication.images"
+                   [responsiveOptions]="responsiveOptions"
+                   [containerStyle]="{ 'max-width': '100%' }"
+                   [showThumbnails]="false"
+                   [showIndicators]="true"
+                   [activeIndex]="activeImageIndex"
+                   class="post-gallery">
+          <ng-template pTemplate="item" let-item>
+            <img [src]="item.url"
+                 [alt]="objPublication.title"
+                 class="post-image" />
+          </ng-template>
+        </p-galleria>
+      </div>
+
+      <!-- Footer con estadísticas -->
+      <ng-template pTemplate="footer">
+        <div class="post-footer">
+          <div class="post-stats">
+            <span class="stat-item">
+              <i class="pi pi-thumbs-up"></i> {{ objPublication.positive_reactions_count }}
+            </span>
+            <span class="stat-item">
+              <i class="pi pi-thumbs-down"></i> {{ objPublication.negative_reactions_count }}
+            </span>
+            <span class="stat-item comment-stat"
+                  (click)="toggleCommentsDialog()">
+              <i class="pi pi-comments"></i> {{ objPublication.comments_count }}
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <!-- Diálogo de comentarios -->
+    <p-dialog [(visible)]="displayCommentsDialog"
+             [modal]="true"
+             [style]="{ width: '50vw' }"
+             [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+             header="Comentarios"
+             class="comments-dialog">
+
+      <!-- Lista de comentarios -->
+      <div class="comments-container">
+        <div class="comments-list">
+          <div *ngFor="let comment of objPublication.comments"
+               class="comment-item">
+            <p-avatar [image]="comment.user.image?.url"
+                     [label]="getAvatarLabel(comment.user)"
+                     size="normal"
+                     shape="circle"
+                     class="comment-avatar"></p-avatar>
+            <div class="comment-content">
+              <div class="comment-header">
+                <strong class="comment-author">{{ comment.user.name }} {{ comment.user.lastname }}</strong>
+                <span class="comment-date">{{ comment.created_at }}</span>
+              </div>
+              <p class="comment-text">{{ comment.content }}</p>
+            </div>
+          </div>
+
+          <p *ngIf="objPublication.comments.length === 0"
+             class="no-comments">
+            No hay comentarios aún.
+          </p>
+        </div>
+      </div>
+    </p-dialog>
+  </div>
+</div>
