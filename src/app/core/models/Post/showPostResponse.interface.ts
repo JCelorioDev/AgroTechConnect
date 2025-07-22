@@ -1,4 +1,4 @@
-export interface AddedPostI {
+export interface ShowPostResponse{
     message:    string;
     statusCode: number;
     error:      boolean;
@@ -15,6 +15,8 @@ export interface Data {
     negative_reactions_count: number;
     user:                     User;
     images:                   Image[];
+    comments_count:           number;
+    reactions_count:          number;
 }
 
 export interface Image {
@@ -38,13 +40,16 @@ export interface User {
     created_at:          string;
     updated_at:          string;
     image:               Image;
-    token ?: string;
-    roles ?: Roles[];
+    ranges:              Range[];
 }
 
-export interface Roles {
-    id: number;
-    name : string;
-    created_at: string;
-    updated_at : string;
+export interface Range {
+    id:          string;
+    name:        string;
+    min_range:   number;
+    max_range:   number;
+    description: string;
+    image_url:   string;
+    created_at:  string;
+    updated_at:  string;
 }

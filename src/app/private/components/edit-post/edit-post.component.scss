@@ -1,0 +1,72 @@
+.edit-post-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+  
+    .card {
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+  
+    h1 {
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+  
+    .current-images-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+  
+      .image-container {
+        position: relative;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+        .image-preview {
+          width: 100%;
+          height: 150px;
+          object-fit: cover;
+          display: block;
+        }
+  
+        .image-remove-btn {
+          position: absolute;
+          top: 0.5rem;
+          right: 0.5rem;
+          width: 1.5rem;
+          height: 1.5rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
+    }
+  
+    .p-button {
+      margin-top: 1rem;
+  
+      .pi-spinner {
+        margin-right: 0.5rem;
+      }
+    }
+  
+    .flex {
+      display: flex;
+  
+      &.gap-2 {
+        gap: 0.5rem;
+      }
+  
+      &.justify-content-between {
+        justify-content: space-between;
+      }
+  
+      &.align-items-center {
+        align-items: center;
+      }
+    }
+  }

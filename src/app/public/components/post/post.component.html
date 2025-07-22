@@ -1,14 +1,16 @@
-<p-dialog header="Opciones de publicación" [(visible)]="visible" [modal]="true" 
+<p-dialog header="Opciones de publicación" [(visible)]="visible" [modal]="true"
           [style]="{ width: '25rem' }" [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           class="premium-dialog">
   <div class="dialog-content">
-    <button pButton pRipple type="button" icon="pi pi-pencil" label="Editar publicación" 
+    <button (click)="editPost()" pButton pRipple type="button" icon="pi pi-pencil" label="Editar publicación"
             class="p-button-text dialog-option edit-option"></button>
-    <button (click)="deletePost()" pButton pRipple type="button" icon="pi pi-trash" label="Borrar publicación" 
+    <button (click)="deletePost()" pButton pRipple type="button" icon="pi pi-trash" label="Borrar publicación"
             class="p-button-text dialog-option delete-option"></button>
+    <button *ngIf="userRole !== 'admin'"  (click)="reportPublication(); visible=false" pButton pRipple type="button" icon="pi pi-flag-fill" label="Denunciar publicación"
+             class="p-button-text dialog-option delete-option"></button>
   </div>
   <p-footer>
-    <button pButton pRipple type="button" label="Cancelar" icon="pi pi-times" 
+    <button pButton pRipple type="button" label="Cancelar" icon="pi pi-times"
             class="p-button-text dialog-cancel"></button>
   </p-footer>
 </p-dialog>
@@ -21,20 +23,20 @@
         <div class="loading-spinner" *ngIf="loading">
           <img src="anim/spinnin_loading2.svg" alt="spinning loading">
         </div>
-      
-      
+
+
         <div  class="posts-wrapper">
           <div class="posts-grid">
             <div *ngFor="let post of listPost; trackBy: trackByPostId" class="post-item" >
-              <div 
+              <div
               *ngIf="post.user.email ===  userLogin()?.email" class="post-menu" (click)="visible=true; setIdPublication(post.id)">
                 <i class="pi pi-ellipsis-h" style="font-size: 1.5rem"></i>
               </div>
               <div class="post-card">
                 <div class="post-header">
                   <div (click)="goPerfilUser(post.user.id)" class="user-profile-container">
-                    <p-avatar [image]="post?.user?.image?.url" 
-                              [shape]="'circle'" 
+                    <p-avatar [image]="post?.user?.image?.url"
+                              [shape]="'circle'"
                               size="large"
                               class="user-avatar-side">
                     </p-avatar>
@@ -44,23 +46,23 @@
                         <span class="post-date">
                           <i class="pi pi-calendar"></i> {{ post?.created_at }}
                         </span>
-                        <p-tag [value]="post?.user?.ranges?.[0]?.name" 
+                        <p-tag [value]="post?.user?.ranges?.[0]?.name"
                               [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)">
                         </p-tag>
                       </div>
                     </div>
                   </div>
                 </div>
-      
+
                 <div class="post-content">
                   <h2 class="post-title">{{ post?.title }}</h2>
                   <p class="post-description">{{ post?.description }}</p>
-      
+
                   <div *ngIf="post?.images?.length! > 0" class="post-image-container">
                     <img [src]="post?.images?.[0]?.url" [alt]="post?.title" class="post-image">
                   </div>
                 </div>
-      
+
                 <div class="post-footer">
                   <div class="post-reactions">
                     <span class="positive-reactions">
@@ -77,12 +79,12 @@
               </div>
             </div>
           </div>
-      
-          <p-paginator 
+
+          <p-paginator
             *ngIf="!loading"
-            [rows]="10" 
-            [totalRecords]="totalRecords" 
-            (onPageChange)="onPageChange($event)" 
+            [rows]="10"
+            [totalRecords]="totalRecords"
+            (onPageChange)="onPageChange($event)"
             [rowsPerPageOptions]="[10, 20, 30]"
             [first]="(currentPage - 1) * 10">
           </p-paginator>

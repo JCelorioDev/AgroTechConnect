@@ -1,0 +1,135 @@
+<div class="edit-post-container p-fluid">
+    <p-toast></p-toast>
+    <p-confirmDialog></p-confirmDialog>
+  
+    <div class="card">
+      <h1>Editar Publicación</h1>
+  
+      <form (ngSubmit)="updatePost()" [formGroup]="editForm" *ngIf="post">
+        <div class="p-grid p-fluid">
+          <!-- Title Input -->
+          <div class="p-col-12 p-md-8">
+            <div class="p-field">
+              <label for="title">Título</label>
+              <input 
+                pInputText 
+                id="title" 
+                formControlName="title" 
+                placeholder="Ingrese el título"
+                [class]="{'p-invalid': editForm.get('title')?.invalid && editForm.get('title')?.touched}">
+              <small *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="p-error">
+                El título es requerido (mínimo 5 caracteres)
+              </small>
+            </div>
+          </div>
+  
+          <!-- Description Textarea -->
+          <div class="p-col-12">
+            <div class="p-field">
+              <label for="description">Descripción</label>
+              <textarea 
+                pInputTextarea 
+                id="description" 
+                formControlName="description" 
+                rows="5"
+                placeholder="Ingrese la descripción"
+                [class]="{'p-invalid': editForm.get('description')?.invalid && editForm.get('description')?.touched}">
+              </textarea>
+              <small *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="p-error">
+                La descripción es requerida (mínimo 10 caracteres)
+              </small>
+            </div>
+          </div>
+  
+          <!-- Image Upload -->
+          <div class="p-col-12">
+            <div class="p-field">
+              <label for="images">Imágenes (opcional)</label>
+              <p-fileUpload 
+                id="images"
+                name="images" 
+                [multiple]="true" 
+                [accept]="'image/*'"
+                [maxFileSize]="5000000"
+                (onSelect)="onImageSelect($event)"
+                (onRemove)="onImageRemove($event)"
+                [showUploadButton]="false"
+                [showCancelButton]="false"
+                chooseLabel="Seleccionar imágenes"
+                cancelLabel="Cancelar">
+                <ng-template pTemplate="content">
+                  <ul *ngIf="uploadedFiles.length > 0">
+                    <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes</li>
+                  </ul>
+                </ng-template>
+              </p-fileUpload>
+              <small class="p-text-secondary">Máximo 5MB por imagen. Formatos: JPG, PNG, JPEG</small>
+            </div>
+          </div>
+  
+          <!-- Current Images Preview -->
+          <div class="p-col-12" *ngIf="post.images.length > 0">
+            <div class="p-field">
+              <div class="flex justify-content-between align-items-center">
+                <label>Imágenes actuales</label>
+                <button 
+                  pButton 
+                  pRipple 
+                  type="button" 
+                  label="Eliminar todas" 
+                  icon="pi pi-trash"
+                  class="p-button-danger p-button-sm"
+                  (click)="deleteAllImages()"
+                  [disabled]="deleting">
+                  <i class="pi pi-spin pi-spinner" *ngIf="deleting"></i>
+                </button>
+              </div>
+              <div class="current-images-grid">
+                <div class="image-container" *ngFor="let image of post.images">
+                  <img [src]="image.url" [alt]="post.title" class="image-preview">
+                  <button 
+                    pButton 
+                    pRipple 
+                    type="button" 
+                    icon="pi pi-times" 
+                    class="p-button-rounded p-button-danger image-remove-btn"
+                    (click)="removeExistingImage(image.id)">
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Action Buttons -->
+          <div class="p-col-12 flex gap-2">
+            <button 
+              pButton 
+              type="button" 
+              label="Cancelar" 
+              class="p-button-secondary"
+              [disabled]="loading"
+              (click)="router.navigate(['/mis-publicaciones'])">
+            </button>
+            
+            <button 
+              pButton 
+              type="submit" 
+              label="Actualizar Publicación" 
+              class="p-button-primary"
+              [disabled]="editForm.invalid || loading">
+              <i class="pi pi-spin pi-spinner" *ngIf="loading"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+  
+      <div *ngIf="!post && !loading" class="p-text-center">
+        <p>No se encontró la publicación</p>
+      </div>
+  
+      <div *ngIf="loading" class="p-text-center">
+        <p-progressSpinner></p-progressSpinner>
+        <p>Cargando publicación...</p>
+      </div>
+    </div>
+  </div>

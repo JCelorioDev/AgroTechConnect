@@ -14,11 +14,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject, takeUntil, combineLatest, filter } from 'rxjs';
 import { User } from '../../../core/models/Post/addedPost.interface';
 import { Dialog } from 'primeng/dialog';
+import { Data } from '../../../core/models/Post/showPostResponse.interface';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'public-post',
   standalone: true,
-  imports: [    
+  imports: [
     CommonModule,
     ButtonModule,
     CardModule,
@@ -37,7 +39,7 @@ export class PostComponent implements OnInit, OnDestroy {
   private readonly alertService = inject(AlertService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  
+
   public validation: boolean = false;
   public msjValidation: string = '';
   public userLogin = signal<User | null>(null);
@@ -46,7 +48,7 @@ export class PostComponent implements OnInit, OnDestroy {
   public loading = true;
   public totalRecords = 0;
   public currentPage = 1;
-  
+
   private segments!: string[];
   private idPublication!: string;
   private destroy$ = new Subject<void>();
@@ -54,6 +56,7 @@ export class PostComponent implements OnInit, OnDestroy {
   private searchQuery: string = '';
   private yearFilter: number | null = null;
   private monthFilter: number | null = null;
+  public post!:Data;
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
@@ -96,7 +99,7 @@ export class PostComponent implements OnInit, OnDestroy {
     if (this.segments[2] === 'mis-publicaciones') {
       this.listPost.unshift(newPost);
       this.totalRecords++;
-      
+
       // Mantenemos solo los posts que caben en la página actual
       if (this.listPost.length > 10) {
         this.listPost.pop();
@@ -106,7 +109,7 @@ export class PostComponent implements OnInit, OnDestroy {
       if (this.currentPage === 1) {
         this.listPost.unshift(newPost);
         this.totalRecords++;
-        
+
         if (this.listPost.length > 10) {
           this.listPost.pop();
         }
@@ -121,7 +124,7 @@ export class PostComponent implements OnInit, OnDestroy {
     this.userLogin.set(JSON.parse(localStorage.getItem('userLogin')!));
     const hasToken = this.userLogin() ? !!this.userLogin()?.token : false;
 
-    console.log();
+
 
     if (this.route.snapshot.paramMap.get('id')){
       this.getPostsByUser(
@@ -145,10 +148,10 @@ export class PostComponent implements OnInit, OnDestroy {
       this.loading = true;
     }
     this.listPost = [];
-    
+
     this.postService.getsPost(
-      this.currentPage, 
-      10, 
+      this.currentPage,
+      10,
       this.searchQuery,
       this.yearFilter,
       this.monthFilter
@@ -158,7 +161,7 @@ export class PostComponent implements OnInit, OnDestroy {
         this.listPost = response.data.data;
         this.totalRecords = response.data.total;
         this.loading = false;
-        
+
         if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
           this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
         }
@@ -180,8 +183,8 @@ export class PostComponent implements OnInit, OnDestroy {
     }
 
     this.postService.getsMePost(
-      this.currentPage, 
-      10, 
+      this.currentPage,
+      10,
       this.searchQuery,
       this.yearFilter,
       this.monthFilter
@@ -190,11 +193,11 @@ export class PostComponent implements OnInit, OnDestroy {
         if (response.data.data.length === 0) {
           this.alertService.miniAlert('No tienes publicaciones aún', 'warning', 3000);
           this.msjValidation = 'Crea tu primera publicación.';
-          this.validation = true; 
+          this.validation = true;
           this.loading = false;
           return;
         }
-        
+
         this.listPost = response.data.data;
         this.totalRecords = response.data.total;
         this.loading = false;
@@ -218,12 +221,12 @@ export class PostComponent implements OnInit, OnDestroy {
       this.loading = true;
     }
 
-    
+
     this.listPost = [];
-    
+
     this.postService.getPublicationbyID(
-      this.currentPage, 
-      10, 
+      this.currentPage,
+      10,
       this.searchQuery,
       this.yearFilter,
       this.monthFilter,
@@ -234,7 +237,7 @@ export class PostComponent implements OnInit, OnDestroy {
         this.listPost = response.data.data;
         this.totalRecords = response.data.total;
         this.loading = false;
-        
+
         if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
           this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
         }
@@ -253,7 +256,7 @@ export class PostComponent implements OnInit, OnDestroy {
   onPageChange(event: any): void {
     this.currentPage = event.page + 1;
     this.updateUrl();
-    
+
     if (this.segments[2] === 'publicaciones') {
       this.getPosts();
     } else {
@@ -267,7 +270,7 @@ export class PostComponent implements OnInit, OnDestroy {
 
   getRangeSeverity(rangeName: string | undefined): any {
     if (!rangeName) return 'info';
-    
+
     switch(rangeName) {
       case 'Novato': return 'info';
       case 'Aprendiz': return 'success';
@@ -293,32 +296,32 @@ export class PostComponent implements OnInit, OnDestroy {
     this.visible = false;
 
     this.alertService.alertwithDialogs(
-      '¿Estás seguro de eliminar la publicación?', 
-      'Después no podrás revertir esta acción.', 
-      'warning', 
-      3000, 
+      '¿Estás seguro de eliminar la publicación?',
+      'Después no podrás revertir esta acción.',
+      'warning',
+      3000,
       (() => {
         this.loading = true;
         this.postService.deleteMePost(this.idPublication).subscribe({
           next: (s) => {
             this.alertService.miniAlert('La publicación se eliminó correctamente.', 'success', 3000);
-            
+
             const index = this.listPost.findIndex(post => post.id === this.idPublication);
             if (index !== -1) {
               this.listPost.splice(index, 1);
               this.totalRecords--;
-              
+
               if (this.listPost.length === 0 && this.currentPage === 1) {
                 this.msjValidation = 'Crea tu primera publicación.';
                 this.validation = true;
               }
-              
+
               if (this.listPost.length === 0 && this.currentPage > 1) {
                 this.currentPage--;
                 this.updateUrl();
               }
             }
-            
+
             this.loading = false;
           },
           error: (err) => {
@@ -343,5 +346,65 @@ export class PostComponent implements OnInit, OnDestroy {
 
   goPerfilUser(idUser:string):void{
     this.router.navigate(['menu/perfil', idUser]);
+  }
+
+  // Editar publicacion
+
+  editPost():void{
+    this.router.navigate(['menu/modificar-publicacion', this.idPublication]);
+  }
+
+  // Reportar una publicacion
+
+  reportPublication():void{
+    if (!this.userLogin()?.token) {
+      this.alertService.miniAlert('Inicia sesión primero para reportar esta publicación.', 'warning', 3000); return;
+    }
+
+    Swal.fire({
+      title: 'Añade la descripción de la denuncia',
+      input: 'textarea',
+      inputPlaceholder: 'Describe el motivo de tu denuncia...',
+      inputAttributes: {
+        'aria-label': 'Escribe tu descripción aquí'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar denuncia',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: (description) => {
+        if (!description) {
+          Swal.showValidationMessage('La descripción es requerida');
+        }
+        return description;
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const description = result.value;
+
+        this.alertService.alertwithDialogs('Estás seguro de reportar esta publicación.', 'Después no podrás revertir esta acción', 'warning', 3000, (() => {
+          this.loading = true;
+          this.postService.reportPublication(this.idPublication, description).subscribe({
+            next: (s) => {
+              this.alertService.alertDefault('La publicación se ha reportado exitosamente, un administrador revisará el caso.');
+              this.loading = false;
+            },
+            error: (err) => {
+              this.loading = false;
+              if (err.status === 422) {
+                this.alertService.showValidationErrors(err.error);
+              } else {
+                this.alertService.miniAlert(err.error.message, 'error', 3000);
+              }
+            }
+          })
+        }), 'No, deseo.', 'Si, deseo');
+      }
+    });
+  }
+
+  get userRole(): string {
+    return this.userLogin()?.roles?.[0]?.name || '';
   }
 }

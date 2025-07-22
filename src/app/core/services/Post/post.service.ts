@@ -8,6 +8,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { AddedPostRequestI } from '../../models/Post/addedPostRequest.interface';
 import { AddedPostI } from '../../models/Post/addedPost.interface';
 import { DeleteMePostResponseI } from '../../models/Post/deleteMePost.interface';
+import { ShowPostResponse } from '../../models/Post/showPostResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -204,7 +205,44 @@ export class PostService implements OnDestroy {
     return this.httpClient.delete<DeleteMePostResponseI>(`${environment.apiBaseUrl}posts/${idPublicacion}`)
   }
 
-  // Obtener perfil de usuario por ID
+  // Mostrar una publicacion
 
+  showPost(idPublication:string):Observable<ShowPostResponse>{
+    return this.httpClient.get<ShowPostResponse>(`${environment.apiBaseUrl}posts/${idPublication}`)
+  }
+
+  // Update post
+
+  updatePost(formPost: AddedPostRequestI,idPublication:string){
+    const formData = new FormData();
+    
+    formData.append('title', formPost.title);
+    formData.append('description', formPost.description);
+    
+    formPost.images.forEach((file, index) => {
+      formData.append(`images[${index}]`, file, file.name);
+    });
+    return this.httpClient.post(`${environment.apiBaseUrl}posts/${idPublication}`,formData)
+  }
+
+  // Eliminar todas las fotos de una publicacion
+
+  deleteAllPhotos(idPublication:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}posts/${idPublication}/images`)
+  }
+
+  // Eliminar una imagen de una publicacion
+
+  deleteOnePhoto(idPublicacion:string, imageId:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}posts/${idPublicacion}/images/${imageId}`)
+  }
+
+  // Denunciar una publicacion
+
+  reportPublication(idPublicacion:string, description:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}posts/${idPublicacion}/complaint`, {
+      description : description
+    })
+  }
 
 }
