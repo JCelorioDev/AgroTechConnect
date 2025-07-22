@@ -8,7 +8,7 @@ import { PostService } from '../../../core/services/Post/post.service';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccordionModule } from 'primeng/accordion';
 import { AlertService } from '../../../shared/alerts/alert.service';
-
+import { Accordion } from 'primeng/accordion';
 
 @Component({
   selector: 'public-add-post',
@@ -32,21 +32,10 @@ export class AddPostComponent {
   isLoading: boolean = false;
   private readonly alertService = inject(AlertService);
 
-  
-
   constructor(private postsService: PostService) {}
 
   getObjectUrl(file: File): string {
     return URL.createObjectURL(file);
-  }
-
-  generateImageFormatPreview(): string {
-    let preview = 'images[]: [\n';
-    this.uploadedFiles.forEach(file => {
-      preview += `  "${file.name}",\n`;
-    });
-    preview += ']';
-    return preview;
   }
 
   onFileSelect(event: any) {
@@ -64,16 +53,20 @@ export class AddPostComponent {
   submitPost() {
     this.isLoading = true;
     
-    if (!this.title && this.htmlContent) {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = this.htmlContent;
-      const firstParagraph = tempDiv.querySelector('p, h1, h2, h3, h4, h5, h6');
-      this.title = firstParagraph?.textContent?.substring(0, 100) || 'Sin título';
+    // Limpiar el contenido HTML de etiquetas <p>
+    let cleanContent = this.htmlContent;
+    if (cleanContent) {
+      cleanContent = cleanContent.replace(/<\/?p[^>]*>/g, ''); // Elimina etiquetas <p>
+      cleanContent = cleanContent.trim(); // Elimina espacios en blanco
+    }
+
+    if (!this.title && cleanContent) {
+      this.title = cleanContent.substring(0, 100) || 'Sin título';
     }
   
     const postData = {
       title: this.title,
-      description: this.htmlContent,
+      description: cleanContent, // Usamos el contenido limpio
       images: this.uploadedFiles
     };
   
@@ -81,12 +74,7 @@ export class AddPostComponent {
       next: (response) => {
         this.resetForm();
         this.alertService.miniAlert('La publicación se creó correctamente', 'success', 3000);
-        
-        // Cierra el acordeón después de crear el post
-        const accordion = document.querySelector('.post-creator-accordion');
-        if (accordion) {
-          accordion.classList.remove('p-accordion-tab-active');
-        }
+        this.closeAccordion();
       },
       error: (error) => {
         this.isLoading = false;
@@ -97,6 +85,20 @@ export class AddPostComponent {
         }
       }
     });
+  }
+  
+  private closeAccordion() {
+    const accordion = document.querySelector('.post-creator-accordion');
+    if (accordion) {
+      const tab = accordion.querySelector('.p-accordion-tab');
+      if (tab) {
+        tab.classList.remove('p-accordion-tab-active');
+        const content = tab.querySelector('.p-accordion-content') as HTMLElement; // <-- Aquí el casting
+        if (content) {
+          content.style.display = 'none';
+        }
+      }
+    }
   }
 
   private resetForm() {
