@@ -161,7 +161,7 @@ export class EditPostComponent implements OnInit {
     }
 
     this.loading = true;
-    
+
     const postData: AddedPostRequestI = {
       title: this.editForm.get('title')?.value,
       description: this.editForm.get('description')?.value,
@@ -172,7 +172,7 @@ export class EditPostComponent implements OnInit {
       next: () => {
         this.loading = false;
         this.alertService.miniAlert('Publicación actualizada correctamente', 'success', 3000);
-        this.router.navigate(['/mis-publicaciones']);
+        this.router.navigate(['menu/mis-publicaciones']);
       },
       error: (err) => {
         this.loading = false;

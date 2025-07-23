@@ -57,6 +57,7 @@ export class PostComponent implements OnInit, OnDestroy {
   private yearFilter: number | null = null;
   private monthFilter: number | null = null;
   public post!:Data;
+  public emailPostUser = signal<string>("");
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
@@ -131,6 +132,8 @@ export class PostComponent implements OnInit, OnDestroy {
       this.route.snapshot.paramMap.get('id')!);
     } else if (this.segments[2] === 'publicaciones') {
       this.getPosts();
+    } else if (this.segments[2] === 'comunidad') {
+      this.getPostsMyFollowings();
     } else {
       if (!hasToken) {
         this.validation = true;
@@ -253,6 +256,46 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Obtener publicaciones de mis seguidos
+
+  getPostsMyFollowings():void{
+      if (!this.isHandlingNewPost) {
+        this.loading = true;
+      }
+
+
+      this.listPost = [];
+
+      this.postService.getPostMeFollowings(
+        this.currentPage,
+        10,
+        this.searchQuery,
+        this.yearFilter,
+        this.monthFilter
+      ).pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (response) => {
+          this.listPost = response.data.data;
+          this.totalRecords = response.data.total;
+          this.loading = false;
+
+          if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
+            this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
+          }
+        },
+        error: (err) => {
+          this.loading = false;
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+            this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
+        }
+      });
+  }
+
+
+
   onPageChange(event: any): void {
     this.currentPage = event.page + 1;
     this.updateUrl();
@@ -288,7 +331,8 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
-  setIdPublication(idPublication: string): void {
+  setIdPublication(idPublication: string, email?:string): void {
+    this.emailPostUser.set(email!);
     this.idPublication = idPublication;
   }
 

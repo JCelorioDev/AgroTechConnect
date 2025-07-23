@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Datum, PostInterfaceI } from '../../models/Post/postRespone.interface';
 import { filter, takeUntil, distinctUntilChanged, tap } from 'rxjs/operators';
@@ -37,17 +37,17 @@ export class PostService implements OnDestroy {
   private setupRouteListener(): void {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) => 
+      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) =>
         prev.url === curr.url),
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
       const newView = event.url.includes('mis-publicaciones') ? 'private' : 'public';
-      
+
       if (this.currentView !== newView) {
         this.resetSearch();
         this.resetFilters();
       }
-      
+
       this.currentView = newView;
     });
   }
@@ -55,7 +55,7 @@ export class PostService implements OnDestroy {
   private setupViewChangeHandler(): void {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) => 
+      distinctUntilChanged((prev: NavigationEnd, curr: NavigationEnd) =>
         prev.urlAfterRedirects === curr.urlAfterRedirects),
       takeUntil(this.destroy$)
     ).subscribe((event: NavigationEnd) => {
@@ -88,18 +88,18 @@ export class PostService implements OnDestroy {
   }
 
   getsPost(
-    page: number = 1, 
-    perPage: number = 10, 
+    page: number = 1,
+    perPage: number = 10,
     searchQuery: string = '',
     year: number | null = null,
     month: number | null = null
   ): Observable<PostInterfaceI> {
     this.cancelPendingRequests$.next();
-    
+
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
-    
+
     if (searchQuery) {
       params = params.set('search', searchQuery);
     }
@@ -117,18 +117,18 @@ export class PostService implements OnDestroy {
   }
 
   getsMePost(
-    page: number = 1, 
-    perPage: number = 10, 
+    page: number = 1,
+    perPage: number = 10,
     searchQuery: string = '',
     year: number | null = null,
     month: number | null = null
   ): Observable<PostInterfaceI> {
     this.cancelPendingRequests$.next();
-    
+
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
-    
+
     if (searchQuery) {
       params = params.set('search', searchQuery);
     }
@@ -146,20 +146,20 @@ export class PostService implements OnDestroy {
   }
 
   // Obtener publicaciones de un usuario en especifico
-  
-  getPublicationbyID(page: number = 1, 
-    perPage: number = 10, 
+
+  getPublicationbyID(page: number = 1,
+    perPage: number = 10,
     searchQuery: string = '',
     year: number | null = null,
     month: number | null = null,
     idPublication:string
     ):Observable<PostInterfaceI>{
     this.cancelPendingRequests$.next();
-    
+
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
-    
+
     if (searchQuery) {
       params = params.set('search', searchQuery);
     }
@@ -176,21 +176,51 @@ export class PostService implements OnDestroy {
       .pipe(takeUntil(this.cancelPendingRequests$));
   }
 
+  // Obtener publicaciones de mis seguidos
+
+  getPostMeFollowings(page: number = 1,
+    perPage: number = 10,
+    searchQuery: string = '',
+    year: number | null = null,
+    month: number | null = null,
+    ):Observable<PostInterfaceI>{
+    this.cancelPendingRequests$.next();
+
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+
+    if (searchQuery) {
+      params = params.set('search', searchQuery);
+    }
+
+    if (year) {
+      params = params.set('year', year.toString());
+    }
+
+    if (month) {
+      params = params.set('month', month.toString());
+    }
+
+    return this.httpClient.get<PostInterfaceI>(`${environment.apiBaseUrl}me/following/posts`, { params })
+      .pipe(takeUntil(this.cancelPendingRequests$));
+  }
+
   // Crear una publicacion
   private newPostSubject = new BehaviorSubject<any | null>(null);
   public newPost$ = this.newPostSubject.asObservable();
-  
+
   // Modifica el método addPost para emitir el nuevo post
   addPost(formPost: AddedPostRequestI): Observable<AddedPostI> {
     const formData = new FormData();
-    
+
     formData.append('title', formPost.title);
     formData.append('description', formPost.description);
-    
+
     formPost.images.forEach((file, index) => {
       formData.append(`images[${index}]`, file, file.name);
     });
-  
+
     return this.httpClient.post<AddedPostI>(`${environment.apiBaseUrl}posts`, formData).pipe(
       tap(response => {
         // Emitimos el nuevo post creado
@@ -215,10 +245,10 @@ export class PostService implements OnDestroy {
 
   updatePost(formPost: AddedPostRequestI,idPublication:string){
     const formData = new FormData();
-    
+
     formData.append('title', formPost.title);
     formData.append('description', formPost.description);
-    
+
     formPost.images.forEach((file, index) => {
       formData.append(`images[${index}]`, file, file.name);
     });
