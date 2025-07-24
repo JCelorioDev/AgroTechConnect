@@ -499,3 +499,16 @@ body {
 .p-overlay-mask {
   background: none !important;
 }
+
+html.custom-dark-mode .organic-dialog__text {
+  background-color: #fcfafa07 !important;
+}
+
+
+html.custom-dark-mode .organic-subtext{
+  color: #4CAF50 !important;
+}
+
+.p-dialog-mask {
+  backdrop-filter: blur(0) !important;
+}
