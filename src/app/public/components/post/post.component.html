@@ -46,7 +46,7 @@
                         <span class="post-date">
                           <i class="pi pi-calendar"></i> {{ post?.created_at }}
                         </span>
-                        <p-tag [value]="post?.user?.ranges?.[0]?.name"
+                        <p-tag *ngIf="post?.user?.ranges?.[0]?.name" [value]="post?.user?.ranges?.[0]?.name"
                               [severity]="getRangeSeverity(post?.user?.ranges?.[0]?.name)">
                         </p-tag>
                       </div>

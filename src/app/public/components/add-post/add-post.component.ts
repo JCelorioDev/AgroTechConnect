@@ -69,6 +69,11 @@ export class AddPostComponent {
       description: cleanContent, // Usamos el contenido limpio
       images: this.uploadedFiles
     };
+
+    if (!postData.title || !postData.description) {
+      this.isLoading = false;
+      this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500); return ;
+    }
   
     this.postsService.addPost(postData).subscribe({
       next: (response) => {

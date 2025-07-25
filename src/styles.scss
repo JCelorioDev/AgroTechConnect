@@ -472,6 +472,30 @@ html.custom-dark-mode .notifications-container button {
   border: none !important;
 }
 
+html.custom-dark-mode .p-dialog .login-modal  {
+  color : #fff;
+}
+
+html.custom-dark-mode .reset-password-container {
+  color : #fff;
+}
+
+html.custom-dark-mode .login-modal label {
+  color: #fff !important;
+}
+
+html.custom-dark-mode .login-modal div {
+  color: #fff !important;
+}
+
+html.custom-dark-mode  input.p-inputtext {
+  color: #fff !important
+}
+
+html.custom-dark-mode .editor-footer .p-button {
+  background-color: #788129 !important;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -512,3 +536,4 @@ html.custom-dark-mode .organic-subtext{
 .p-dialog-mask {
   backdrop-filter: blur(0) !important;
 }
+

@@ -22,14 +22,18 @@ export class PublicationComponent {
   public showAddPost = signal<boolean>(false);
   private readonly postsService = inject(PostService);
 
+  constructor(){
+    effect(() => {
+      this.showAddPost.set(this.postsService.getIsCreatePost());
+    });
+  }
+
   ngOnInit():void{
     const currentUrl = this.router.url.split('?')[0];
     const segments = currentUrl.split('/').filter(Boolean); 
     const childRoute = segments[segments.length - 1]; 
 
-    effect(() => {
-      this.showAddPost.set(this.postsService.getIsCreatePost());
-    });
+
 
     if (childRoute === 'mis-publicaciones') {
       this.isMePublication.set(true);
