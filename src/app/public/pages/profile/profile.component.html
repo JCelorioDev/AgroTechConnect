@@ -304,7 +304,7 @@
         <div class="user-list">
           <!-- Usuarios -->
           <div style="cursor: pointer;" (click)="getInformationnByID(follower?.follower?.id)" *ngFor="let follower of listFollowersMe" class="user-card">
-            <img [src]="follower.follower.image.url" alt="Avatar" class="user-avatar">
+            <img [src]="follower?.follower?.image?.url" alt="Avatar" class="user-avatar">
             <div class="user-details">
               <span class="user-name">{{follower?.follower?.name}} {{follower?.follower?.lastname}}</span>
               <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
