@@ -12,7 +12,7 @@ import { DividerModule } from 'primeng/divider';
 import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { GalleriaModule } from 'primeng/galleria';
-
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-show-post',
@@ -35,6 +35,7 @@ export class ShowPostComponent implements OnInit {
   private readonly postService = inject(PostService);
   private readonly route = inject(ActivatedRoute);
   private readonly alertService = inject(AlertService);
+  private readonly domSanitizer = inject(DomSanitizer );
 
   private idPublicacion!: string;
   public objPublication!: Data;
@@ -112,5 +113,13 @@ export class ShowPostComponent implements OnInit {
     const name = user.name || '';
     const lastname = user.lastname || '';
     return `${name.charAt(0)}${lastname.charAt(0)}`.toUpperCase();
+  }
+
+  sanitizeHtml(html: string) {
+    const cleaned = html
+      .replace(/<\/?span[^>]*>/g, '')       
+      .replace(/<(\w+)[^>]*>/g, '<$1>');   
+      
+    return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
 }

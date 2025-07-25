@@ -53,11 +53,10 @@ export class AddPostComponent {
   submitPost() {
     this.isLoading = true;
     
-    // Limpiar el contenido HTML de etiquetas <p>
+    // Limpiar el contenido HTML
     let cleanContent = this.htmlContent;
     if (cleanContent) {
-      cleanContent = cleanContent.replace(/<\/?p[^>]*>/g, ''); // Elimina etiquetas <p>
-      cleanContent = cleanContent.trim(); // Elimina espacios en blanco
+      cleanContent = this.cleanHtmlContent(cleanContent);
     }
 
     if (!this.title && cleanContent) {
@@ -66,7 +65,7 @@ export class AddPostComponent {
   
     const postData = {
       title: this.title,
-      description: cleanContent, // Usamos el contenido limpio
+      description: cleanContent,
       images: this.uploadedFiles
     };
 
@@ -91,6 +90,22 @@ export class AddPostComponent {
       }
     });
   }
+
+  private cleanHtmlContent(html: string): string {
+    // 1. Eliminar todos los <span> (no aportan formato)
+    let cleaned = html.replace(/<\/?span[^>]*>/g, '');
+  
+    // 2. Eliminar <p> si no contienen formato (opcional)
+    cleaned = cleaned.replace(/<p[^>]*>(.*?)<\/p>/g, '$1');
+  
+    // 3. Eliminar atributos innecesarios (como class, style, etc.)
+    cleaned = cleaned.replace(/<(\w+)[^>]*>/g, '<$1>');
+  
+    // 4. Eliminar &nbsp; y espacios extras
+    cleaned = cleaned.replace(/&nbsp;/g, ' ').trim();
+  
+    return cleaned;
+  }
   
   private closeAccordion() {
     const accordion = document.querySelector('.post-creator-accordion');
@@ -98,7 +113,7 @@ export class AddPostComponent {
       const tab = accordion.querySelector('.p-accordion-tab');
       if (tab) {
         tab.classList.remove('p-accordion-tab-active');
-        const content = tab.querySelector('.p-accordion-content') as HTMLElement; // <-- Aquí el casting
+        const content = tab.querySelector('.p-accordion-content') as HTMLElement;
         if (content) {
           content.style.display = 'none';
         }
@@ -116,5 +131,6 @@ export class AddPostComponent {
     this.uploadedFiles = [];
     this.isLoading = false;
   }
+
 
 }

@@ -244,3 +244,31 @@
 :host ::ng-deep .p-fileupload-content {
   border-color: transparent !important;
 }
+
+.preview-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  
+  h4 {
+    margin-bottom: 0.5rem;
+    color: #666;
+  }
+  
+  .preview-content {
+    line-height: 1.6;
+    
+    strong {
+      font-weight: bold;
+    }
+    
+    em {
+      font-style: italic;
+    }
+    
+    u {
+      text-decoration: underline;
+    }
+  }
+}

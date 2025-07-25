@@ -34,7 +34,7 @@
       <!-- Contenido del post -->
       <div class="post-body">
         <h2 class="post-title">{{ objPublication.title }}</h2>
-        <p class="post-description">{{ objPublication.description }}</p>
+        <p class="post-description" [innerHTML]="sanitizeHtml(objPublication?.description!)"></p>
 
         <!-- Galería de imágenes -->
         <p-galleria *ngIf="objPublication.images.length > 0"

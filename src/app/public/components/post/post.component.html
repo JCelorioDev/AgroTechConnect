@@ -56,7 +56,7 @@
 
                 <div (click)="goShowPost(post.id)" class="post-content">
                   <h2 class="post-title">{{ post?.title }}</h2>
-                  <p class="post-description">{{ post?.description }}</p>
+                  <div class="post-description" [innerHTML]="sanitizeHtml(post?.description!)"></div>
 
                   <div *ngIf="post?.images?.length! > 0" class="post-image-container">
                     <img [src]="post?.images?.[0]?.url" [alt]="post?.title" class="post-image">

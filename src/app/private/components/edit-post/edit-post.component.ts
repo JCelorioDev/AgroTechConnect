@@ -21,6 +21,8 @@ import { AlertService } from '../../../shared/alerts/alert.service';
 // Interfaces
 import { Data } from '../../../core/models/Post/showPostResponse.interface';
 import { AddedPostRequestI } from '../../../core/models/Post/addedPostRequest.interface';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'app-edit-post',
@@ -55,6 +57,7 @@ export class EditPostComponent implements OnInit {
   public editForm!: FormGroup;
   public uploadedFiles: File[] = [];
   public imagesToDelete: string[] = [];
+  private readonly domSanitizer = inject(DomSanitizer );
 
   ngOnInit(): void {
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
@@ -77,7 +80,7 @@ export class EditPostComponent implements OnInit {
         this.post = response.data;
         this.editForm.patchValue({
           title: this.post.title,
-          description: this.post.description
+          description: this.htmlToFormattedText(this.post.description) 
         });
         this.loading = false;
       },
@@ -154,6 +157,16 @@ export class EditPostComponent implements OnInit {
     });
   }
 
+  getDescriptionValue(): string {
+    const description = this.editForm.get('description')?.value;
+    if (!description) return '';
+    
+    // Convertir HTML a texto plano manteniendo saltos de línea
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = description;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  }
+
   updatePost(): void {
     if (this.editForm.invalid) {
       this.editForm.markAllAsTouched();
@@ -183,5 +196,25 @@ export class EditPostComponent implements OnInit {
         }
       }
     });
+  }
+
+  htmlToFormattedText(html: string): string {
+    if (!html) return '';
+  
+    // Convertir listas a texto con viñetas
+    let text = html
+      .replace(/<ul>/g, '')                     // Eliminar <ul>
+      .replace(/<\/ul>/g, '\n')                 // Convertir </ul> a salto de línea
+      .replace(/<li>/g, '• ')                   // Convertir <li> a viñeta
+      .replace(/<\/li>/g, '\n')                 // Convertir </li> a salto de línea
+      .replace(/<a\b[^>]*>(.*?)<\/a>/g, '$1');  // Eliminar <a> pero mantener texto
+  
+    // Eliminar todas las demás etiquetas HTML
+    text = text.replace(/<\/?[^>]+(>|$)/g, '');
+  
+    // Reemplazar múltiples espacios o saltos de línea
+    text = text.replace(/\s+/g, ' ').trim();
+  
+    return text;
   }
 }

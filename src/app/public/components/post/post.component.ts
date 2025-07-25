@@ -16,6 +16,8 @@ import { User } from '../../../core/models/Post/addedPost.interface';
 import { Dialog } from 'primeng/dialog';
 import { Data } from '../../../core/models/Post/showPostResponse.interface';
 import Swal from 'sweetalert2';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 @Component({
   selector: 'public-post',
@@ -39,6 +41,7 @@ export class PostComponent implements OnInit, OnDestroy {
   private readonly alertService = inject(AlertService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly domSanitizer = inject(DomSanitizer );
 
   public validation: boolean = false;
   public msjValidation: string = '';
@@ -456,5 +459,13 @@ export class PostComponent implements OnInit, OnDestroy {
 
   goShowPost(idPublicacion:string):void{
     this.router.navigate(['menu/mostrar-publicacion', idPublicacion])
+  }
+
+  sanitizeHtml(html: string) {
+    const cleaned = html
+      .replace(/<\/?span[^>]*>/g, '')       
+      .replace(/<(\w+)[^>]*>/g, '<$1>');   
+      
+    return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
 }

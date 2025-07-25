@@ -18,7 +18,7 @@
 
       .post-header {
         padding: 1rem;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: none !important;
 
         .user-info {
           display: flex;
@@ -88,7 +88,7 @@
           display: flex;
           gap: 1.5rem;
           padding: 0.75rem 1rem;
-          border-top: 1px solid #f0f0f0;
+          border-top: none !important;
 
           .stat-item {
             display: flex;
@@ -212,4 +212,6 @@
     height: 80px;
   }
 }
+
+
 
