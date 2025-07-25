@@ -1,11 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, Inject, PLATFORM_ID, OnInit, OnDestroy } from '@angular/core';
+import { Component, HostListener, Inject, PLATFORM_ID, OnInit, OnDestroy, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
 import { MenubarComponent } from '../menubar/menubar.component';
+import { PostService } from '../../../core/services/Post/post.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -27,6 +28,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isOpen = true;
   isMobile = false;
   checked: boolean = false;
+  private readonly postService = inject(PostService);
+
   private resizeListener: (() => void) | null = null; // Corrección aquí
 
   menuItems = [
@@ -104,6 +107,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
     return false;
   }
+
+  setClickPost(): void {
+    const currentValue = this.postService.isCreatePost();
+    this.postService.setAddPublication(!currentValue);
+  }
+
   
   
 }

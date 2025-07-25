@@ -3,7 +3,7 @@
 </div>
 
 <p-accordion class="post-creator-accordion">
-  <p-accordionTab [selected]="false">
+  <p-accordionTab [selected]="postsService.isCreatePost()">
     <ng-template pTemplate="header">
       <div class="accordion-header">
         <i class="pi pi-plus-circle"></i>

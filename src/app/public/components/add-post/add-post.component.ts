@@ -32,7 +32,7 @@ export class AddPostComponent {
   isLoading: boolean = false;
   private readonly alertService = inject(AlertService);
 
-  constructor(private postsService: PostService) {}
+  constructor(public postsService: PostService) {}
 
   getObjectUrl(file: File): string {
     return URL.createObjectURL(file);
@@ -111,4 +111,5 @@ export class AddPostComponent {
     this.uploadedFiles = [];
     this.isLoading = false;
   }
+
 }

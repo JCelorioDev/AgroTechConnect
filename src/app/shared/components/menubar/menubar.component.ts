@@ -536,5 +536,10 @@ export class MenubarComponent {
     this.postService.setFilters(filters);
   }
 
+  setClickPost(): void {
+    const currentValue = this.postService.isCreatePost();
+    this.postService.setAddPublication(!currentValue);
+  }
+
   
 }

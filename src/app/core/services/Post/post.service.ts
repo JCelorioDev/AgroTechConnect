@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable, OnDestroy, signal } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { environment } from '../../../../environments/environment';
@@ -274,5 +274,19 @@ export class PostService implements OnDestroy {
       description : description
     })
   }
+
+  public isCreatePost = signal<boolean>(false);
+
+  // Método para obtener el estado actual
+  getIsCreatePost(): boolean {
+    return this.isCreatePost();
+  }
+
+  // Método para cambiar el estado
+  setAddPublication(value: boolean): void {
+    this.isCreatePost.set(value);
+  }
+
+
 
 }

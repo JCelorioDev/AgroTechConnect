@@ -113,7 +113,9 @@
         <!-- Botón de Añadir Pregunta -->
         <p-button
           class="menubar-container__buttonLogin"
-          [label]="screenWidth > 600 ? 'Añadir pregunta' : 'Preguntar'">
+          [label]="screenWidth > 600 ? 'Añadir pregunta' : 'Preguntar'"
+          (onClick)="setClickPost()"
+          >
         </p-button>
       }
       @else {
