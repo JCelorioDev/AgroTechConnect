@@ -50,4 +50,12 @@ export class CommentsService {
   setOpc(value:string):void{
     this.opc = value;
   }
+
+  // Denunciar un comentario
+
+  denuncieComment(idComentario:string, description:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}comments/${idComentario}/complaint`, {
+      description : description
+    })
+  }
 }

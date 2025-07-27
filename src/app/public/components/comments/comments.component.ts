@@ -16,6 +16,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'public-comments',
@@ -163,5 +164,48 @@ export class CommentsComponent implements OnInit {
   goToComment(idComentario:string, opc:string):void{
     this.commentsService.setOpc(opc);
     this.router.navigate(['menu/mostrar-comentario', idComentario ]);
+  }
+
+  // Denunciar un comentario
+
+  denuncieComment(idComentario:string){
+    this.closeDialog.emit();
+    
+    Swal.fire({
+      title: 'Añade la descripción de la denuncia',
+      input: 'textarea',
+      inputPlaceholder: 'Describe el motivo de tu denuncia...',
+      inputAttributes: {
+        'aria-label': 'Escribe tu descripción aquí'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Enviar denuncia',
+      cancelButtonText: 'Cancelar',
+      showLoaderOnConfirm: true,
+      preConfirm: (description) => {
+        if (!description) {
+          Swal.showValidationMessage('La descripción es requerida');
+        }
+        return description;
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const description = result.value;
+
+        this.commentsService.denuncieComment(idComentario, description).subscribe({
+          next: (s) => {
+            this.alertService.miniAlert('La denuncia se realizó correctamente.', 'success', 3000);
+          },
+          error: (err) => {
+            if (err.status === 422) {
+              this.alertService.showValidationErrors(err.error);
+            } else {
+              this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
+          }
+        })
+      }
+    });
   }
 }
