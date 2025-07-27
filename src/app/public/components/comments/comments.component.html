@@ -1,11 +1,8 @@
 <div class="comments-dialog">
-
-  <!-- Contenido del diálogo -->
   <div class="dialog-content">
-    <!-- Lista de comentarios -->
     <div class="comments-container" *ngIf="!loadingComments; else loading">
       <div class="comments-list">
-        <div *ngFor="let comment of listComment?.data?.data" class="comment-item">
+        <div *ngFor="let comment of listComment?.data?.data; trackBy: trackByCommentId" class="comment-item">
           <div class="comment-main">
             <p-avatar [image]="comment.user.image?.url!"
                      [label]="getAvatarLabel(comment.user)"
@@ -23,12 +20,11 @@
                         styleClass="user-range-tag">
                   </p-tag>
                 </strong>
-                <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
+                <span class="comment-date">{{ comment.created_at }}</span>
               </div>
 
               <p class="comment-text">{{ comment.comment }}</p>
 
-              <!-- Imágenes del comentario -->
               <div *ngIf="comment.images.length > 0" class="comment-images">
                 <img *ngFor="let image of comment.images"
                      [src]="image.url"
@@ -36,7 +32,6 @@
                      class="comment-image">
               </div>
 
-              <!-- Reacciones y respuestas -->
               <div class="comment-footer">
                 <div class="reactions">
                   <span class="positive-reactions">
@@ -52,9 +47,62 @@
               </div>
             </div>
           </div>
+
+          <!-- Sección de respuestas (acordeón) -->
+          <div *ngIf="activeIndex[comment.id]" class="responses-container">
+            <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
+              <div class="response-main">
+                <p-avatar [image]="response.user.image?.url"
+                         [label]="getAvatarLabel(response.user)"
+                         size="normal"
+                         shape="circle"
+                         class="response-avatar"></p-avatar>
+                
+                <div class="response-content">
+                  <div class="response-header">
+                    <strong class="response-author">
+                      {{ response.user.name }} {{ response.user.lastname }}
+                      <p-tag *ngIf="response.user.ranges?.[0]?.name"
+                            [value]="response.user.ranges[0].name"
+                            [severity]="getRangeSeverity(response.user.ranges[0].name)"
+                            styleClass="user-range-tag">
+                      </p-tag>
+                    </strong>
+                    <span class="response-date">{{ response.created_at }}</span>
+                  </div>
+                  
+                  <p class="response-text">{{ response.comment }}</p>
+                  
+                  <div *ngIf="response.images.length > 0" class="response-images">
+                    <img *ngFor="let image of response.images"
+                         [src]="image.url"
+                         [alt]="'Imagen de respuesta'"
+                         class="response-image">
+                  </div>
+                  
+                  <div class="response-footer">
+                    <div class="reactions">
+                      <span class="positive-reactions">
+                        <i class="pi pi-thumbs-up"></i> {{ response.positive_reactions_count }}
+                      </span>
+                      <span class="negative-reactions">
+                        <i class="pi pi-thumbs-down"></i> {{ response.negative_reactions_count }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Paginación de respuestas si es necesario -->
+            <p-paginator *ngIf="listResponseOfComments[comment.id]?.data?.length! > 0 && listResponseOfComments[comment.id]?.total! > 5"
+                        [rows]="5"
+                        [totalRecords]="listResponseOfComments[comment.id]?.total"
+                        styleClass="response-paginator">
+            </p-paginator>
+          </div>
         </div>
 
-        <!-- Paginación -->
         <p-paginator *ngIf="listComment?.data?.total! > rows"
                     [rows]="rows"
                     [totalRecords]="listComment?.data?.total"
@@ -63,14 +111,12 @@
                     styleClass="comment-paginator">
         </p-paginator>
 
-        <!-- Sin comentarios -->
         <p *ngIf="listComment?.data?.data?.length === 0" class="no-comments">
           No hay comentarios aún.
         </p>
       </div>
     </div>
 
-    <!-- Formulario para nuevo comentario -->
     <div class="new-comment">
       <textarea pInputTextarea
                 [(ngModel)]="newComment"

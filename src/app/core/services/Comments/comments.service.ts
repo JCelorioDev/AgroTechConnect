@@ -4,6 +4,7 @@ import { CommentsPublicactionResponseInterfaceTs } from '../../models/Comments/c
 import { ThemesService } from '../../../shared/services/themes.service';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
+import { ResponseOfCommentsI } from '../../models/Comments/responseOfComments.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +15,17 @@ export class CommentsService {
 
   constructor() { }
 
-  // Obtener comentarios d euna publicacion
+  // Obtener comentarios de una publicacion
 
   getsCommentsPublication(idPublication:string):Observable<CommentsPublicactionResponseInterfaceTs>{
     return this.httpClient.get<CommentsPublicactionResponseInterfaceTs>(`${environment.apiBaseUrl}posts/${idPublication}/comments`)
+  }
+
+
+
+  // Obtener respuesta de comentarios
+
+  getsCommentsResponse(idComentario:string):Observable<ResponseOfCommentsI>{
+    return this.httpClient.get<ResponseOfCommentsI>(`${environment.apiBaseUrl}comments/${idComentario}/replaycomments`)
   }
 }
