@@ -14,6 +14,10 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { GalleriaModule } from 'primeng/galleria';
 import { DomSanitizer } from '@angular/platform-browser';
 import { CommentsComponent } from '../comments/comments.component';
+import { ReactionsService } from '../../../core/services/Reactions/reactions.service';
+import { Data as DataReactions, ReactionsResponseI } from '../../../core/models/Reactions/reactionsResponse.interface';
+import { TabViewModule } from 'primeng/tabview';
+
 
 @Component({
   selector: 'app-show-post',
@@ -28,7 +32,8 @@ import { CommentsComponent } from '../comments/comments.component';
     CardModule,
     ProgressSpinnerModule,
     GalleriaModule,
-    CommentsComponent
+    CommentsComponent,
+    TabViewModule
   ],
   templateUrl: './show-post.component.html',
   styleUrls: ['./show-post.component.scss']
@@ -36,14 +41,25 @@ import { CommentsComponent } from '../comments/comments.component';
 export class ShowPostComponent implements OnInit {
   private readonly postService = inject(PostService);
   private readonly route = inject(ActivatedRoute);
+  private readonly reactionservice = inject(ReactionsService)
   private readonly alertService = inject(AlertService);
   private readonly domSanitizer = inject(DomSanitizer );
+  public listReactionsPost!:DataReactions;
 
   public idPublicacion!: string;
   public objPublication!: Data;
   public loading = true;
   public displayCommentsDialog = false;
   public activeImageIndex = 0;
+
+
+  public displayReactionsDialog = false;
+  public loadingReactions = false;
+  public reactionsData: ReactionsResponseI | null = null;
+  public activeReactionTab = 0;
+
+
+  
   public responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -129,4 +145,31 @@ export class ShowPostComponent implements OnInit {
 
     return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
+
+
+  // Ver las reacciones de una publicacion
+
+  showReactionsDialog(): void {
+    this.displayReactionsDialog = true;
+    this.loadingReactions = true;
+    
+    this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
+      next: (response) => {
+        this.reactionsData = response;
+        this.loadingReactions = false;
+      },
+      error: (err) => {
+        this.loadingReactions = false;
+        this.handleError(err);
+      }
+    });
+  }
+
+    // Método auxiliar para contar reacciones por tipo
+    countReactionsByType(type: string): number {
+      if (!this.reactionsData?.data.all_reactions) return 0;
+      return this.reactionsData.data.all_reactions.filter(r => r.type === type).length;
+    }
+
+
 }

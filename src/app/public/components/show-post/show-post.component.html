@@ -57,10 +57,10 @@
       <ng-template pTemplate="footer">
         <div class="post-footer">
           <div class="post-stats">
-            <span class="stat-item">
+            <span class="stat-item" (click)="showReactionsDialog()">
               <i class="pi pi-thumbs-up"></i> {{ objPublication.positive_reactions_count }}
             </span>
-            <span class="stat-item">
+            <span class="stat-item" (click)="showReactionsDialog()">
               <i class="pi pi-thumbs-down"></i> {{ objPublication.negative_reactions_count }}
             </span>
             <span class="stat-item comment-stat"
@@ -84,4 +84,83 @@
           header="Comentarios"
           (onHide)="closeCommentsDialog()">
   <public-comments (closeDialog)="closeCommentsDialog()"  [idPublication]="idPublicacion"></public-comments>
+</p-dialog>
+
+
+<!-- Nuevo diálogo de reacciones -->
+<p-dialog [(visible)]="displayReactionsDialog" 
+          [modal]="true"
+          [style]="{ width: '50vw', maxHeight: '70vh' }"
+          [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+          header="Reacciones"
+          [draggable]="false"
+          [resizable]="false">
+  
+  <div class="reactions-dialog-content">
+    <!-- Spinner de carga -->
+    <div class="loading-spinner" *ngIf="loadingReactions">
+      <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+    </div>
+
+    <!-- Contenido de reacciones -->
+    <div *ngIf="!loadingReactions && reactionsData" class="reactions-content">
+      <p-tabView [(activeIndex)]="activeReactionTab">
+        <p-tabPanel header="Todas">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of reactionsData.data.all_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-type" [ngClass]="{
+                  'positive': reaction.type === 'positive',
+                  'negative': reaction.type === 'negative'
+                }">
+                  {{ reaction.type === 'positive' ? '👍' : '👎' }}
+                </span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Positivas (' + reactionsData.data.counts.positive + ')'">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of reactionsData.data.positive_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Negativas (' + reactionsData.data.counts.negative + ')'">
+          <div *ngIf="reactionsData.data.negative_reactions.length > 0; else noNegativeReactions">
+            <div *ngFor="let reaction of reactionsData.data.negative_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noNegativeReactions>
+            <div class="no-reactions">
+              No hay reacciones negativas
+            </div>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
 </p-dialog>
