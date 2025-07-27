@@ -58,4 +58,12 @@ export class CommentsService {
       description : description
     })
   }
+
+  // Denunciar respuesta de comentario
+
+  denuncieReplayComment(idComentario:string, description:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}replaycomments/${idComentario}/complaint`, {
+      description : description
+    })
+  }
 }
