@@ -11,6 +11,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { GalleriaModule } from 'primeng/galleria';
 import { ButtonModule } from 'primeng/button';
 import { AlertService } from '../../../shared/alerts/alert.service';
+import { User } from '../../../core/models/Comments/createCommentInPost.interface';
 
 @Component({
   selector: 'public-show-comment',
@@ -37,6 +38,7 @@ export class ShowCommentComponent implements OnInit {
   public commentData: ViewCommentResponse | null = null;
   public loading = true;
   public activeImageIndex = 0;
+  public objUser!:User;
   public responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -51,6 +53,10 @@ export class ShowCommentComponent implements OnInit {
       numVisible: 1
     }
   ];
+
+  constructor(){
+    this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
+  }
 
   ngOnInit(): void {
     this.idComentario = this.route.snapshot.paramMap.get('id')!;
@@ -111,4 +117,8 @@ export class ShowCommentComponent implements OnInit {
     if (user.image?.url) return '';
     return (user.name.charAt(0) + user.lastname.charAt(0)).toUpperCase();
   }
+
+  // Editar comentario
+
+
 }

@@ -6,6 +6,9 @@ import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ResponseOfCommentsI } from '../../models/Comments/responseOfComments.interface';
 import { ViewCommentResponse } from '../../models/Comments/viewCommentResponse.interface';
+import { CreateCommentInPostReponseI } from '../../models/Comments/createCommentInPost.interface';
+import { requestCommentsPublicationResponseI } from '../../models/Comments/requestCommentsPublicationResponse.interface';
+import { EditCommentInPostI } from '../../models/Comments/editCommentInPost.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -65,5 +68,20 @@ export class CommentsService {
     return this.httpClient.post(`${environment.apiBaseUrl}replaycomments/${idComentario}/complaint`, {
       description : description
     })
+  }
+
+  // Crear comentario en publicacion
+
+  commentInPost(idPublicacion: string, data: FormData): Observable<CreateCommentInPostReponseI> {
+    return this.httpClient.post<CreateCommentInPostReponseI>(
+      `${environment.apiBaseUrl}posts/${idPublicacion}/comments`, 
+      data
+    );
+  }
+
+  // Editar comentario de una publicacion
+
+  editCommentInPost(idPublicacion:string, idComentario:string, data: FormData):Observable<EditCommentInPostI>{
+    return this.httpClient.post<EditCommentInPostI>(`${environment.apiBaseUrl}posts/${idPublicacion}/comments/${idComentario}`, data);
   }
 }

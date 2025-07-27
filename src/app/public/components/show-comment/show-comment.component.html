@@ -6,6 +6,14 @@
 
   <!-- Contenido principal -->
   <div *ngIf="!loading && commentData?.data" class="comment-content">
+    <div *ngIf="objUser.email === commentData?.data?.user?.email" class="edit-comment-actions">
+      <button pButton 
+              icon="pi pi-pencil" 
+              class="p-button-rounded p-button-text edit-button"
+              pTooltip="Editar comentario" 
+              tooltipPosition="top"
+              ></button>
+    </div>
     <!-- Card del comentario -->
     <p-card class="comment-card">
       <!-- Header con información del usuario -->

@@ -123,14 +123,40 @@
     </div>
 
     <div class="new-comment">
+      <!-- Textarea para el comentario -->
       <textarea pInputTextarea
                 [(ngModel)]="newComment"
                 placeholder="Escribe un comentario..."
                 rows="3"></textarea>
+    
+      <!-- Selector de imágenes -->
+      <div class="image-upload-container">
+        <p-fileUpload #fileUpload
+                      mode="basic"
+                      accept="image/*"
+                      multiple
+                      chooseLabel="Agregar imágenes"
+                      (onSelect)="onFileSelect($event)"
+                      styleClass="upload-button">
+        </p-fileUpload>
+    
+        <!-- Previsualización de imágenes -->
+        <div class="image-previews" *ngIf="previewImages.length > 0">
+          <div class="image-preview-item" *ngFor="let img of previewImages; let i = index">
+            <img [src]="img" alt="Preview" class="preview-image">
+            <button pButton 
+                    icon="pi pi-times" 
+                    class="p-button-rounded p-button-danger remove-image-btn"
+                    (click)="removeImage(i)"></button>
+          </div>
+        </div>
+      </div>
+    
+      <!-- Botón de enviar -->
       <button pButton
               icon="pi pi-send"
               label="Enviar"
-              (click)="postComment()"
+              (click)="createCommentInPost()"
               [loading]="postingComment"
               class="send-button">
       </button>

@@ -17,7 +17,9 @@ import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { FileUploadModule } from 'primeng/fileupload';
 
+     
 @Component({
   selector: 'public-comments',
   standalone: true,
@@ -33,7 +35,8 @@ import Swal from 'sweetalert2';
     GalleriaModule,
     PaginatorModule,
     FormsModule,
-    AccordionModule
+    AccordionModule,
+    FileUploadModule
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss'
@@ -250,5 +253,70 @@ export class CommentsComponent implements OnInit {
         })
       }
     });
+  }
+
+  public uploadedFiles: File[] = [];
+  public previewImages: string[] = [];
+
+  // Crear un comentario en publicacion
+
+  createCommentInPost(): void {
+    if (!this.newComment.trim() && this.uploadedFiles.length === 0) {
+      this.alertService.miniAlert('El comentario no puede estar vacío', 'warning', 3000);
+      return;
+    }
+  
+    this.postingComment = true;
+  
+    const formData = new FormData();
+    formData.append('comment', this.newComment);
+    
+    // Agregar imágenes al FormData
+    this.uploadedFiles.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
+  
+    this.commentsService.commentInPost(this.idPublication, formData).subscribe({
+      next: (response) => {
+        this.alertService.miniAlert('Comentario publicado', 'success', 2000);
+        this.newComment = '';
+        this.uploadedFiles = [];
+        this.previewImages = [];
+        this.postingComment = false;
+        
+        // Actualizar la lista de comentarios
+        this.loadComments();
+      },
+      error: (err) => {
+        this.postingComment = false;
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    });
+  }
+
+  // Método para manejar la selección de imágenes
+  onFileSelect(event: any): void {
+    const files: File[] = Array.from(event.files);
+    
+    files.forEach(file => {
+      this.uploadedFiles.push(file);
+      
+      // Crear preview de la imagen
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewImages.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Método para eliminar una imagen
+  removeImage(index: number): void {
+    this.uploadedFiles.splice(index, 1);
+    this.previewImages.splice(index, 1);
   }
 }
