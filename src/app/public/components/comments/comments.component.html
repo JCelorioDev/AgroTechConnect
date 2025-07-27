@@ -3,7 +3,7 @@
     <div class="comments-container" *ngIf="!loadingComments; else loading">
       <div class="comments-list">
         <div *ngFor="let comment of listComment?.data?.data; trackBy: trackByCommentId" class="comment-item">
-          <div (click)="goToComment(comment.id, '')" class="comment-main">
+          <div (click)="goToComment(comment.id, '', idPublication)" class="comment-main">
             <p-avatar [image]="comment.user.image?.url!"
                      [label]="getAvatarLabel(comment.user)"
                      size="normal"
@@ -54,7 +54,7 @@
           <!-- Sección de respuestas (acordeón) -->
           <div *ngIf="activeIndex[comment.id]" class="responses-container">
             <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
-              <div (click)="goToComment(response.id, 'replayComment')" class="response-main">
+              <div (click)="goToComment(response.id, 'replayComment', idPublication)" class="response-main">
                 <p-avatar [image]="response.user.image?.url"
                          [label]="getAvatarLabel(response.user)"
                          size="normal"
@@ -97,6 +97,57 @@
               </div>
 
               <p (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem"> Reportar</i></p>
+            </div>
+
+              <!-- Sección para agregar nueva respuesta -->
+            <div class="new-reply" *ngIf="replyingToCommentId === comment.id">
+              <textarea pInputTextarea
+                        [(ngModel)]="replyCommentText"
+                        placeholder="Escribe tu respuesta..."
+                        rows="3"></textarea>
+              
+              <div class="image-upload-container">
+                <p-fileUpload #replyFileUpload
+                              mode="basic"
+                              accept="image/*"
+                              multiple
+                              chooseLabel="Agregar imágenes"
+                              (onSelect)="onReplyFileSelect($event)"
+                              styleClass="upload-button">
+                </p-fileUpload>
+              
+                <div class="image-previews" *ngIf="replyPreviewImages.length > 0">
+                  <div class="image-preview-item" *ngFor="let img of replyPreviewImages; let i = index">
+                    <img [src]="img" alt="Preview" class="preview-image">
+                    <button pButton 
+                            icon="pi pi-times" 
+                            class="p-button-rounded p-button-danger remove-image-btn"
+                            (click)="removeReplyImage(i)"></button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="reply-actions">
+                <button pButton
+                        label="Cancelar"
+                        class="p-button-text"
+                        (click)="cancelReply()"></button>
+                <button pButton
+                        icon="pi pi-send"
+                        label="Enviar respuesta"
+                        (click)="postReply()"
+                        [loading]="postingReply"
+                        class="p-button-primary"></button>
+              </div>
+            </div>
+
+            <!-- Botón para agregar respuesta (solo muestra si no estamos ya respondiendo) -->
+            <div class="add-reply" *ngIf="replyingToCommentId !== comment.id">
+              <button pButton
+                      icon="pi pi-reply"
+                      label="Responder"
+                      class="p-button-text p-button-sm"
+                      (click)="startReply(comment.id)"></button>
             </div>
 
             <!-- Paginación de respuestas si es necesario -->

@@ -12,6 +12,12 @@ import { GalleriaModule } from 'primeng/galleria';
 import { ButtonModule } from 'primeng/button';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { User } from '../../../core/models/Comments/createCommentInPost.interface';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { EditCommentInPostI } from '../../../core/models/Comments/editCommentInPost.interface';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { FileUploadModule } from 'primeng/fileupload';
+
 
 @Component({
   selector: 'public-show-comment',
@@ -24,7 +30,12 @@ import { User } from '../../../core/models/Comments/createCommentInPost.interfac
     CardModule,
     ProgressSpinnerModule,
     GalleriaModule,
-    ButtonModule
+    ButtonModule,
+    DialogModule,
+    FormsModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    FileUploadModule
   ],
   templateUrl: './show-comment.component.html',
   styleUrl: './show-comment.component.scss'
@@ -33,12 +44,18 @@ export class ShowCommentComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly commentsService = inject(CommentsService);
   private readonly alertService = inject(AlertService);
+  private readonly fb = inject(FormBuilder);
 
   public idComentario!: string;
+  public idPublicacion!: string;
   public commentData: ViewCommentResponse | null = null;
   public loading = true;
   public activeImageIndex = 0;
   public objUser!:User;
+  public editDialogVisible = false;
+  public editForm!: FormGroup;
+  public uploadedFiles: any[] = [];
+  public isEditing = false;
   public responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -56,10 +73,20 @@ export class ShowCommentComponent implements OnInit {
 
   constructor(){
     this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
+    this.initEditForm();
   }
 
+  private initEditForm(): void {
+    this.editForm = this.fb.group({
+      comment: [''],
+      images: [null]
+    });
+  }
+
+  
   ngOnInit(): void {
-    this.idComentario = this.route.snapshot.paramMap.get('id')!;
+    this.idComentario = this.route.snapshot.paramMap.get('idPublicacion')!;
+    this.idPublicacion = this.route.snapshot.paramMap.get('idComentario')!;
     this.loadComment();
   }
 
@@ -119,6 +146,46 @@ export class ShowCommentComponent implements OnInit {
   }
 
   // Editar comentario
+  showEditDialog(): void {
+    this.editForm.patchValue({
+      comment: this.commentData?.data?.comment
+    });
+    this.editDialogVisible = true;
+  }
 
+  onUpload(event: any): void {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+  }
+
+  editComment(): void {
+    if (this.editForm.invalid) return;
+
+    this.isEditing = true;
+    const formData = new FormData();
+    formData.append('comment', this.editForm.get('comment')?.value);
+
+    // Agregar archivos si existen
+    if (this.uploadedFiles.length > 0) {
+      for (let file of this.uploadedFiles) {
+        formData.append('images[]', file);
+      }
+    }
+
+    this.commentsService.editCommentInPost(this.idPublicacion, this.idComentario, formData).subscribe({
+      next: (response: any) => {
+        this.alertService.miniAlert('Comentario actualizado correctamente', 'success', 2000);
+        this.commentData!.data = response.data; // Actualizar los datos del comentario
+        this.editDialogVisible = false;
+        this.uploadedFiles = [];
+        this.isEditing = false;
+      },
+      error: (err) => {
+        this.isEditing = false;
+        this.handleError(err);
+      }
+    });
+  }
 
 }

@@ -47,7 +47,7 @@ export default [
         component: ShowPostComponent
       },
       {
-        path: 'mostrar-comentario/:id',
+        path: 'mostrar-comentario/:idPublicacion/:idComentario',
         component: ShowCommentComponent
       },
       ...privateRoutes

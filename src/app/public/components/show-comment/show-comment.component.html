@@ -12,8 +12,9 @@
               class="p-button-rounded p-button-text edit-button"
               pTooltip="Editar comentario" 
               tooltipPosition="top"
-              ></button>
+              (click)="showEditDialog()"></button>
     </div>
+    
     <!-- Card del comentario -->
     <p-card class="comment-card">
       <!-- Header con información del usuario -->
@@ -32,7 +33,7 @@
                       [value]="commentData?.data?.user?.ranges?.[0]?.name"
                       [severity]="getRangeSeverity(commentData?.data?.user?.ranges?.[0]?.name!)"
                       class="user-range"></p-tag>
-                <span class="comment-date">{{ commentData?.data?.created_at }}</span>
+                <span class="comment-date">{{ commentData?.data?.updated_at | date:'medium' }}</span>
               </div>
             </div>
           </div>
@@ -78,13 +79,62 @@
       </ng-template>
     </p-card>
 
-    <!-- Sección de respuestas (puedes implementarla después) -->
+    <!-- Sección de respuestas -->
     <div class="responses-section">
       <h4>Respuestas</h4>
-      <!-- Aquí iría la lista de respuestas -->
       <p *ngIf="commentData?.data?.replies_count === 0" class="no-responses">
         No hay respuestas aún.
       </p>
     </div>
   </div>
+
+  <!-- Diálogo para editar comentario -->
+  <p-dialog [(visible)]="editDialogVisible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
+    <ng-template pTemplate="header">
+      <h4>Editar comentario</h4>
+    </ng-template>
+    
+    <form [formGroup]="editForm">
+      <div class="p-fluid">
+        <div class="p-field">
+          <label for="comment">Comentario</label>
+          <textarea id="comment" formControlName="comment" rows="5"></textarea>
+        </div>
+        
+        <div class="p-field">
+          <label for="images">Imágenes (opcional)</label>
+          <p-fileUpload id="images" 
+                       name="images" 
+                       [multiple]="true" 
+                       accept="image/*" 
+                       [maxFileSize]="1000000"
+                       (onUpload)="onUpload($event)"
+                       [showUploadButton]="false"
+                       [showCancelButton]="false"
+                       chooseLabel="Seleccionar imágenes">
+          </p-fileUpload>
+          <small *ngIf="uploadedFiles.length > 0">{{ uploadedFiles.length }} archivo(s) seleccionado(s)</small>
+        </div>
+      </div>
+    </form>
+    
+    <ng-template pTemplate="footer">
+      <button pButton pRipple 
+              type="button" 
+              label="Cancelar" 
+              icon="pi pi-times" 
+              class="p-button-text" 
+              (click)="editDialogVisible = false; uploadedFiles = []">
+      </button>
+      <button pButton pRipple 
+              type="button" 
+              label="Guardar cambios" 
+              icon="pi pi-check" 
+              class="p-button-success" 
+              (click)="editComment()"
+              [disabled]="editForm.invalid || isEditing">
+              <i *ngIf="isEditing" class="pi pi-spinner pi-spin"></i>
+      </button>
+    </ng-template>
+  </p-dialog>
 </div>

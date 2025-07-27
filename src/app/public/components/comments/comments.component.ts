@@ -18,6 +18,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { FileUploadModule } from 'primeng/fileupload';
+import { finalize } from 'rxjs';
 
      
 @Component({
@@ -54,6 +55,14 @@ export class CommentsComponent implements OnInit {
   public postingComment = false;
   public newComment = '';
   public activeIndex: {[key: string]: boolean} = {};
+
+
+  // Nuevas propiedades para respuestas
+  public replyingToCommentId: string | null = null;
+  public replyCommentText: string = '';
+  public replyUploadedFiles: File[] = [];
+  public replyPreviewImages: string[] = [];
+  public postingReply = false;
 
   // Paginación
   public firstComment = 0;
@@ -164,9 +173,9 @@ export class CommentsComponent implements OnInit {
 
   // ir a ver comentario
 
-  goToComment(idComentario:string, opc:string):void{
+  goToComment(idComentario:string, opc:string, idPublicacion:string):void{
     this.commentsService.setOpc(opc);
-    this.router.navigate(['menu/mostrar-comentario', idComentario ]);
+    this.router.navigate(['menu/mostrar-comentario', idComentario, idPublicacion ]);
   }
 
   // Denunciar un comentario
@@ -319,4 +328,99 @@ export class CommentsComponent implements OnInit {
     this.uploadedFiles.splice(index, 1);
     this.previewImages.splice(index, 1);
   }
+
+  // Método para iniciar una respuesta
+  startReply(commentId: string): void {
+    this.replyingToCommentId = commentId;
+    this.replyCommentText = '';
+    this.replyUploadedFiles = [];
+    this.replyPreviewImages = [];
+  }
+
+   // Método para cancelar una respuesta
+   cancelReply(): void {
+    this.replyingToCommentId = null;
+    this.replyCommentText = '';
+    this.replyUploadedFiles = [];
+    this.replyPreviewImages = [];
+  }
+
+   // Método para manejar selección de imágenes en respuesta
+   onReplyFileSelect(event: any): void {
+    const files: File[] = Array.from(event.files);
+    
+    files.forEach(file => {
+      this.replyUploadedFiles.push(file);
+      
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.replyPreviewImages.push(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+   // Método para eliminar imagen de respuesta
+   removeReplyImage(index: number): void {
+    this.replyUploadedFiles.splice(index, 1);
+    this.replyPreviewImages.splice(index, 1);
+  }
+
+
+   // Método para enviar respuesta
+   postReply(): void {
+    if (!this.replyingToCommentId) return;
+    
+    if (!this.replyCommentText.trim() && this.replyUploadedFiles.length === 0) {
+      this.alertService.miniAlert('La respuesta no puede estar vacía', 'warning', 3000);
+      return;
+    }
+  
+    this.postingReply = true;
+  
+    const formData = new FormData();
+    formData.append('comment', this.replyCommentText);
+    
+    this.replyUploadedFiles.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
+  
+    this.commentsService.createReplayComment(
+      this.idPublication, 
+      this.replyingToCommentId, 
+      formData
+    ).pipe(
+      finalize(() => this.postingReply = false)
+    ).subscribe({
+      next: (response) => {
+        this.alertService.miniAlert('Respuesta publicada', 'success', 2000);
+        this.cancelReply();
+        
+        // Actualizar las respuestas del comentario
+        if (this.listResponseOfComments[this.replyingToCommentId!]) {
+          this.loadCommentResponses(this.replyingToCommentId!);
+        }
+      },
+      error: (err) => {
+        if (err.status === 422) {
+          this.alertService.showValidationErrors(err.error);
+        } else {
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
+      }
+    });
+  }
+
+  // Método auxiliar para cargar respuestas
+  private loadCommentResponses(commentId: string): void {
+    this.commentsService.getsCommentsResponse(commentId).subscribe({
+      next: (response) => {
+        this.listResponseOfComments[commentId] = response.data;
+      },
+      error: (err) => this.handleError(err)
+    });
+  }
+
+
+
 }

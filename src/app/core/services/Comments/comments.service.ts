@@ -9,6 +9,7 @@ import { ViewCommentResponse } from '../../models/Comments/viewCommentResponse.i
 import { CreateCommentInPostReponseI } from '../../models/Comments/createCommentInPost.interface';
 import { requestCommentsPublicationResponseI } from '../../models/Comments/requestCommentsPublicationResponse.interface';
 import { EditCommentInPostI } from '../../models/Comments/editCommentInPost.interface';
+import { CreateReplayCommentI } from '../../models/Comments/createReplayComment.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -83,5 +84,11 @@ export class CommentsService {
 
   editCommentInPost(idPublicacion:string, idComentario:string, data: FormData):Observable<EditCommentInPostI>{
     return this.httpClient.post<EditCommentInPostI>(`${environment.apiBaseUrl}posts/${idPublicacion}/comments/${idComentario}`, data);
+  }
+
+  // Crear repuesta de comentario
+
+  createReplayComment(idPublicacion:string, idComentario:string, data: FormData):Observable<CreateReplayCommentI>{
+    return this.httpClient.post<CreateReplayCommentI>(`${environment.apiBaseUrl}posts/${idPublicacion}/comments/${idComentario}/replaycomments`, data);
   }
 }
