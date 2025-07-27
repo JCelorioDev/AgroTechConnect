@@ -53,18 +53,20 @@
         </p-galleria>
       </div>
 
+
       <!-- Footer con estadísticas -->
       <ng-template pTemplate="footer">
         <div class="post-footer">
           <div class="post-stats">
-            <span class="stat-item" (click)="showReactionsDialog()">
-              <i class="pi pi-thumbs-up"></i> {{ objPublication.positive_reactions_count }}
+            <span class="stat-item" (click)="showReactionsDialog()" 
+            [class.reacted-positive]="hasReacted('positivo')">
+            <i class="pi pi-thumbs-up"></i> {{ objPublication.positive_reactions_count }}
             </span>
-            <span class="stat-item" (click)="showReactionsDialog()">
-              <i class="pi pi-thumbs-down"></i> {{ objPublication.negative_reactions_count }}
+            <span class="stat-item" (click)="showReactionsDialog()"
+            [class.reacted-negative]="hasReacted('negativo')">
+            <i class="pi pi-thumbs-down"></i> {{ objPublication.negative_reactions_count }}
             </span>
-            <span class="stat-item comment-stat"
-                  (click)="toggleCommentsDialog()">
+            <span class="stat-item comment-stat" (click)="toggleCommentsDialog()">
               <i class="pi pi-comments"></i> {{ objPublication.comments_count }}
             </span>
           </div>

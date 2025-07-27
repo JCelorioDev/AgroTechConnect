@@ -252,3 +252,13 @@
     color: var(--primary-color);
   }
 }
+
+.reacted-positive {
+  color: red !important; 
+  font-weight: bold !important;
+}
+
+.reacted-negative {
+  color: blue !important; 
+  font-weight: bold !important;
+}

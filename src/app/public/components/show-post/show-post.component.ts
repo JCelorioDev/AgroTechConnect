@@ -78,6 +78,16 @@ export class ShowPostComponent implements OnInit {
   ngOnInit(): void {
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
     this.loadPublication();
+    this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
+      next: (response) => {
+        this.reactionsData = response;
+        this.loadingReactions = false;
+      },
+      error: (err) => {
+        this.loadingReactions = false;
+        this.handleError(err);
+      }
+    });
   }
 
   loadPublication(): void {
@@ -170,6 +180,32 @@ export class ShowPostComponent implements OnInit {
       if (!this.reactionsData?.data.all_reactions) return 0;
       return this.reactionsData.data.all_reactions.filter(r => r.type === type).length;
     }
+
+    
+    hasReacted(reactionType: string): boolean {
+      try {
+        const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+        const currentUserEmail = userLogin.email;
+    
+        if (!currentUserEmail || !this.reactionsData?.data?.all_reactions) {
+          return false;
+        }
+    
+        // Usamos un for...of para poder hacer return inmediato
+        for (const reaction of this.reactionsData.data.all_reactions) {
+          if (reaction?.user?.email === currentUserEmail && reaction.type === reactionType) {
+            console.log(`✅ Usuario ${currentUserEmail} tiene ${reactionType}`); // Debug
+            return true; // Sale inmediatamente si encuentra coincidencia
+          }
+        }
+    
+        return false; // Si no encontró ninguna coincidencia
+      } catch (error) {
+        console.error('Error checking reaction:', error);
+        return false;
+      }
+    }
+    
 
 
 }
