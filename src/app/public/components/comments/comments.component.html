@@ -3,7 +3,7 @@
     <div class="comments-container" *ngIf="!loadingComments; else loading">
       <div class="comments-list">
         <div *ngFor="let comment of listComment?.data?.data; trackBy: trackByCommentId" class="comment-item">
-          <div class="comment-main">
+          <div (click)="goToComment(comment.id, '')" class="comment-main">
             <p-avatar [image]="comment.user.image?.url!"
                      [label]="getAvatarLabel(comment.user)"
                      size="normal"
@@ -41,7 +41,7 @@
                     <i class="pi pi-thumbs-down"></i> {{ comment.negative_reactions_count }}
                   </span>
                 </div>
-                <span (click)="seeCommentsResponse(comment.id)" class="replies-count">
+                <span (click)="seeCommentsResponse(comment.id); $event.stopPropagation()" class="replies-count">
                   <i class="pi pi-comments"></i> {{ comment.replies_count }} respuestas
                 </span>
               </div>
@@ -51,13 +51,13 @@
           <!-- Sección de respuestas (acordeón) -->
           <div *ngIf="activeIndex[comment.id]" class="responses-container">
             <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
-              <div class="response-main">
+              <div (click)="goToComment(response.id, 'replayComment')" class="response-main">
                 <p-avatar [image]="response.user.image?.url"
                          [label]="getAvatarLabel(response.user)"
                          size="normal"
                          shape="circle"
                          class="response-avatar"></p-avatar>
-                
+
                 <div class="response-content">
                   <div class="response-header">
                     <strong class="response-author">
@@ -70,16 +70,16 @@
                     </strong>
                     <span class="response-date">{{ response.created_at }}</span>
                   </div>
-                  
+
                   <p class="response-text">{{ response.comment }}</p>
-                  
+
                   <div *ngIf="response.images.length > 0" class="response-images">
                     <img *ngFor="let image of response.images"
                          [src]="image.url"
                          [alt]="'Imagen de respuesta'"
                          class="response-image">
                   </div>
-                  
+
                   <div class="response-footer">
                     <div class="reactions">
                       <span class="positive-reactions">

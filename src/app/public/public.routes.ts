@@ -6,6 +6,7 @@ import { PreguntasComponent } from "./pages/preguntas/preguntas.component";
 import { noVerificationGuard } from "../core/guards/no-verification.guard";
 import { ProfileComponent } from "./pages/profile/profile.component";
 import { ShowPostComponent } from "./components/show-post/show-post.component";
+import { ShowCommentComponent } from "./components/show-comment/show-comment.component";
 
 
 
@@ -44,6 +45,10 @@ export default [
       {
         path: 'mostrar-publicacion/:id',
         component: ShowPostComponent
+      },
+      {
+        path: 'mostrar-comentario/:id',
+        component: ShowCommentComponent
       },
       ...privateRoutes
     ]

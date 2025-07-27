@@ -1,0 +1,82 @@
+<div class="comment-container">
+  <!-- Spinner de carga -->
+  <div class="loading-spinner" *ngIf="loading">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!loading && commentData?.data" class="comment-content">
+    <!-- Card del comentario -->
+    <p-card class="comment-card">
+      <!-- Header con información del usuario -->
+      <ng-template pTemplate="header">
+        <div class="comment-header">
+          <div class="user-info">
+            <p-avatar [image]="commentData?.data?.user?.image?.url"
+                     [label]="getAvatarLabel(commentData?.data?.user)"
+                     size="large"
+                     shape="circle"
+                     class="user-avatar"></p-avatar>
+            <div class="user-details">
+              <h3 class="user-name">{{ commentData?.data?.user?.name }} {{ commentData?.data?.user?.lastname }}</h3>
+              <div class="user-meta">
+                <p-tag *ngIf="commentData?.data?.user?.ranges?.[0]?.name"
+                      [value]="commentData?.data?.user?.ranges?.[0]?.name"
+                      [severity]="getRangeSeverity(commentData?.data?.user?.ranges?.[0]?.name!)"
+                      class="user-range"></p-tag>
+                <span class="comment-date">{{ commentData?.data?.created_at }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
+      <!-- Contenido del comentario -->
+      <div class="comment-body">
+        <p class="comment-text">{{ commentData?.data?.comment }}</p>
+
+        <!-- Galería de imágenes -->
+        <p-galleria *ngIf="commentData?.data?.images?.length! > 0"
+                   [value]="commentData?.data?.images"
+                   [responsiveOptions]="responsiveOptions"
+                   [containerStyle]="{ 'max-width': '100%' }"
+                   [showThumbnails]="false"
+                   [showIndicators]="true"
+                   [activeIndex]="activeImageIndex"
+                   class="comment-gallery">
+          <ng-template pTemplate="item" let-item>
+            <img [src]="item.url"
+                 [alt]="'Imagen del comentario'"
+                 class="comment-image" />
+          </ng-template>
+        </p-galleria>
+      </div>
+
+      <!-- Footer con estadísticas -->
+      <ng-template pTemplate="footer">
+        <div class="comment-footer">
+          <div class="comment-stats">
+            <span class="stat-item">
+              <i class="pi pi-thumbs-up"></i> {{ commentData?.data?.positive_reactions_count }}
+            </span>
+            <span class="stat-item">
+              <i class="pi pi-thumbs-down"></i> {{ commentData?.data?.negative_reactions_count }}
+            </span>
+            <span class="stat-item">
+              <i class="pi pi-comments"></i> {{ commentData?.data?.replies_count }} respuestas
+            </span>
+          </div>
+        </div>
+      </ng-template>
+    </p-card>
+
+    <!-- Sección de respuestas (puedes implementarla después) -->
+    <div class="responses-section">
+      <h4>Respuestas</h4>
+      <!-- Aquí iría la lista de respuestas -->
+      <p *ngIf="commentData?.data?.replies_count === 0" class="no-responses">
+        No hay respuestas aún.
+      </p>
+    </div>
+  </div>
+</div>

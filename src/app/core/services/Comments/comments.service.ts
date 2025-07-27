@@ -5,6 +5,7 @@ import { ThemesService } from '../../../shared/services/themes.service';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ResponseOfCommentsI } from '../../models/Comments/responseOfComments.interface';
+import { ViewCommentResponse } from '../../models/Comments/viewCommentResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ import { ResponseOfCommentsI } from '../../models/Comments/responseOfComments.in
 export class CommentsService {
 
   private readonly httpClient = inject(HttpClient);
+  private opc !: string;
 
   constructor() { }
 
@@ -27,5 +29,25 @@ export class CommentsService {
 
   getsCommentsResponse(idComentario:string):Observable<ResponseOfCommentsI>{
     return this.httpClient.get<ResponseOfCommentsI>(`${environment.apiBaseUrl}comments/${idComentario}/replaycomments`)
+  }
+
+  // Ver un comentario
+
+  viewComment(commentId: string): Observable<ViewCommentResponse> {
+    return this.httpClient.get<ViewCommentResponse>(`${environment.apiBaseUrl}comments/${commentId}`);
+  }
+
+  // Ver respuesta de comentario
+
+  viewResponseOfComment(commentId: string): Observable<ViewCommentResponse> {
+    return this.httpClient.get<ViewCommentResponse>(`${environment.apiBaseUrl}replaycomments/${commentId}`);
+  }
+
+  get getOpc():string {
+    return this.opc;
+  }
+
+  setOpc(value:string):void{
+    this.opc = value;
   }
 }

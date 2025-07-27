@@ -15,6 +15,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { AccordionModule } from 'primeng/accordion';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'public-comments',
@@ -40,6 +41,7 @@ export class CommentsComponent implements OnInit {
   public displayCommentsDialog = false;
   private readonly commentsService = inject(CommentsService);
   private readonly alertService = inject(AlertService);
+  private readonly router = inject(Router);
 
   // Datos de comentarios
   public listComment: CommentsPublicactionResponseInterfaceTs | null = null;
@@ -154,5 +156,12 @@ export class CommentsComponent implements OnInit {
 
   trackByResponseId(index: number, response: ResponseDatum): string {
     return response.id;
+  }
+
+  // ir a ver comentario
+
+  goToComment(idComentario:string, opc:string):void{
+    this.commentsService.setOpc(opc);
+    this.router.navigate(['menu/mostrar-comentario', idComentario ]);
   }
 }
