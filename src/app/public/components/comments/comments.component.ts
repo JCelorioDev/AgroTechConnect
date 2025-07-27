@@ -4,6 +4,8 @@ import { DialogModule } from 'primeng/dialog';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
 import { CommentsPublicactionResponseInterfaceTs, Data, Datum } from '../../../core/models/Comments/commentsPublicationResponse.interface';
 import { Data as DataComments, Datum as ResponseDatum } from '../../../core/models/Comments/responseOfComments.interface';
+import { Data as DataReactionsComment} from '../../../core/models/Reactions/reactionsCommentResponse.interface';
+import { Data as DataReactionsReplayComment} from '../../../core/models/Reactions/reactionsReplayCommentResponse.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
@@ -19,7 +21,8 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { FileUploadModule } from 'primeng/fileupload';
 import { finalize } from 'rxjs';
-
+import { ReactionsService } from '../../../core/services/Reactions/reactions.service';
+import { TabViewModule } from 'primeng/tabview';
      
 @Component({
   selector: 'public-comments',
@@ -37,7 +40,8 @@ import { finalize } from 'rxjs';
     PaginatorModule,
     FormsModule,
     AccordionModule,
-    FileUploadModule
+    FileUploadModule,
+    TabViewModule
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss'
@@ -47,7 +51,7 @@ export class CommentsComponent implements OnInit {
   private readonly commentsService = inject(CommentsService);
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
-
+  private readonly reactionsService = inject(ReactionsService);
   // Datos de comentarios
   public listComment: CommentsPublicactionResponseInterfaceTs | null = null;
   public listResponseOfComments: {[key: string]: DataComments} = {};
@@ -63,10 +67,18 @@ export class CommentsComponent implements OnInit {
   public replyUploadedFiles: File[] = [];
   public replyPreviewImages: string[] = [];
   public postingReply = false;
-
+  public listReactionsCommnet!: DataReactionsComment;
   // Paginación
   public firstComment = 0;
   public rows = 5;
+
+
+  public displayCommentReactionsDialog = false;
+  public loadingCommentReactions = false;
+  public commentReactionsData: DataReactionsComment | null = null;
+  public activeCommentReactionTab = 0;
+
+  public listReplayCommentReactions!:DataReactionsReplayComment;
 
   @Input() idPublication!: string;
   @Output() closeDialog = new EventEmitter<void>();
@@ -421,6 +433,57 @@ export class CommentsComponent implements OnInit {
     });
   }
 
+   // Método para mostrar reacciones de un comentario
+   showCommentReactionsDialog(commentId: string): void {
+    this.displayCommentReactionsDialog = true;
+    this.loadingCommentReactions = true;
+    
+    this.reactionsService.getReactionsComment(commentId).subscribe({
+      next: (response) => {
+        this.commentReactionsData = response.data;
+        this.loadingCommentReactions = false;
+      },
+      error: (err) => {
+        this.loadingCommentReactions = false;
+        this.handleError(err);
+      }
+    });
+  }
 
+  // Método auxiliar para contar reacciones por tipo en comentarios
+  countCommentReactionsByType(type: string): number {
+    if (!this.commentReactionsData?.all_reactions) return 0;
+    return this.commentReactionsData.all_reactions.filter(r => r.type === type).length;
+  }
+
+  // Nuevas propiedades para el diálogo de reacciones de respuestas
+  public displayReplayReactionsDialog = false;
+  public loadingReplayReactions = false;
+  public replayReactionsData: DataReactionsReplayComment | null = null;
+  public activeReplayReactionTab = 0;
+
+  // Metodo para ver reacciones de respuesta de comentario
+
+  showReplayReactionsDialog(replayId: string): void {
+    this.displayReplayReactionsDialog = true;
+    this.loadingReplayReactions = true;
+    
+    this.reactionsService.getReplayReactionsComment(replayId).subscribe({
+      next: (response) => {
+        this.replayReactionsData = response.data;
+        this.loadingReplayReactions = false;
+      },
+      error: (err) => {
+        this.loadingReplayReactions = false;
+        this.handleError(err);
+      }
+    });
+  }
+
+    // Método auxiliar para contar reacciones por tipo en respuestas
+    countReplayReactionsByType(type: string): number {
+      if (!this.replayReactionsData?.all_reactions) return 0;
+      return this.replayReactionsData.all_reactions.filter(r => r.type === type).length;
+    }
 
 }

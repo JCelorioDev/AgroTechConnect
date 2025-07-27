@@ -34,10 +34,10 @@
 
               <div class="comment-footer">
                 <div class="reactions">
-                  <span class="positive-reactions">
+                  <span class="positive-reactions" (click)="showCommentReactionsDialog(comment.id); $event.stopPropagation()">
                     <i class="pi pi-thumbs-up"></i> {{ comment.positive_reactions_count }}
                   </span>
-                  <span class="negative-reactions">
+                  <span class="negative-reactions" (click)="showCommentReactionsDialog(comment.id); $event.stopPropagation()">
                     <i class="pi pi-thumbs-down"></i> {{ comment.negative_reactions_count }}
                   </span>
                 </div>
@@ -85,10 +85,10 @@
 
                   <div class="response-footer">
                     <div class="reactions">
-                      <span class="positive-reactions">
+                      <span class="positive-reactions" (click)="showReplayReactionsDialog(response.id); $event.stopPropagation()">
                         <i class="pi pi-thumbs-up"></i> {{ response.positive_reactions_count }}
                       </span>
-                      <span class="negative-reactions">
+                      <span class="negative-reactions" (click)="showReplayReactionsDialog(response.id); $event.stopPropagation()">
                         <i class="pi pi-thumbs-down"></i> {{ response.negative_reactions_count }}
                       </span>
                     </div>
@@ -220,3 +220,160 @@
     <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
   </div>
 </ng-template>
+
+
+<!-- Nuevo diálogo de reacciones de comentarios -->
+<p-dialog [(visible)]="displayCommentReactionsDialog" 
+          [modal]="true"
+          [style]="{ width: '50vw', maxHeight: '70vh' }"
+          [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+          header="Reacciones del comentario"
+          [draggable]="false"
+          [resizable]="false">
+  
+  <div class="reactions-dialog-content">
+    <!-- Spinner de carga -->
+    <div class="loading-spinner" *ngIf="loadingCommentReactions">
+      <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+    </div>
+
+    <!-- Contenido de reacciones -->
+    <div *ngIf="!loadingCommentReactions && commentReactionsData" class="reactions-content">
+      <p-tabView [(activeIndex)]="activeCommentReactionTab">
+        <p-tabPanel header="Todas">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of commentReactionsData.all_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-type" [ngClass]="{
+                  'positive': reaction.type === 'positive',
+                  'negative': reaction.type === 'negative'
+                }">
+                  {{ reaction.type === 'positive' ? '👍' : '👎' }}
+                </span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Positivas (' + commentReactionsData.counts.positive + ')'">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of commentReactionsData.positive_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Negativas (' + commentReactionsData.counts.negative + ')'">
+          <div *ngIf="commentReactionsData.negative_reactions.length > 0; else noNegativeReactions">
+            <div *ngFor="let reaction of commentReactionsData.negative_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noNegativeReactions>
+            <div class="no-reactions">
+              No hay reacciones negativas
+            </div>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</p-dialog>
+
+
+<p-dialog [(visible)]="displayReplayReactionsDialog" 
+          [modal]="true"
+          [style]="{ width: '50vw', maxHeight: '70vh' }"
+          [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+          header="Reacciones de la respuesta"
+          [draggable]="false"
+          [resizable]="false">
+  
+  <div class="reactions-dialog-content">
+    <!-- Spinner de carga -->
+    <div class="loading-spinner" *ngIf="loadingReplayReactions">
+      <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+    </div>
+
+    <!-- Contenido de reacciones -->
+    <div *ngIf="!loadingReplayReactions && replayReactionsData" class="reactions-content">
+      <p-tabView [(activeIndex)]="activeReplayReactionTab">
+        <p-tabPanel header="Todas">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of replayReactionsData.all_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-type" [ngClass]="{
+                  'positive': reaction.type === 'positive',
+                  'negative': reaction.type === 'negative'
+                }">
+                  {{ reaction.type === 'positive' ? '👍' : '👎' }}
+                </span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Positivas (' + replayReactionsData.counts.positive + ')'">
+          <div class="reactions-list">
+            <div *ngFor="let reaction of replayReactionsData.positive_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+
+        <p-tabPanel [header]="'Negativas (' + replayReactionsData.counts.negative + ')'">
+          <div *ngIf="replayReactionsData.negative_reactions.length > 0; else noNegativeReactions">
+            <div *ngFor="let reaction of replayReactionsData.negative_reactions" class="reaction-item">
+              <p-avatar [image]="reaction.user.image?.url"
+                       [label]="getAvatarLabel(reaction.user)"
+                       size="large"
+                       shape="circle"></p-avatar>
+              <div class="reaction-details">
+                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              </div>
+            </div>
+          </div>
+          <ng-template #noNegativeReactions>
+            <div class="no-reactions">
+              No hay reacciones negativas
+            </div>
+          </ng-template>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</p-dialog>
