@@ -1,0 +1,94 @@
+<div class="comments-dialog">
+
+  <!-- Contenido del diálogo -->
+  <div class="dialog-content">
+    <!-- Lista de comentarios -->
+    <div class="comments-container" *ngIf="!loadingComments; else loading">
+      <div class="comments-list">
+        <div *ngFor="let comment of listComment?.data?.data" class="comment-item">
+          <div class="comment-main">
+            <p-avatar [image]="comment.user.image?.url!"
+                     [label]="getAvatarLabel(comment.user)"
+                     size="normal"
+                     shape="circle"
+                     class="comment-avatar"></p-avatar>
+
+            <div class="comment-content">
+              <div class="comment-header">
+                <strong class="comment-author">
+                  {{ comment.user.name }} {{ comment.user.lastname }}
+                  <p-tag *ngIf="comment.user.ranges?.[0]?.name"
+                        [value]="comment.user.ranges[0].name"
+                        [severity]="getRangeSeverity(comment.user.ranges[0].name)"
+                        styleClass="user-range-tag">
+                  </p-tag>
+                </strong>
+                <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
+              </div>
+
+              <p class="comment-text">{{ comment.comment }}</p>
+
+              <!-- Imágenes del comentario -->
+              <div *ngIf="comment.images.length > 0" class="comment-images">
+                <img *ngFor="let image of comment.images"
+                     [src]="image.url"
+                     [alt]="'Imagen del comentario'"
+                     class="comment-image">
+              </div>
+
+              <!-- Reacciones y respuestas -->
+              <div class="comment-footer">
+                <div class="reactions">
+                  <span class="positive-reactions">
+                    <i class="pi pi-thumbs-up"></i> {{ comment.positive_reactions_count }}
+                  </span>
+                  <span class="negative-reactions">
+                    <i class="pi pi-thumbs-down"></i> {{ comment.negative_reactions_count }}
+                  </span>
+                </div>
+                <span (click)="seeCommentsResponse(comment.id)" class="replies-count">
+                  <i class="pi pi-comments"></i> {{ comment.replies_count }} respuestas
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paginación -->
+        <p-paginator *ngIf="listComment?.data?.total! > rows"
+                    [rows]="rows"
+                    [totalRecords]="listComment?.data?.total"
+                    (onPageChange)="onPageChange($event)"
+                    [first]="firstComment"
+                    styleClass="comment-paginator">
+        </p-paginator>
+
+        <!-- Sin comentarios -->
+        <p *ngIf="listComment?.data?.data?.length === 0" class="no-comments">
+          No hay comentarios aún.
+        </p>
+      </div>
+    </div>
+
+    <!-- Formulario para nuevo comentario -->
+    <div class="new-comment">
+      <textarea pInputTextarea
+                [(ngModel)]="newComment"
+                placeholder="Escribe un comentario..."
+                rows="3"></textarea>
+      <button pButton
+              icon="pi pi-send"
+              label="Enviar"
+              (click)="postComment()"
+              [loading]="postingComment"
+              class="send-button">
+      </button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-spinner">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+</ng-template>

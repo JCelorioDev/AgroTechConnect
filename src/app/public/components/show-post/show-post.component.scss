@@ -113,64 +113,7 @@
     }
   }
 
-  .comments-dialog {
-    .comments-container {
-      .comments-list {
-        max-height: 60vh;
-        overflow-y: auto;
-        padding-right: 0.5rem;
 
-        .comment-item {
-          display: flex;
-          gap: 1rem;
-          padding: 1rem 0;
-          border-bottom: 1px solid #f0f0f0;
-
-          &:last-child {
-            border-bottom: none;
-          }
-
-          .comment-avatar {
-            flex-shrink: 0;
-          }
-
-          .comment-content {
-            flex: 1;
-
-            .comment-header {
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: 0.5rem;
-
-              .comment-author {
-                font-weight: 500;
-                color: #2c3e50;
-              }
-
-              .comment-date {
-                font-size: 0.8rem;
-                color: #6c757d;
-              }
-            }
-
-            .comment-text {
-              margin: 0;
-              white-space: pre-line;
-              color: #495057;
-              line-height: 1.5;
-            }
-          }
-        }
-
-        .no-comments {
-          text-align: center;
-          color: #6c757d;
-          padding: 2rem 0;
-          font-style: italic;
-        }
-      }
-    }
-  }
 }
 
 /* Responsive */

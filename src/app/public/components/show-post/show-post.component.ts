@@ -13,6 +13,7 @@ import { CardModule } from 'primeng/card';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { GalleriaModule } from 'primeng/galleria';
 import { DomSanitizer } from '@angular/platform-browser';
+import { CommentsComponent } from '../comments/comments.component';
 
 @Component({
   selector: 'app-show-post',
@@ -26,7 +27,8 @@ import { DomSanitizer } from '@angular/platform-browser';
     DividerModule,
     CardModule,
     ProgressSpinnerModule,
-    GalleriaModule
+    GalleriaModule,
+    CommentsComponent
   ],
   templateUrl: './show-post.component.html',
   styleUrls: ['./show-post.component.scss']
@@ -37,7 +39,7 @@ export class ShowPostComponent implements OnInit {
   private readonly alertService = inject(AlertService);
   private readonly domSanitizer = inject(DomSanitizer );
 
-  private idPublicacion!: string;
+  public idPublicacion!: string;
   public objPublication!: Data;
   public loading = true;
   public displayCommentsDialog = false;
@@ -72,7 +74,7 @@ export class ShowPostComponent implements OnInit {
           this.objPublication.comments = [];
         }
         this.loading = false;
-        console.log(this.objPublication.created_at); 
+        console.log(this.objPublication.created_at);
       },
       error: (err) => {
         this.loading = false;
@@ -89,10 +91,15 @@ export class ShowPostComponent implements OnInit {
     }
   }
 
+  // Añade esta función para manejar el cierre del diálogo
+  closeCommentsDialog(): void {
+    this.displayCommentsDialog = false;
+  }
+
+  // Modifica la función toggleCommentsDialog
   toggleCommentsDialog(): void {
     this.displayCommentsDialog = !this.displayCommentsDialog;
   }
-
   getRangeSeverity(rangeName: string | undefined): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
     if (!rangeName) return 'info';
 
@@ -117,9 +124,9 @@ export class ShowPostComponent implements OnInit {
 
   sanitizeHtml(html: string) {
     const cleaned = html
-      .replace(/<\/?span[^>]*>/g, '')       
-      .replace(/<(\w+)[^>]*>/g, '<$1>');   
-      
+      .replace(/<\/?span[^>]*>/g, '')
+      .replace(/<(\w+)[^>]*>/g, '<$1>');
+
     return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
 }
