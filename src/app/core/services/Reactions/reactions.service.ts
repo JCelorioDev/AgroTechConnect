@@ -67,7 +67,14 @@ export class ReactionsService {
 
   // Quitar reaccion de comentario
 
+  removeReactionAComment(idComentario:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}comments/${idComentario}/reactions`)
+  }
+
   // Quitar reaccion de respuesta de comentario
 
+  removeReactionAReplayComment(idComentario:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}replaycomments/${idComentario}/reactions`)
+  }
 
 }

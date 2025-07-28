@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
 import { CommentsPublicactionResponseInterfaceTs, Data, Datum } from '../../../core/models/Comments/commentsPublicationResponse.interface';
 import { Data as DataComments, Datum as ResponseDatum } from '../../../core/models/Comments/responseOfComments.interface';
-import { Data as DataReactionsComment} from '../../../core/models/Reactions/reactionsCommentResponse.interface';
-import { Data as DataReactionsReplayComment} from '../../../core/models/Reactions/reactionsReplayCommentResponse.interface';
+import { Data as DataReactionsComment } from '../../../core/models/Reactions/reactionsCommentResponse.interface';
+import { Data as DataReactionsReplayComment } from '../../../core/models/Reactions/reactionsReplayCommentResponse.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ButtonModule } from 'primeng/button';
 import { AvatarModule } from 'primeng/avatar';
@@ -23,7 +23,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { finalize } from 'rxjs';
 import { ReactionsService } from '../../../core/services/Reactions/reactions.service';
 import { TabViewModule } from 'primeng/tabview';
-     
+
 @Component({
   selector: 'public-comments',
   standalone: true,
@@ -52,38 +52,45 @@ export class CommentsComponent implements OnInit {
   private readonly alertService = inject(AlertService);
   private readonly router = inject(Router);
   private readonly reactionsService = inject(ReactionsService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+
   // Datos de comentarios
   public listComment: CommentsPublicactionResponseInterfaceTs | null = null;
-  public listResponseOfComments: {[key: string]: DataComments} = {};
+  public listResponseOfComments: { [key: string]: DataComments } = {};
   public loadingComments = false;
   public postingComment = false;
   public newComment = '';
-  public activeIndex: {[key: string]: boolean} = {};
+  public activeIndex: { [key: string]: boolean } = {};
 
-
-  // Nuevas propiedades para respuestas
+  // Propiedades para respuestas
   public replyingToCommentId: string | null = null;
   public replyCommentText: string = '';
   public replyUploadedFiles: File[] = [];
   public replyPreviewImages: string[] = [];
   public postingReply = false;
-  public listReactionsCommnet!: DataReactionsComment;
+
   // Paginación
   public firstComment = 0;
   public rows = 5;
 
-
+  // Reacciones a comentarios
   public displayCommentReactionsDialog = false;
   public loadingCommentReactions = false;
   public commentReactionsData: DataReactionsComment | null = null;
   public activeCommentReactionTab = 0;
+  public reactingCommentId: string | null = null;
 
-  public listReplayCommentReactions!:DataReactionsReplayComment;
+  // Reacciones a respuestas
+  public displayReplayReactionsDialog = false;
+  public loadingReplayReactions = false;
+  public replayReactionsData: DataReactionsReplayComment | null = null;
+  public activeReplayReactionTab = 0;
+  public reactingReplayId: string | null = null;
 
   @Input() idPublication!: string;
   @Output() closeDialog = new EventEmitter<void>();
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     if (this.idPublication) {
@@ -116,10 +123,6 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  postComment(): void {
-    // Lógica existente para publicar comentarios
-  }
-
   private handleError(err: any): void {
     if (err.status === 422) {
       this.alertService.showValidationErrors(err.error);
@@ -140,9 +143,8 @@ export class CommentsComponent implements OnInit {
     return (user.name.charAt(0) + user.lastname.charAt(0)).toUpperCase();
   }
 
-
   getRangeSeverity(rangeName: string): any {
-    switch(rangeName) {
+    switch (rangeName) {
       case 'Novato': return 'info';
       case 'Aprendiz': return 'success';
       case 'Iniciado': return 'warning';
@@ -183,16 +185,12 @@ export class CommentsComponent implements OnInit {
     return response.id;
   }
 
-  // ir a ver comentario
-
-  goToComment(idComentario:string, opc:string, idPublicacion:string):void{
+  goToComment(idComentario: string, opc: string, idPublicacion: string): void {
     this.commentsService.setOpc(opc);
-    this.router.navigate(['menu/mostrar-comentario', idComentario, idPublicacion ]);
+    this.router.navigate(['menu/mostrar-comentario', idComentario, idPublicacion]);
   }
 
-  // Denunciar un comentario
-
-  denuncieComment(idComentario:string){
+  denuncieComment(idComentario: string): void {
     this.closeDialog.emit();
 
     Swal.fire({
@@ -228,14 +226,12 @@ export class CommentsComponent implements OnInit {
               this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
-        })
+        });
       }
     });
   }
 
-  // Denunciar respuesta de comentario
-
-  denuncieReplayComment(idComentario:string){
+  denuncieReplayComment(idComentario: string): void {
     this.closeDialog.emit();
 
     Swal.fire({
@@ -271,7 +267,7 @@ export class CommentsComponent implements OnInit {
               this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
-        })
+        });
       }
     });
   }
@@ -279,24 +275,21 @@ export class CommentsComponent implements OnInit {
   public uploadedFiles: File[] = [];
   public previewImages: string[] = [];
 
-  // Crear un comentario en publicacion
-
   createCommentInPost(): void {
     if (!this.newComment.trim() && this.uploadedFiles.length === 0) {
       this.alertService.miniAlert('El comentario no puede estar vacío', 'warning', 3000);
       return;
     }
-  
+
     this.postingComment = true;
-  
+
     const formData = new FormData();
     formData.append('comment', this.newComment);
-    
-    // Agregar imágenes al FormData
+
     this.uploadedFiles.forEach((file, index) => {
       formData.append(`images[${index}]`, file);
     });
-  
+
     this.commentsService.commentInPost(this.idPublication, formData).subscribe({
       next: (response) => {
         this.alertService.miniAlert('Comentario publicado', 'success', 2000);
@@ -304,8 +297,6 @@ export class CommentsComponent implements OnInit {
         this.uploadedFiles = [];
         this.previewImages = [];
         this.postingComment = false;
-        
-        // Actualizar la lista de comentarios
         this.loadComments();
       },
       error: (err) => {
@@ -319,14 +310,12 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  // Método para manejar la selección de imágenes
   onFileSelect(event: any): void {
     const files: File[] = Array.from(event.files);
-    
+
     files.forEach(file => {
       this.uploadedFiles.push(file);
-      
-      // Crear preview de la imagen
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.previewImages.push(e.target.result);
@@ -335,13 +324,11 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  // Método para eliminar una imagen
   removeImage(index: number): void {
     this.uploadedFiles.splice(index, 1);
     this.previewImages.splice(index, 1);
   }
 
-  // Método para iniciar una respuesta
   startReply(commentId: string): void {
     this.replyingToCommentId = commentId;
     this.replyCommentText = '';
@@ -349,21 +336,19 @@ export class CommentsComponent implements OnInit {
     this.replyPreviewImages = [];
   }
 
-   // Método para cancelar una respuesta
-   cancelReply(): void {
+  cancelReply(): void {
     this.replyingToCommentId = null;
     this.replyCommentText = '';
     this.replyUploadedFiles = [];
     this.replyPreviewImages = [];
   }
 
-   // Método para manejar selección de imágenes en respuesta
-   onReplyFileSelect(event: any): void {
+  onReplyFileSelect(event: any): void {
     const files: File[] = Array.from(event.files);
-    
+
     files.forEach(file => {
       this.replyUploadedFiles.push(file);
-      
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.replyPreviewImages.push(e.target.result);
@@ -372,34 +357,31 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-   // Método para eliminar imagen de respuesta
-   removeReplyImage(index: number): void {
+  removeReplyImage(index: number): void {
     this.replyUploadedFiles.splice(index, 1);
     this.replyPreviewImages.splice(index, 1);
   }
 
-
-   // Método para enviar respuesta
-   postReply(): void {
+  postReply(): void {
     if (!this.replyingToCommentId) return;
-    
+
     if (!this.replyCommentText.trim() && this.replyUploadedFiles.length === 0) {
       this.alertService.miniAlert('La respuesta no puede estar vacía', 'warning', 3000);
       return;
     }
-  
+
     this.postingReply = true;
-  
+
     const formData = new FormData();
     formData.append('comment', this.replyCommentText);
-    
+
     this.replyUploadedFiles.forEach((file, index) => {
       formData.append(`images[${index}]`, file);
     });
-  
+
     this.commentsService.createReplayComment(
-      this.idPublication, 
-      this.replyingToCommentId, 
+      this.idPublication,
+      this.replyingToCommentId,
       formData
     ).pipe(
       finalize(() => this.postingReply = false)
@@ -407,8 +389,7 @@ export class CommentsComponent implements OnInit {
       next: (response) => {
         this.alertService.miniAlert('Respuesta publicada', 'success', 2000);
         this.cancelReply();
-        
-        // Actualizar las respuestas del comentario
+
         if (this.listResponseOfComments[this.replyingToCommentId!]) {
           this.loadCommentResponses(this.replyingToCommentId!);
         }
@@ -423,7 +404,6 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  // Método auxiliar para cargar respuestas
   private loadCommentResponses(commentId: string): void {
     this.commentsService.getsCommentsResponse(commentId).subscribe({
       next: (response) => {
@@ -433,11 +413,10 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-   // Método para mostrar reacciones de un comentario
-   showCommentReactionsDialog(commentId: string): void {
+  showCommentReactionsDialog(commentId: string): void {
     this.displayCommentReactionsDialog = true;
     this.loadingCommentReactions = true;
-    
+
     this.reactionsService.getReactionsComment(commentId).subscribe({
       next: (response) => {
         this.commentReactionsData = response.data;
@@ -450,24 +429,10 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-  // Método auxiliar para contar reacciones por tipo en comentarios
-  countCommentReactionsByType(type: string): number {
-    if (!this.commentReactionsData?.all_reactions) return 0;
-    return this.commentReactionsData.all_reactions.filter(r => r.type === type).length;
-  }
-
-  // Nuevas propiedades para el diálogo de reacciones de respuestas
-  public displayReplayReactionsDialog = false;
-  public loadingReplayReactions = false;
-  public replayReactionsData: DataReactionsReplayComment | null = null;
-  public activeReplayReactionTab = 0;
-
-  // Metodo para ver reacciones de respuesta de comentario
-
   showReplayReactionsDialog(replayId: string): void {
     this.displayReplayReactionsDialog = true;
     this.loadingReplayReactions = true;
-    
+
     this.reactionsService.getReplayReactionsComment(replayId).subscribe({
       next: (response) => {
         this.replayReactionsData = response.data;
@@ -480,10 +445,287 @@ export class CommentsComponent implements OnInit {
     });
   }
 
-    // Método auxiliar para contar reacciones por tipo en respuestas
-    countReplayReactionsByType(type: string): number {
-      if (!this.replayReactionsData?.all_reactions) return 0;
-      return this.replayReactionsData.all_reactions.filter(r => r.type === type).length;
+  countCommentReactionsByType(type: string): number {
+    if (!this.commentReactionsData?.all_reactions) return 0;
+    return this.commentReactionsData.all_reactions.filter((r: any) => r.type === type).length;
+  }
+
+  countReplayReactionsByType(type: string): number {
+    if (!this.replayReactionsData?.all_reactions) return 0;
+    return this.replayReactionsData.all_reactions.filter((r: any) => r.type === type).length;
+  }
+
+  hasReactedToComment(commentId: string, type: string): boolean {
+    try {
+      const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+      const currentUserEmail = userLogin.email;
+
+      if (!this.commentReactionsData || !this.commentReactionsData.all_reactions) {
+        return false;
+      }
+
+      return this.commentReactionsData.all_reactions.some(
+        (r: any) => r?.user?.email === currentUserEmail && r.type === type
+      );
+    } catch (error) {
+      console.error('Error checking comment reaction:', error);
+      return false;
+    }
+  }
+
+  hasReactedToReplay(replayId: string, type: string): boolean {
+    try {
+      const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+      const currentUserEmail = userLogin.email;
+
+      if (!this.replayReactionsData || !this.replayReactionsData.all_reactions) {
+        return false;
+      }
+
+      return this.replayReactionsData.all_reactions.some(
+        (r: any) => r?.user?.email === currentUserEmail && r.type === type
+      );
+    } catch (error) {
+      console.error('Error checking replay reaction:', error);
+      return false;
+    }
+  }
+
+  reactionAComment(commentId: string, type: string): void {
+    if (this.reactingCommentId === commentId) return;
+    this.reactingCommentId = commentId;
+
+    const hadPositive = this.hasReactedToComment(commentId, 'positivo');
+    const hadNegative = this.hasReactedToComment(commentId, 'negativo');
+    const isSameReaction = (type === 'positivo' && hadPositive) || (type === 'negativo' && hadNegative);
+
+    const comment = this.listComment?.data?.data.find(c => c.id === commentId);
+    if (!comment) return;
+
+    const originalPositive = comment.positive_reactions_count;
+    const originalNegative = comment.negative_reactions_count;
+
+    this.updateLocalCounts(comment, type, hadPositive, hadNegative);
+    this.updateLocalReactionState(commentId, type, hadPositive, hadNegative, 'comment');
+
+    const action = isSameReaction ?
+      this.reactionsService.removeReactionAComment(commentId) :
+      this.reactionsService.reactionsAComment(commentId, type);
+
+    action.subscribe({
+      next: (response: any) => {
+        if (response.data) {
+          comment.positive_reactions_count = response.data.counts.positive;
+          comment.negative_reactions_count = response.data.counts.negative;
+
+          if (this.commentReactionsData) {
+            this.commentReactionsData = response.data;
+          }
+        }
+        this.reactingCommentId = null;
+      },
+      error: (err) => {
+        comment.positive_reactions_count = originalPositive;
+        comment.negative_reactions_count = originalNegative;
+        this.updateLocalReactionState(commentId, type, hadPositive, hadNegative, 'comment', true);
+        this.handleError(err);
+        this.reactingCommentId = null;
+      }
+    });
+  }
+
+  reactionAReplayComment(replayId: string, type: string): void {
+    if (this.reactingReplayId === replayId) return;
+    this.reactingReplayId = replayId;
+
+    const hadPositive = this.hasReactedToReplay(replayId, 'positivo');
+    const hadNegative = this.hasReactedToReplay(replayId, 'negativo');
+    const isSameReaction = (type === 'positivo' && hadPositive) || (type === 'negativo' && hadNegative);
+
+    let response: any;
+    for (const commentId in this.listResponseOfComments) {
+      response = this.listResponseOfComments[commentId].data.find((r: any) => r.id === replayId);
+      if (response) break;
+    }
+    if (!response) return;
+
+    const originalPositive = response.positive_reactions_count;
+    const originalNegative = response.negative_reactions_count;
+
+    this.updateLocalCounts(response, type, hadPositive, hadNegative);
+    this.updateLocalReactionState(replayId, type, hadPositive, hadNegative, 'replay');
+
+    const action = isSameReaction ?
+      this.reactionsService.removeReactionAReplayComment(replayId) :
+      this.reactionsService.reactionsAReplayComment(replayId, type);
+
+    action.subscribe({
+      next: (responseData: any) => {
+        if (responseData.data) {
+          response.positive_reactions_count = responseData.data.counts.positive;
+          response.negative_reactions_count = responseData.data.counts.negative;
+
+          if (this.replayReactionsData) {
+            this.replayReactionsData = responseData.data;
+          }
+        }
+        this.reactingReplayId = null;
+      },
+      error: (err) => {
+        response.positive_reactions_count = originalPositive;
+        response.negative_reactions_count = originalNegative;
+        this.updateLocalReactionState(replayId, type, hadPositive, hadNegative, 'replay', true);
+        this.handleError(err);
+        this.reactingReplayId = null;
+      }
+    });
+  }
+
+  private updateLocalCounts(
+    item: any,
+    type: string,
+    hadPositive: boolean,
+    hadNegative: boolean,
+    revert = false
+  ): void {
+    if (revert) return;
+
+    if (type === 'positivo') {
+      if (hadPositive) {
+        item.positive_reactions_count--;
+      } else {
+        item.positive_reactions_count++;
+        if (hadNegative) {
+          item.negative_reactions_count--;
+        }
+      }
+    } else if (type === 'negativo') {
+      if (hadNegative) {
+        item.negative_reactions_count--;
+      } else {
+        item.negative_reactions_count++;
+        if (hadPositive) {
+          item.positive_reactions_count--;
+        }
+      }
+    }
+  }
+
+  private updateLocalReactionState(
+    id: string,
+    type: string,
+    hadPositive: boolean,
+    hadNegative: boolean,
+    reactionType: 'comment' | 'replay',
+    revert = false
+  ): void {
+    const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+    const currentUserEmail = userLogin.email;
+
+    if (revert) {
+      this.changeDetector.detectChanges();
+      return;
     }
 
+    let reactionsData: any;
+    if (reactionType === 'comment') {
+      if (!this.commentReactionsData) return;
+      reactionsData = this.commentReactionsData;
+    } else {
+      if (!this.replayReactionsData) return;
+      reactionsData = this.replayReactionsData;
+    }
+
+    if (!reactionsData.all_reactions) return;
+
+    if (type === 'positivo') {
+      if (hadPositive) {
+        reactionsData.all_reactions = reactionsData.all_reactions.filter(
+          (r: any) => !(r.user?.email === currentUserEmail && r.type === 'positivo')
+        );
+        if (reactionsData.positive_reactions) {
+          reactionsData.positive_reactions = reactionsData.positive_reactions.filter(
+            (r: any) => !(r.user?.email === currentUserEmail)
+          );
+        }
+      } else {
+        reactionsData.all_reactions = reactionsData.all_reactions.filter(
+          (r: any) => !(r.user?.email === currentUserEmail && r.type === 'negativo')
+        );
+        if (reactionsData.negative_reactions) {
+          reactionsData.negative_reactions = reactionsData.negative_reactions.filter(
+            (r: any) => !(r.user?.email === currentUserEmail)
+          );
+        }
+
+        const newReaction = {
+          type: 'positivo',
+          user: {
+            email: currentUserEmail,
+            name: userLogin.name,
+            lastname: userLogin.lastname,
+            image: userLogin.image
+          },
+          created_at: new Date().toISOString()
+        };
+
+        reactionsData.all_reactions.push(newReaction);
+        if (reactionsData.positive_reactions) {
+          reactionsData.positive_reactions.push(newReaction);
+        }
+      }
+    } else if (type === 'negativo') {
+      if (hadNegative) {
+        reactionsData.all_reactions = reactionsData.all_reactions.filter(
+          (r: any) => !(r.user?.email === currentUserEmail && r.type === 'negativo')
+        );
+        if (reactionsData.negative_reactions) {
+          reactionsData.negative_reactions = reactionsData.negative_reactions.filter(
+            (r: any) => !(r.user?.email === currentUserEmail)
+          );
+        }
+      } else {
+        reactionsData.all_reactions = reactionsData.all_reactions.filter(
+          (r: any) => !(r.user?.email === currentUserEmail && r.type === 'positivo')
+        );
+        if (reactionsData.positive_reactions) {
+          reactionsData.positive_reactions = reactionsData.positive_reactions.filter(
+            (r: any) => !(r.user?.email === currentUserEmail)
+          );
+        }
+
+        const newReaction = {
+          type: 'negativo',
+          user: {
+            email: currentUserEmail,
+            name: userLogin.name,
+            lastname: userLogin.lastname,
+            image: userLogin.image
+          },
+          created_at: new Date().toISOString()
+        };
+
+        reactionsData.all_reactions.push(newReaction);
+        if (reactionsData.negative_reactions) {
+          reactionsData.negative_reactions.push(newReaction);
+        }
+      }
+    }
+
+    if (reactionType === 'comment' && this.commentReactionsData) {
+      this.commentReactionsData.counts = {
+        positive: reactionsData.positive_reactions?.length || 0,
+        negative: reactionsData.negative_reactions?.length || 0,
+        total: reactionsData.all_reactions.length
+      };
+    } else if (this.replayReactionsData) {
+      this.replayReactionsData.counts = {
+        positive: reactionsData.positive_reactions?.length || 0,
+        negative: reactionsData.negative_reactions?.length || 0,
+        total: reactionsData.all_reactions.length
+      };
+    }
+
+    this.changeDetector.detectChanges();
+  }
 }

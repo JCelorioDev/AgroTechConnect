@@ -34,10 +34,14 @@
 
               <div class="comment-footer">
                 <div class="reactions">
-                  <span class="positive-reactions" (click)="showCommentReactionsDialog(comment.id); $event.stopPropagation()">
+                  <span class="stat-item" 
+                        (click)="reactionAComment(comment.id, 'positivo'); $event.stopPropagation()"
+                        [class.reacted-positive]="hasReactedToComment(comment.id, 'positivo')">
                     <i class="pi pi-thumbs-up"></i> {{ comment.positive_reactions_count }}
                   </span>
-                  <span class="negative-reactions" (click)="showCommentReactionsDialog(comment.id); $event.stopPropagation()">
+                  <span class="stat-item" 
+                        (click)="reactionAComment(comment.id, 'negativo'); $event.stopPropagation()"
+                        [class.reacted-negative]="hasReactedToComment(comment.id, 'negativo')">
                     <i class="pi pi-thumbs-down"></i> {{ comment.negative_reactions_count }}
                   </span>
                 </div>
@@ -52,7 +56,7 @@
           </div>
 
           <!-- Sección de respuestas (acordeón) -->
-          <div *ngIf="activeIndex[comment.id]" class="responses-container">
+          <div  *ngIf="activeIndex[comment.id]" class="responses-container">
             <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
               <div (click)="goToComment(response.id, 'replayComment', idPublication)" class="response-main">
                 <p-avatar [image]="response.user.image?.url"
@@ -85,10 +89,14 @@
 
                   <div class="response-footer">
                     <div class="reactions">
-                      <span class="positive-reactions" (click)="showReplayReactionsDialog(response.id); $event.stopPropagation()">
+                      <span class="stat-item" 
+                            (click)="reactionAReplayComment(response.id, 'positivo'); $event.stopPropagation()"
+                            [class.reacted-positive]="hasReactedToReplay(response.id, 'positivo')">
                         <i class="pi pi-thumbs-up"></i> {{ response.positive_reactions_count }}
                       </span>
-                      <span class="negative-reactions" (click)="showReplayReactionsDialog(response.id); $event.stopPropagation()">
+                      <span class="stat-item" 
+                            (click)="reactionAReplayComment(response.id, 'negativo'); $event.stopPropagation()"
+                            [class.reacted-negative]="hasReactedToReplay(response.id, 'negativo')">
                         <i class="pi pi-thumbs-down"></i> {{ response.negative_reactions_count }}
                       </span>
                     </div>
