@@ -13,9 +13,9 @@ import { provideLottieOptions } from 'ngx-lottie';
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCYQsMe6DNRnXjEbFZ8cy10K7Bz66Qezl8", 
+  apiKey: "AIzaSyCYQsMe6DNRnXjEbFZ8cy10K7Bz66Qezl8",
   authDomain: "auth-login-ionic.firebaseapp.com",
-  projectId: "auth-login-ionic", 
+  projectId: "auth-login-ionic",
 };
 
 
@@ -24,10 +24,14 @@ export const appConfig: ApplicationConfig = {
     theme: {
         preset: Aura,
         options: {
-          darkModeSelector: false 
+          darkModeSelector: false
         }
     }
-  }), provideHttpClient(), provideAnimationsAsync(), provideHttpClient(withInterceptors([tokenInterceptor])), provideFirebaseApp(() => initializeApp(firebaseConfig)),
+  }),
+  provideHttpClient(),
+  provideAnimationsAsync(),
+  provideHttpClient(withInterceptors([tokenInterceptor])),
+  provideFirebaseApp(() => initializeApp(firebaseConfig)),
   provideAuth(() => getAuth()), provideLottieOptions({
     player: () => import('lottie-web'),
   })]

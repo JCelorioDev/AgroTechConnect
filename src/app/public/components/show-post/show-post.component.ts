@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PostService } from '../../../core/services/Post/post.service';
 import { Data } from '../../../core/models/Post/showPostResponse.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -17,7 +17,6 @@ import { CommentsComponent } from '../comments/comments.component';
 import { ReactionsService } from '../../../core/services/Reactions/reactions.service';
 import { Data as DataReactions, ReactionsResponseI } from '../../../core/models/Reactions/reactionsResponse.interface';
 import { TabViewModule } from 'primeng/tabview';
-
 
 @Component({
   selector: 'app-show-post',
@@ -41,25 +40,23 @@ import { TabViewModule } from 'primeng/tabview';
 export class ShowPostComponent implements OnInit {
   private readonly postService = inject(PostService);
   private readonly route = inject(ActivatedRoute);
-  private readonly reactionservice = inject(ReactionsService)
+  private readonly reactionservice = inject(ReactionsService);
   private readonly alertService = inject(AlertService);
-  private readonly domSanitizer = inject(DomSanitizer );
-  public listReactionsPost!:DataReactions;
+  private readonly domSanitizer = inject(DomSanitizer);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  public listReactionsPost!: DataReactions;
 
   public idPublicacion!: string;
   public objPublication!: Data;
   public loading = true;
   public displayCommentsDialog = false;
   public activeImageIndex = 0;
-
-
   public displayReactionsDialog = false;
   public loadingReactions = false;
   public reactionsData: ReactionsResponseI | null = null;
   public activeReactionTab = 0;
+  public isReacting = false;
 
-
-  
   public responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -78,16 +75,7 @@ export class ShowPostComponent implements OnInit {
   ngOnInit(): void {
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
     this.loadPublication();
-    this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
-      next: (response) => {
-        this.reactionsData = response;
-        this.loadingReactions = false;
-      },
-      error: (err) => {
-        this.loadingReactions = false;
-        this.handleError(err);
-      }
-    });
+    this.loadReactions();
   }
 
   loadPublication(): void {
@@ -95,15 +83,27 @@ export class ShowPostComponent implements OnInit {
     this.postService.showPost(this.idPublicacion).subscribe({
       next: (response) => {
         this.objPublication = response.data;
-        // Initialize comments array if not present
         if (!this.objPublication.comments) {
           this.objPublication.comments = [];
         }
         this.loading = false;
-        console.log(this.objPublication.created_at);
       },
       error: (err) => {
         this.loading = false;
+        this.handleError(err);
+      }
+    });
+  }
+
+  loadReactions(): void {
+    this.loadingReactions = true;
+    this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
+      next: (response) => {
+        this.reactionsData = response;
+        this.loadingReactions = false;
+      },
+      error: (err) => {
+        this.loadingReactions = false;
         this.handleError(err);
       }
     });
@@ -117,18 +117,16 @@ export class ShowPostComponent implements OnInit {
     }
   }
 
-  // Añade esta función para manejar el cierre del diálogo
   closeCommentsDialog(): void {
     this.displayCommentsDialog = false;
   }
 
-  // Modifica la función toggleCommentsDialog
   toggleCommentsDialog(): void {
     this.displayCommentsDialog = !this.displayCommentsDialog;
   }
+
   getRangeSeverity(rangeName: string | undefined): "success" | "secondary" | "info" | "warn" | "danger" | "contrast" {
     if (!rangeName) return 'info';
-
     switch(rangeName) {
       case 'Novato': return 'info';
       case 'Aprendiz': return 'success';
@@ -141,8 +139,6 @@ export class ShowPostComponent implements OnInit {
   getAvatarLabel(user: any): string {
     if (!user) return '';
     if (user.image?.url) return '';
-
-    // Return initials if no image
     const name = user.name || '';
     const lastname = user.lastname || '';
     return `${name.charAt(0)}${lastname.charAt(0)}`.toUpperCase();
@@ -152,60 +148,169 @@ export class ShowPostComponent implements OnInit {
     const cleaned = html
       .replace(/<\/?span[^>]*>/g, '')
       .replace(/<(\w+)[^>]*>/g, '<$1>');
-
     return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
 
-
-  // Ver las reacciones de una publicacion
-
   showReactionsDialog(): void {
     this.displayReactionsDialog = true;
-    this.loadingReactions = true;
-    
-    this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
-      next: (response) => {
-        this.reactionsData = response;
-        this.loadingReactions = false;
-      },
-      error: (err) => {
-        this.loadingReactions = false;
-        this.handleError(err);
-      }
-    });
+    this.loadReactions();
   }
 
-    // Método auxiliar para contar reacciones por tipo
-    countReactionsByType(type: string): number {
-      if (!this.reactionsData?.data.all_reactions) return 0;
-      return this.reactionsData.data.all_reactions.filter(r => r.type === type).length;
+  countReactionsByType(type: string): number {
+    if (!this.reactionsData?.data.all_reactions) return 0;
+    return this.reactionsData.data.all_reactions.filter(r => r.type === type).length;
+  }
+
+  hasReacted(reactionType: string): boolean {
+    try {
+      const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+      const currentUserEmail = userLogin.email;
+
+      if (!currentUserEmail || !this.reactionsData?.data?.all_reactions) {
+        return false;
+      }
+
+      return this.reactionsData.data.all_reactions.some(
+        r => r?.user?.email === currentUserEmail && r.type === reactionType
+      );
+    } catch (error) {
+      console.error('Error checking reaction:', error);
+      return false;
+    }
+  }
+
+  reactionAPost(type: string): void {
+    if (this.isReacting) return;
+    this.isReacting = true;
+
+    const hadPositive = this.hasReacted('positivo');
+    const hadNegative = this.hasReacted('negativo');
+    const isSameReaction = (type === 'positivo' && hadPositive) || (type === 'negativo' && hadNegative);
+
+    // Guardar los valores originales para posible reversión
+    const originalPositiveCount = this.objPublication.positive_reactions_count;
+    const originalNegativeCount = this.objPublication.negative_reactions_count;
+
+    // Actualización visual inmediata (incluyendo contadores)
+    if (type === 'positivo') {
+        if (hadPositive) {
+            // Quitar like
+            this.objPublication.positive_reactions_count--;
+        } else {
+            // Agregar like
+            this.objPublication.positive_reactions_count++;
+            if (hadNegative) {
+                this.objPublication.negative_reactions_count--;
+            }
+        }
+    } else if (type === 'negativo') {
+        if (hadNegative) {
+            // Quitar dislike
+            this.objPublication.negative_reactions_count--;
+        } else {
+            // Agregar dislike
+            this.objPublication.negative_reactions_count++;
+            if (hadPositive) {
+                this.objPublication.positive_reactions_count--;
+            }
+        }
     }
 
-    
-    hasReacted(reactionType: string): boolean {
-      try {
-        const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
-        const currentUserEmail = userLogin.email;
-    
-        if (!currentUserEmail || !this.reactionsData?.data?.all_reactions) {
-          return false;
+    // Actualizar lista de reacciones localmente
+    this.updateLocalReactionState(type, hadPositive, hadNegative);
+
+    // Determinar si es para agregar o quitar reacción
+    const action = isSameReaction ? 
+        this.reactionservice.removeReactionAPost(this.idPublicacion) :
+        this.reactionservice.reactionsAPost(this.idPublicacion, type);
+
+    action.subscribe({
+        next: (response: any) => {
+            // Actualizar con datos reales del servidor por si hay diferencias
+            if (response.data) {
+                this.objPublication.positive_reactions_count = response.data.counts.positive;
+                this.objPublication.negative_reactions_count = response.data.counts.negative;
+                this.reactionsData = response.data;
+            }
+            this.isReacting = false;
+            this.changeDetector.detectChanges();
+        },
+        error: (err) => {
+            // Revertir cambios si hay error
+            this.objPublication.positive_reactions_count = originalPositiveCount;
+            this.objPublication.negative_reactions_count = originalNegativeCount;
+            this.updateLocalReactionState(type, hadPositive, hadNegative, true);
+            this.handleError(err);
+            this.isReacting = false;
+            this.changeDetector.detectChanges();
         }
+    });
+}
+
+  private updateLocalReactionState(
+    type: string, 
+    hadPositive: boolean, 
+    hadNegative: boolean, 
+    revert = false
+  ): void {
+    const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+    const currentUserEmail = userLogin.email;
     
-        // Usamos un for...of para poder hacer return inmediato
-        for (const reaction of this.reactionsData.data.all_reactions) {
-          if (reaction?.user?.email === currentUserEmail && reaction.type === reactionType) {
-            console.log(`✅ Usuario ${currentUserEmail} tiene ${reactionType}`); // Debug
-            return true; // Sale inmediatamente si encuentra coincidencia
-          }
-        }
-    
-        return false; // Si no encontró ninguna coincidencia
-      } catch (error) {
-        console.error('Error checking reaction:', error);
-        return false;
+    if (!this.reactionsData?.data.all_reactions) return;
+
+    if (revert) {
+      // Forzar actualización del estado original
+      this.changeDetector.detectChanges();
+      return;
+    }
+
+    // Lógica para actualizar el estado visual localmente
+    if (type === 'positivo') {
+      if (hadPositive) {
+        // Quitar like
+        this.reactionsData.data.all_reactions = this.reactionsData.data.all_reactions.filter(
+          r => !(r.user?.email === currentUserEmail && r.type === 'positivo')
+        );
+      } else {
+        // Agregar like
+        this.reactionsData.data.all_reactions = this.reactionsData.data.all_reactions.filter(
+          r => !(r.user?.email === currentUserEmail && r.type === 'negativo')
+        );
+        this.reactionsData.data.all_reactions.push({
+          type: 'positivo',
+          user: {
+            email: currentUserEmail,
+            name: userLogin.name,
+            lastname: userLogin.lastname,
+            image: userLogin.image
+          },
+          created_at: new Date().toISOString()
+        } as any);
+      }
+    } else if (type === 'negativo') {
+      if (hadNegative) {
+        // Quitar dislike
+        this.reactionsData.data.all_reactions = this.reactionsData.data.all_reactions.filter(
+          r => !(r.user?.email === currentUserEmail && r.type === 'negativo')
+        );
+      } else {
+        // Agregar dislike
+        this.reactionsData.data.all_reactions = this.reactionsData.data.all_reactions.filter(
+          r => !(r.user?.email === currentUserEmail && r.type === 'positivo')
+        );
+        this.reactionsData.data.all_reactions.push({
+          type: 'negativo',
+          user: {
+            email: currentUserEmail,
+            name: userLogin.name,
+            lastname: userLogin.lastname,
+            image: userLogin.image
+          },
+          created_at: new Date().toISOString()
+        } as any);
       }
     }
     
-
-
+    this.changeDetector.detectChanges();
+  }
 }

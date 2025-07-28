@@ -246,19 +246,27 @@
 
 .stat-item {
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all 0.2s;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
 
   &:hover {
-    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &.reacted-positive {
+    color: var(--green-500) !important;
+    font-weight: bold;
+    background: rgba(0, 128, 0, 0.1);
+  }
+
+  &.reacted-negative {
+    color: var(--red-500) !important;
+    font-weight: bold;
+    background: rgba(255, 0, 0, 0.1);
   }
 }
 
-.reacted-positive {
-  color: red !important; 
-  font-weight: bold !important;
-}
-
-.reacted-negative {
-  color: blue !important; 
-  font-weight: bold !important;
+.comment-stat:hover {
+  color: var(--primary-color) !important;
 }

@@ -34,5 +34,40 @@ export class ReactionsService {
     return this.httpClient.get<ReactionsReplayCommentResponse>(`${environment.apiBaseUrl}replaycomments/${idComentario}/reactions`)
   }
 
+  // Dar like/dislike a publicacion
+
+  reactionsAPost(idPublicacion:string, type:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}posts/${idPublicacion}/reactions`, {
+      type : type
+    });
+  }
+
+
+  // Dar like/dislike a comentario de publicacion
+
+  reactionsAComment(idComentario:string, type:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}comments/${idComentario}/reactions`, {
+      type : type
+    });
+  }
+
+  // Dar like/dislike a respuesta de comentario
+
+  reactionsAReplayComment(idComentario:string, type:string){
+    return this.httpClient.post(`${environment.apiBaseUrl}replaycomments/${idComentario}/reactions`, {
+      type : type
+    });
+  }
+
+  // Quitar reaccion de publicacion
+
+  removeReactionAPost(idPublicacion:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}posts/${idPublicacion}/reactions`)
+  }
+
+  // Quitar reaccion de comentario
+
+  // Quitar reaccion de respuesta de comentario
+
 
 }

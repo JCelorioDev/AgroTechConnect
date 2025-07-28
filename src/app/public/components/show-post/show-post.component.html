@@ -58,14 +58,17 @@
       <ng-template pTemplate="footer">
         <div class="post-footer">
           <div class="post-stats">
-            <span class="stat-item" (click)="showReactionsDialog()" 
+          <span class="stat-item" (click)="reactionAPost('positivo')" 
             [class.reacted-positive]="hasReacted('positivo')">
             <i class="pi pi-thumbs-up"></i> {{ objPublication.positive_reactions_count }}
-            </span>
-            <span class="stat-item" (click)="showReactionsDialog()"
-            [class.reacted-negative]="hasReacted('negativo')">
+          </span>
+          <span class="stat-item" (click)="reactionAPost('negativo')"
+                [class.reacted-negative]="hasReacted('negativo')">
             <i class="pi pi-thumbs-down"></i> {{ objPublication.negative_reactions_count }}
-            </span>
+          </span>
+          <span class="stat-item comment-stat" (click)="showReactionsDialog()">
+            <i class="pi pi-eye"></i> Ver reacciones
+          </span>
             <span class="stat-item comment-stat" (click)="toggleCommentsDialog()">
               <i class="pi pi-comments"></i> {{ objPublication.comments_count }}
             </span>
@@ -79,7 +82,7 @@
 
 <!-- Diálogo de comentarios -->
 
-<p-dialog [(visible)]="displayCommentsDialog" 
+<p-dialog [(visible)]="displayCommentsDialog"
           [modal]="true"
           [style]="{ width: '50vw' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
@@ -90,14 +93,14 @@
 
 
 <!-- Nuevo diálogo de reacciones -->
-<p-dialog [(visible)]="displayReactionsDialog" 
+<p-dialog [(visible)]="displayReactionsDialog"
           [modal]="true"
           [style]="{ width: '50vw', maxHeight: '70vh' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           header="Reacciones"
           [draggable]="false"
           [resizable]="false">
-  
+
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
     <div class="loading-spinner" *ngIf="loadingReactions">
