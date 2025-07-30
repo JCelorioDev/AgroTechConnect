@@ -463,9 +463,9 @@ export class PostComponent implements OnInit, OnDestroy {
 
   sanitizeHtml(html: string) {
     const cleaned = html
-      .replace(/<\/?span[^>]*>/g, '')       
-      .replace(/<(\w+)[^>]*>/g, '<$1>');   
-      
+      .replace(/<\/?span[^>]*>/g, '')
+      .replace(/<(\w+)[^>]*>/g, '<$1>');
+
     return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
 }

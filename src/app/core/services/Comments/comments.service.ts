@@ -91,4 +91,16 @@ export class CommentsService {
   createReplayComment(idPublicacion:string, idComentario:string, data: FormData):Observable<CreateReplayCommentI>{
     return this.httpClient.post<CreateReplayCommentI>(`${environment.apiBaseUrl}posts/${idPublicacion}/comments/${idComentario}/replaycomments`, data);
   }
+
+  // Eliminar un comentario
+
+  deleteComment(idComentario:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}comments/${idComentario}`)
+  }
+
+  // Eliminar repsuesta de comentario 
+
+  deleteReplayComment(idComentario:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}replaycomments/${idComentario}`)
+  }
 }

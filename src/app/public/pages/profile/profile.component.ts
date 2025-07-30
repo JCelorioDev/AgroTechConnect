@@ -1013,4 +1013,24 @@ loadMoreMeFollowing(): void {
     this.router.navigate(['menu/publicaciones', this.encryptedId() ?? this.objUser.id]);
   }
 
+  // Eliminar cuenta por administrador
+
+  deleteAccoutUser():void{
+    this.alertService.alertwithDialogs('Estás seguro que deseas borrar esta cuenta?', 'Despues no podrás revertir esta acción', 'warning' ,3000, (() => {
+      this.userService.deleteAccoutAdmin(this.objUser.id).subscribe({
+        next: (s) => {
+          this.router.navigate(['menu/publicaciones']);
+          this.alertService.miniAlert('La cuenta se eliminó correctamente.', 'success' , 3000);
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+              this.alertService.miniAlert(err.error.message, 'error', 3000);
+          }
+        }
+      })
+    }), 'No, deseo', 'Si, deseo')
+  }
+
 }

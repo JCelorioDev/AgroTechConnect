@@ -143,5 +143,11 @@ export class UserService {
     return this.httpClient.get<FollowingResponse>(
         `${environment.apiBaseUrl}users/${idUser}/following?page=${page}`
     );
-}
+  }
+
+  // Eliminar cuenta por administrador
+
+  deleteAccoutAdmin(idUsuario:string){
+    return this.httpClient.delete(`${environment.apiBaseUrl}users/${idUsuario}`)
+  }
 }

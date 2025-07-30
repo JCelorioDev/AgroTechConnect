@@ -4,7 +4,7 @@
   <div class="dialog-content">
     <button *ngIf="emailPostUser() ===  userLogin()?.email" (click)="editPost()" pButton pRipple type="button" icon="pi pi-pencil" label="Editar publicación"
             class="p-button-text dialog-option edit-option"></button>
-    <button *ngIf="emailPostUser() ===  userLogin()?.email" (click)="deletePost()" pButton pRipple type="button" icon="pi pi-trash" label="Borrar publicación"
+    <button *ngIf="emailPostUser() ===  userLogin()?.email || userRole == 'admin'" (click)="deletePost()" pButton pRipple type="button" icon="pi pi-trash" label="Borrar publicación"
             class="p-button-text dialog-option delete-option"></button>
     <button *ngIf="userRole !== 'admin' &&  emailPostUser() !==  userLogin()?.email"  (click)="reportPublication(); visible=false" pButton pRipple type="button" icon="pi pi-flag-fill" label="Denunciar publicación"
              class="p-button-text dialog-option delete-option"></button>

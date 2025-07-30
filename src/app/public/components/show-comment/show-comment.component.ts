@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
 import { ViewCommentResponse } from '../../../core/models/Comments/viewCommentResponse.interface';
 import { AvatarModule } from 'primeng/avatar';
@@ -56,6 +56,11 @@ export class ShowCommentComponent implements OnInit {
   public editForm!: FormGroup;
   public uploadedFiles: any[] = [];
   public isEditing = false;
+  private readonly router = inject(Router);
+  private readonly location = inject(Location);
+  private segments!: string[];
+
+
   public responsiveOptions: any[] = [
     {
       breakpoint: '1024px',
@@ -71,8 +76,12 @@ export class ShowCommentComponent implements OnInit {
     }
   ];
 
+  public rolUser !:string;
+
   constructor(){
     this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
+    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!).roles[0].name;
+    console.log(this.rolUser);
     this.initEditForm();
   }
 
@@ -83,7 +92,7 @@ export class ShowCommentComponent implements OnInit {
     });
   }
 
-  
+
   ngOnInit(): void {
     this.idComentario = this.route.snapshot.paramMap.get('idPublicacion')!;
     this.idPublicacion = this.route.snapshot.paramMap.get('idComentario')!;
@@ -186,6 +195,39 @@ export class ShowCommentComponent implements OnInit {
         this.handleError(err);
       }
     });
+  }
+
+  // Borrar un comentario (Admin)
+
+
+  deleteComment():void{
+
+    const baseRoute = this.router.url.split('?')[0];
+    this.segments = baseRoute.split('/');
+
+    this.alertService.alertwithDialogs('Estás seguro que deseas eliminar este comentario?', 'Después no podrás revertir esta acción', 'warning', 3000, (() => {
+      if (this.commentsService.getOpc === 'replayComment') {
+        this.commentsService.deleteReplayComment(this.idComentario).subscribe({
+          next: (s) => {
+            this.alertService.miniAlert('El comentario se eliminó correctamente', 'success', 3000);
+            this.location.back();
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        })
+      }else{
+        this.commentsService.deleteComment(this.idComentario).subscribe({
+          next: (s) => {
+            this.alertService.miniAlert('El comentario se eliminó correctamente', 'success', 3000);
+            this.location.back();
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        })
+      }
+    }))
   }
 
 }

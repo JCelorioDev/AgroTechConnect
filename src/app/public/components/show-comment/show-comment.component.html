@@ -7,14 +7,24 @@
   <!-- Contenido principal -->
   <div *ngIf="!loading && commentData?.data" class="comment-content">
     <div *ngIf="objUser.email === commentData?.data?.user?.email" class="edit-comment-actions">
-      <button pButton 
-              icon="pi pi-pencil" 
+      <button pButton
+              icon="pi pi-pencil"
               class="p-button-rounded p-button-text edit-button"
-              pTooltip="Editar comentario" 
+              pTooltip="Editar comentario"
               tooltipPosition="top"
               (click)="showEditDialog()"></button>
     </div>
-    
+
+    <div *ngIf="rolUser === 'admin'" class="edit-comment-actions">
+      <button pButton
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-text edit-button"
+              pTooltip="Eliminar comentario"
+              tooltipPosition="top"
+              (click)="deleteComment()"
+              ></button>
+    </div>
+
     <!-- Card del comentario -->
     <p-card class="comment-card">
       <!-- Header con información del usuario -->
@@ -93,20 +103,20 @@
     <ng-template pTemplate="header">
       <h4>Editar comentario</h4>
     </ng-template>
-    
+
     <form [formGroup]="editForm">
       <div class="p-fluid">
         <div class="p-field">
           <label for="comment">Comentario</label>
           <textarea id="comment" formControlName="comment" rows="5"></textarea>
         </div>
-        
+
         <div class="p-field">
           <label for="images">Imágenes (opcional)</label>
-          <p-fileUpload id="images" 
-                       name="images" 
-                       [multiple]="true" 
-                       accept="image/*" 
+          <p-fileUpload id="images"
+                       name="images"
+                       [multiple]="true"
+                       accept="image/*"
                        [maxFileSize]="1000000"
                        (onUpload)="onUpload($event)"
                        [showUploadButton]="false"
@@ -117,20 +127,20 @@
         </div>
       </div>
     </form>
-    
+
     <ng-template pTemplate="footer">
-      <button pButton pRipple 
-              type="button" 
-              label="Cancelar" 
-              icon="pi pi-times" 
-              class="p-button-text" 
+      <button pButton pRipple
+              type="button"
+              label="Cancelar"
+              icon="pi pi-times"
+              class="p-button-text"
               (click)="editDialogVisible = false; uploadedFiles = []">
       </button>
-      <button pButton pRipple 
-              type="button" 
-              label="Guardar cambios" 
-              icon="pi pi-check" 
-              class="p-button-success" 
+      <button pButton pRipple
+              type="button"
+              label="Guardar cambios"
+              icon="pi pi-check"
+              class="p-button-success"
               (click)="editComment()"
               [disabled]="editForm.invalid || isEditing">
               <i *ngIf="isEditing" class="pi pi-spinner pi-spin"></i>
