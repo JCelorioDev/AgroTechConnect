@@ -31,8 +31,10 @@ export class CommentsService {
 
   // Obtener respuesta de comentarios
 
-  getsCommentsResponse(idComentario:string):Observable<ResponseOfCommentsI>{
-    return this.httpClient.get<ResponseOfCommentsI>(`${environment.apiBaseUrl}comments/${idComentario}/replaycomments`)
+  getsCommentsResponse(idComentario: string, page: number = 1): Observable<ResponseOfCommentsI> {
+    return this.httpClient.get<ResponseOfCommentsI>(
+      `${environment.apiBaseUrl}comments/${idComentario}/replaycomments?page=${page}`
+    );
   }
 
   // Ver un comentario

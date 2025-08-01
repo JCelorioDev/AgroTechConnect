@@ -148,3 +148,59 @@
     </ng-template>
   </p-dialog>
 </div>
+
+
+<div class="responses-section">
+  <h4>Respuestas ({{ commentData?.data?.replies_count || 0 }})</h4>
+  
+  <div *ngIf="loadingResponses" class="loading-spinner-small">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!loadingResponses">
+    <div *ngIf="responses.length === 0" class="no-responses">
+      No hay respuestas aún.
+    </div>
+
+    <div *ngFor="let response of responses" class="response-item">
+      <div class="response-header">
+        <p-avatar [image]="response.user.image?.url"
+                 [label]="getAvatarLabel(response.user)"
+                 size="normal"
+                 shape="circle"></p-avatar>
+        <div class="response-user-info">
+          <span class="user-name">{{ response.user.name }} {{ response.user.lastname }}</span>
+          <span class="response-date">{{ response.created_at | date:'medium' }}</span>
+        </div>
+      </div>
+      
+      <div class="response-content">
+        <p>{{ response.comment }}</p>
+        
+        <!-- Galería de imágenes para respuestas -->
+        <div *ngIf="response.images?.length > 0" class="response-images">
+          <img *ngFor="let img of response.images" 
+               [src]="img.url" 
+               alt="Imagen de respuesta"
+               class="response-image">
+        </div>
+      </div>
+      
+      <div class="response-footer">
+        <span class="stat-item">
+          <i class="pi pi-thumbs-up"></i> {{ response.positive_reactions_count || 0 }}
+        </span>
+        <span class="stat-item">
+          <i class="pi pi-thumbs-down"></i> {{ response.negative_reactions_count || 0 }}
+        </span>
+      </div>
+    </div>
+
+    <p-paginator *ngIf="totalResponses > rows"
+                [rows]="rows"
+                [totalRecords]="totalResponses"
+                (onPageChange)="loadResponses($event?.page! + 1)"
+                styleClass="response-paginator">
+    </p-paginator>
+  </div>
+</div>

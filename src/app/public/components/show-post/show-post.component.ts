@@ -50,7 +50,7 @@ export class ShowPostComponent implements OnInit {
   public idPublicacion!: string;
   public objPublication!: Data;
   public loading = true;
-  public displayCommentsDialog = false;
+  public displayCommentsDialog = true;
   public activeImageIndex = 0;
   public displayReactionsDialog = false;
   public loadingReactions = false;
@@ -319,5 +319,12 @@ export class ShowPostComponent implements OnInit {
 
   goProfileByID(idUsuario:string){
     this.router.navigate(['menu/perfil', idUsuario]);
+  }
+
+  scrollToComments(): void {
+    const commentsSection = document.querySelector('.comments-section');
+    if (commentsSection) {
+      commentsSection.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 }

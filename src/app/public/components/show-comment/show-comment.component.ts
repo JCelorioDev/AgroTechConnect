@@ -3,6 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
 import { ViewCommentResponse } from '../../../core/models/Comments/viewCommentResponse.interface';
+import { Data } from '../../../core/models/Comments/responseOfComments.interface';
 import { AvatarModule } from 'primeng/avatar';
 import { TagModule } from 'primeng/tag';
 import { DividerModule } from 'primeng/divider';
@@ -17,6 +18,7 @@ import { EditCommentInPostI } from '../../../core/models/Comments/editCommentInP
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FileUploadModule } from 'primeng/fileupload';
+import { Paginator } from "primeng/paginator";
 
 
 @Component({
@@ -35,8 +37,9 @@ import { FileUploadModule } from 'primeng/fileupload';
     FormsModule,
     ReactiveFormsModule,
     InputTextModule,
-    FileUploadModule
-  ],
+    FileUploadModule,
+    Paginator
+],
   templateUrl: './show-comment.component.html',
   styleUrl: './show-comment.component.scss'
 })
@@ -59,6 +62,7 @@ export class ShowCommentComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly location = inject(Location);
   private segments!: string[];
+  private listReplayComments!:Data;
 
 
   public responsiveOptions: any[] = [
@@ -97,6 +101,7 @@ export class ShowCommentComponent implements OnInit {
     this.idComentario = this.route.snapshot.paramMap.get('idPublicacion')!;
     this.idPublicacion = this.route.snapshot.paramMap.get('idComentario')!;
     this.loadComment();
+    this.loadResponses();
   }
 
   loadComment(): void {
@@ -229,5 +234,31 @@ export class ShowCommentComponent implements OnInit {
       }
     }))
   }
+
+  public loadingResponses = false;
+  public responses: any[] = [];
+  public currentPage = 1;
+  public totalResponses = 0;
+  public rows = 5;
+
+  // Ver respuesta de comentarios 
+
+  loadResponses(page: number = 1): void {
+    this.loadingResponses = true;
+    this.commentsService.getsCommentsResponse(this.idComentario, page).subscribe({
+      next: (response) => {
+        this.responses = response.data.data;
+        this.totalResponses = response.data.total;
+        this.loadingResponses = false;
+      },
+      error: (err) => {
+        this.loadingResponses = false;
+        this.handleError(err);
+      }
+    });
+  }
+
+  
+  
 
 }

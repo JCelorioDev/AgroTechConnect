@@ -77,19 +77,12 @@
       </ng-template>
     </p-card>
   </div>
+
+  <div *ngIf="displayCommentsDialog" class="comments-section">
+    <public-comments [idPublication]="idPublicacion"></public-comments>
+  </div>
 </div>
 
-
-<!-- Diálogo de comentarios -->
-
-<p-dialog [(visible)]="displayCommentsDialog"
-          [modal]="true"
-          [style]="{ width: '50vw' }"
-          [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
-          header="Comentarios"
-          (onHide)="closeCommentsDialog()">
-  <public-comments (closeDialog)="closeCommentsDialog()"  [idPublication]="idPublicacion"></public-comments>
-</p-dialog>
 
 
 <!-- Nuevo diálogo de reacciones -->
