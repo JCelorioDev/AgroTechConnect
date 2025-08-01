@@ -187,7 +187,7 @@ export class CommentsComponent implements OnInit {
 
   goToComment(idComentario: string, opc: string, idPublicacion: string): void {
     this.commentsService.setOpc(opc);
-    this.router.navigate(['menu/mostrar-comentario', idComentario, idPublicacion]);
+    this.router.navigate(['menu/mostrar-comentario', idPublicacion, idComentario]);
   }
 
   denuncieComment(idComentario: string): void {
