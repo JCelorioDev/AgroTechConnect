@@ -270,3 +270,45 @@
 .comment-stat:hover {
   color: var(--primary-color) !important;
 }
+
+.reaction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; 
+  padding: 0.25rem 0; 
+
+  .user-meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1; 
+
+    .user-name {
+      font-size: 1rem; 
+      color: #333;
+      margin: 0;
+    }
+
+    .post-date {
+      font-size: 0.75rem;
+      color: #6c757d;
+      margin-top: 0.5rem; 
+      letter-spacing: 0.02em; 
+    }
+  }
+}
+
+
+@media (max-width: 576px) {
+  .reaction-item {
+    gap: 0.5rem;
+    
+    .user-meta {
+      .user-name {
+        font-size: 0.9rem;
+      }
+      .post-date {
+        font-size: 0.7rem;
+      }
+    }
+  }
+}

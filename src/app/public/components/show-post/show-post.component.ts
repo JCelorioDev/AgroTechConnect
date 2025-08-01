@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { PostService } from '../../../core/services/Post/post.service';
 import { Data } from '../../../core/models/Post/showPostResponse.interface';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
@@ -44,6 +44,7 @@ export class ShowPostComponent implements OnInit {
   private readonly alertService = inject(AlertService);
   private readonly domSanitizer = inject(DomSanitizer);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly router = inject(Router);
   public listReactionsPost!: DataReactions;
 
   public idPublicacion!: string;
@@ -220,7 +221,7 @@ export class ShowPostComponent implements OnInit {
     this.updateLocalReactionState(type, hadPositive, hadNegative);
 
     // Determinar si es para agregar o quitar reacción
-    const action = isSameReaction ? 
+    const action = isSameReaction ?
         this.reactionservice.removeReactionAPost(this.idPublicacion) :
         this.reactionservice.reactionsAPost(this.idPublicacion, type);
 
@@ -248,14 +249,14 @@ export class ShowPostComponent implements OnInit {
 }
 
   private updateLocalReactionState(
-    type: string, 
-    hadPositive: boolean, 
-    hadNegative: boolean, 
+    type: string,
+    hadPositive: boolean,
+    hadNegative: boolean,
     revert = false
   ): void {
     const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
     const currentUserEmail = userLogin.email;
-    
+
     if (!this.reactionsData?.data.all_reactions) return;
 
     if (revert) {
@@ -310,7 +311,13 @@ export class ShowPostComponent implements OnInit {
         } as any);
       }
     }
-    
+
     this.changeDetector.detectChanges();
+  }
+
+  // Ir al perfil de usuario por ID
+
+  goProfileByID(idUsuario:string){
+    this.router.navigate(['menu/perfil', idUsuario]);
   }
 }

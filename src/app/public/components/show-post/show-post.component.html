@@ -118,7 +118,7 @@
                        size="large"
                        shape="circle"></p-avatar>
               <div class="reaction-details">
-                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span style="cursor: pointer;" (click)="goProfileByID(reaction?.user?.id!)" class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
                 <span class="reaction-type" [ngClass]="{
                   'positive': reaction.type === 'positive',
                   'negative': reaction.type === 'negative'
@@ -138,9 +138,11 @@
                        [label]="getAvatarLabel(reaction.user)"
                        size="large"
                        shape="circle"></p-avatar>
-              <div class="reaction-details">
-                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
-                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              <div class="user-meta">
+                <span style="cursor: pointer;" 
+                      (click)="goProfileByID(reaction?.user?.id!)" 
+                      class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="post-date">{{ reaction.created_at | date:'MMM d, y, h:mm:ss a' }}</span>
               </div>
             </div>
           </div>
@@ -153,9 +155,11 @@
                        [label]="getAvatarLabel(reaction.user)"
                        size="large"
                        shape="circle"></p-avatar>
-              <div class="reaction-details">
-                <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
-                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+              <div class="user-meta">
+                <span style="cursor: pointer;" 
+                      (click)="goProfileByID(reaction?.user?.id!)" 
+                      class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
+                <span class="post-date">{{ reaction.created_at | date:'MMM d, y, h:mm:ss a' }}</span>
               </div>
             </div>
           </div>
