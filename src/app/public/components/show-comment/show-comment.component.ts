@@ -80,7 +80,7 @@ export class ShowCommentComponent implements OnInit {
 
   constructor(){
     this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
-    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!).roles[0].name;
+    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!)?.roles[0]?.name;
     console.log(this.rolUser);
     this.initEditForm();
   }
