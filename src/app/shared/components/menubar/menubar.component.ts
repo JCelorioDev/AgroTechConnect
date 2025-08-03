@@ -231,11 +231,7 @@ export class MenubarComponent {
           next: (s) => {
             localStorage.removeItem('userLogin');
             this.isLoadingLogout = false;
-            Swal.fire({
-              title: "Aviso",
-              text: "Se cerró sesión correctamente.",
-              icon: "success"
-            });
+            this.alertService.miniAlert('Se cerró sesión correctamente.', 'success', 3000);
             this.visible = false;
             this.router.navigate(['menu/publicaciones']);
           },

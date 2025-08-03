@@ -364,44 +364,99 @@ export class CommentsComponent implements OnInit {
 
   postReply(): void {
     if (!this.replyingToCommentId) return;
-
+  
     if (!this.replyCommentText.trim() && this.replyUploadedFiles.length === 0) {
       this.alertService.miniAlert('La respuesta no puede estar vacía', 'warning', 3000);
       return;
     }
-
+  
     this.postingReply = true;
-
+  
     const formData = new FormData();
     formData.append('comment', this.replyCommentText);
-
+  
+    // Adjuntar imágenes correctamente
     this.replyUploadedFiles.forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
+      formData.append(`images`, file); // Cambiado a usar el mismo nombre para múltiples archivos
     });
-
+  
     this.commentsService.createReplayComment(
       this.idPublication,
       this.replyingToCommentId,
       formData
-    ).pipe(
-      finalize(() => this.postingReply = false)
     ).subscribe({
       next: (response) => {
-        this.alertService.miniAlert('Respuesta publicada', 'success', 2000);
-        this.cancelReply();
-
-        if (this.listResponseOfComments[this.replyingToCommentId!]) {
-          this.loadCommentResponses(this.replyingToCommentId!);
+        if (response.data) {
+          // Asegurar compatibilidad con la interfaz
+          const newResponse: ResponseDatum = {
+            ...response.data,
+            reactions_count: (response.data.positive_reactions_count || 0) + (response.data.negative_reactions_count || 0),
+            images: response.data.images || [],
+            user: response.data.user || this.getCurrentUser()
+          };
+  
+          // Actualización local segura
+          if (this.listResponseOfComments[this.replyingToCommentId!]) {
+            this.listResponseOfComments[this.replyingToCommentId!].data.unshift(newResponse);
+            this.listResponseOfComments[this.replyingToCommentId!].total++;
+            
+            const parentComment = this.listComment?.data?.data.find(c => c.id === this.replyingToCommentId);
+            if (parentComment) {
+              parentComment.replies_count = (parentComment.replies_count || 0) + 1;
+            }
+          }
         }
+        
+        this.resetReplyState();
       },
       error: (err) => {
-        if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
-        } else {
-          this.alertService.miniAlert(err.error.message, 'error', 3000);
-        }
+        this.handleReplyError(err);
       }
     });
+  }
+
+  private getCurrentUser(): any {
+    try {
+      const userLogin = JSON.parse(localStorage.getItem('userLogin') || '{}');
+      return {
+        id: userLogin.id,
+        name: userLogin.name,
+        lastname: userLogin.lastname,
+        image: userLogin.image,
+        ranges: userLogin.ranges || []
+      };
+    } catch (error) {
+      console.error('Error getting current user:', error);
+      return {
+        id: 'unknown',
+        name: 'Usuario',
+        lastname: '',
+        image: null,
+        ranges: []
+      };
+    }
+  }
+
+  private resetReplyState(): void {
+    this.postingReply = false;
+    this.replyingToCommentId = null;
+    this.replyCommentText = '';
+    this.replyUploadedFiles = [];
+    this.replyPreviewImages = [];
+    this.changeDetector.detectChanges();
+  }
+  
+  private handleReplyError(err: any): void {
+    this.postingReply = false;
+    if (err.status === 422) {
+      this.alertService.showValidationErrors(err.error);
+    } else {
+      this.alertService.miniAlert(
+        err.error?.message || 'Error al publicar la respuesta', 
+        'error', 
+        3000
+      );
+    }
   }
 
   private loadCommentResponses(commentId: string): void {

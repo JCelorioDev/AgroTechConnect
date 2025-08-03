@@ -224,70 +224,81 @@ export class ShowPostComponent implements OnInit {
   reactionAPost(type: string): void {
     if (this.isReacting) return;
     this.isReacting = true;
-
+  
     const hadPositive = this.hasReacted('positivo');
     const hadNegative = this.hasReacted('negativo');
     const isSameReaction = (type === 'positivo' && hadPositive) || (type === 'negativo' && hadNegative);
-
+  
     // Guardar los valores originales para posible reversión
     const originalPositiveCount = this.objPublication.positive_reactions_count;
     const originalNegativeCount = this.objPublication.negative_reactions_count;
-
+  
     // Actualización visual inmediata (incluyendo contadores)
     if (type === 'positivo') {
-        if (hadPositive) {
-            // Quitar like
-            this.objPublication.positive_reactions_count--;
-        } else {
-            // Agregar like
-            this.objPublication.positive_reactions_count++;
-            if (hadNegative) {
-                this.objPublication.negative_reactions_count--;
-            }
-        }
-    } else if (type === 'negativo') {
+      if (hadPositive) {
+        // Quitar like
+        this.objPublication.positive_reactions_count--;
+      } else {
+        // Agregar like
+        this.objPublication.positive_reactions_count++;
         if (hadNegative) {
-            // Quitar dislike
-            this.objPublication.negative_reactions_count--;
-        } else {
-            // Agregar dislike
-            this.objPublication.negative_reactions_count++;
-            if (hadPositive) {
-                this.objPublication.positive_reactions_count--;
-            }
+          this.objPublication.negative_reactions_count--;
         }
+      }
+    } else if (type === 'negativo') {
+      if (hadNegative) {
+        // Quitar dislike
+        this.objPublication.negative_reactions_count--;
+      } else {
+        // Agregar dislike
+        this.objPublication.negative_reactions_count++;
+        if (hadPositive) {
+          this.objPublication.positive_reactions_count--;
+        }
+      }
     }
-
+  
     // Actualizar lista de reacciones localmente
     this.updateLocalReactionState(type, hadPositive, hadNegative);
-
+  
     // Determinar si es para agregar o quitar reacción
     const action = isSameReaction ?
-        this.reactionservice.removeReactionAPost(this.idPublicacion) :
-        this.reactionservice.reactionsAPost(this.idPublicacion, type);
-
+      this.reactionservice.removeReactionAPost(this.idPublicacion) :
+      this.reactionservice.reactionsAPost(this.idPublicacion, type);
+  
     action.subscribe({
-        next: (response: any) => {
-            // Actualizar con datos reales del servidor por si hay diferencias
-            if (response.data) {
-                this.objPublication.positive_reactions_count = response.data.counts.positive;
-                this.objPublication.negative_reactions_count = response.data.counts.negative;
-                this.reactionsData = response.data;
-            }
-            this.isReacting = false;
-            this.changeDetector.detectChanges();
-        },
-        error: (err) => {
-            // Revertir cambios si hay error
-            this.objPublication.positive_reactions_count = originalPositiveCount;
-            this.objPublication.negative_reactions_count = originalNegativeCount;
-            this.updateLocalReactionState(type, hadPositive, hadNegative, true);
-            this.handleError(err);
-            this.isReacting = false;
-            this.changeDetector.detectChanges();
+      next: (response: any) => {
+        // Actualizar con datos reales del servidor
+        if (response && response.data) {
+          // Verificar si la respuesta tiene la estructura esperada
+          if (response.data.counts) {
+            this.objPublication.positive_reactions_count = response.data.counts.positive || this.objPublication.positive_reactions_count;
+            this.objPublication.negative_reactions_count = response.data.counts.negative || this.objPublication.negative_reactions_count;
+          }
+          
+          // Actualizar lista completa de reacciones solo si existe
+          if (response.data.all_reactions) {
+            this.reactionsData = response.data;
+          }
+        } else {
+          // Si no hay data en la respuesta, recargar las reacciones
+          this.loadReactions();
         }
+        
+        this.isReacting = false;
+        this.changeDetector.detectChanges();
+      },
+      error: (err) => {
+        // Revertir cambios si hay error
+        this.objPublication.positive_reactions_count = originalPositiveCount;
+        this.objPublication.negative_reactions_count = originalNegativeCount;
+        this.updateLocalReactionState(type, hadPositive, hadNegative, true);
+        this.handleError(err);
+        this.isReacting = false;
+        this.changeDetector.detectChanges();
+      }
     });
-}
+  }
 
   private updateLocalReactionState(
     type: string,
