@@ -7,6 +7,7 @@ import { noVerificationGuard } from "../core/guards/no-verification.guard";
 import { ProfileComponent } from "./pages/profile/profile.component";
 import { ShowPostComponent } from "./components/show-post/show-post.component";
 import { ShowCommentComponent } from "./components/show-comment/show-comment.component";
+import { ShowReplayCommentComponent } from "./components/show-replay-comment/show-replay-comment.component";
 
 
 
@@ -49,6 +50,10 @@ export default [
       {
         path: 'mostrar-comentario/:idPublicacion/:idComentario',
         component: ShowCommentComponent
+      },
+      {
+        path: 'respuesta-comentario/:idReplayComment',
+        component: ShowReplayCommentComponent
       },
       ...privateRoutes
     ]

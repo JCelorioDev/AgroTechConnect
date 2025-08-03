@@ -663,4 +663,10 @@ export class ShowCommentComponent implements OnInit {
     if (user.image?.url) return '';
     return (user.name.charAt(0) + user.lastname.charAt(0)).toUpperCase();
   }
+
+  // Ir a respuesta de comentario por el idComentario
+
+  goReplayComment(idReplayComment:string){
+    this.router.navigate(['menu/respuesta-comentario', idReplayComment])
+  }
 }

@@ -175,7 +175,7 @@
       No hay respuestas aún.
     </div>
 
-    <div *ngFor="let response of responses" class="response-item">
+    <div (click)="goReplayComment(response.id)" *ngFor="let response of responses" class="response-item">
       <div class="response-header">
         <p-avatar [image]="response.user.image?.url"
                  [label]="getAvatarLabel(response.user)"
