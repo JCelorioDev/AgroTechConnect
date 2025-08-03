@@ -483,25 +483,7 @@ export class MenubarComponent {
     }
   }
 
-  // Marcar notificación como leída
-  markAsRead(notification: Notification): void {
-    if (!notification.is_read) {
-      this.notificationsService.markAsRead(notification.id).subscribe({
-        next: () => {
-          this.loadUnreadNotifications();
-          this.loadNotifications();
-          this.alertService.miniAlert('La notificación se marcó como leida correctamente.', 'success', 3000);
-        },
-        error: (err) => {
-          if (err.status === 422) {
-            this.alertService.showValidationErrors(err.error);
-          }else{
-            this.alertService.miniAlert(err.error.message, 'error', 3000);
-          }
-        }
-      });
-    }
-  }
+
 
   // Ir al componente dde ver notificacion
 

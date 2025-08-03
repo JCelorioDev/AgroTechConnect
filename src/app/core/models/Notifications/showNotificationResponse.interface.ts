@@ -13,7 +13,7 @@ export interface ShowNotificationResponseData {
   is_read:    boolean;
   created_at: string;
   updated_at: string;
-  read_at:    null;
+  read_at: string | null | undefined;
 }
 
 export interface DataData {

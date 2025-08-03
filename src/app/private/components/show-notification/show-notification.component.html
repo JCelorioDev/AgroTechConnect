@@ -1,78 +1,157 @@
-<div class="notification-container">
+<div class="notification-view" pAnimateOnScroll enterClass="fadein">
   <!-- Spinner de carga -->
-  <div class="loading-spinner" *ngIf="loading">
-    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  <div class="loading-overlay" *ngIf="loading">
+    <p-progressSpinner 
+      strokeWidth="4" 
+      animationDuration=".5s"
+      styleClass="spinner"
+      [style]="{width: '50px', height: '50px'}">
+    </p-progressSpinner>
   </div>
 
-  <!-- Contenido principal -->
-  <div *ngIf="!loading && objNotification" class="notification-content">
-    <div class="notification-header">
-      <div class="notification-badge">
+  <!-- Tarjeta de notificación -->
+  <div *ngIf="!loading && objNotification" class="notification-card" [ngClass]="{'unread': !objNotification.is_read}">
+    <!-- Encabezado con badge animado -->
+    <div class="notification-header" pTooltip="Tipo de notificación" [tooltipPosition]="'top'">
+      <div class="notification-badge" [ngStyle]="{'background': 'var(--' + getNotificationSeverity(objNotification.type) + '-100)'}">
         <i [class]="getNotificationIcon(objNotification.type)" 
-           class="notification-icon"
-           [ngStyle]="{'color': 'var(--' + getNotificationSeverity(objNotification.type) + '-500)'}"></i>
+           [ngStyle]="{'color': 'var(--' + getNotificationSeverity(objNotification.type) + '-600)'}">
+        </i>
       </div>
+      
       <div class="notification-meta">
         <span class="notification-type">{{ objNotification.type | titlecase }}</span>
-        <span class="notification-date">{{ formatDate(objNotification.created_at) }}</span>
+        <span class="notification-date">
+          <i class="pi pi-clock"></i>
+          {{ getTimeSince(objNotification.created_at) }}
+        </span>
       </div>
+      
+      <p-badge *ngIf="!objNotification.is_read && !markAsReadLoading" 
+               value="Nuevo" 
+               severity="danger"
+               class="unread-badge">
+      </p-badge>
+      <p-badge *ngIf="markAsReadLoading" 
+               value="Procesando..." 
+               severity="info"
+               class="unread-badge">
+      </p-badge>
     </div>
 
+    <!-- Cuerpo de la notificación -->
     <div class="notification-body">
-      <div class="sender-card" (click)="navigateToProfile()">
+      <!-- Información del remitente -->
+      <div class="sender-info" (click)="navigateToProfile()" pRipple>
         <p-avatar [image]="objNotification.data.sender_avatar" 
-                 [label]="objNotification.data.sender_name?.charAt(0)!" 
+                 [label]="objNotification.data.sender_name?.charAt(0) || '?'" 
                  size="xlarge" 
                  shape="circle"
-                 class="sender-avatar"></p-avatar>
-        <div class="sender-info">
-          <span class="sender-name">{{ objNotification.data.sender_name }}</span>
-          <span class="sender-action">ha interactuado con tu publicación</span>
+                 [style]="{
+                   'width': '3.5rem',
+                   'height': '3.5rem',
+                   'font-size': '1.5rem'
+                 }"
+                 class="sender-avatar">
+        </p-avatar>
+        
+        <div class="sender-details">
+          <h3 class="sender-name">{{ objNotification.data.sender_name }}</h3>
+          <p class="sender-action">{{ objNotification.message }}</p>
         </div>
       </div>
 
-      <div class="notification-message">
-        <p class="main-message">{{ objNotification.message }}</p>
-        <div *ngIf="objNotification.data.message" class="quote-message">
+      <!-- Mensaje destacado -->
+      <div *ngIf="objNotification.data.message" class="highlighted-message" pAnimateOnScroll enterClass="fadeinleft">
+        <div class="quote-icon">
           <i class="pi pi-quote-left"></i>
-          <p>{{ objNotification.data.message }}</p>
-          <i class="pi pi-quote-right"></i>
         </div>
+        <p class="message-content">{{ objNotification.data.message }}</p>
       </div>
 
-      <div *ngIf="objNotification.data.post_title" class="post-card" (click)="navigateToPost()">
-        <div class="post-content">
+      <!-- Previsualización de publicación -->
+      <div *ngIf="objNotification.data.post_title" 
+           class="post-preview" 
+           (click)="navigateToPost()" 
+           pRipple
+           pAnimateOnScroll 
+           enterClass="fadeinup">
+        <div class="post-image-placeholder">
+          <i class="pi pi-image"></i>
+        </div>
+        <div class="post-details">
           <h4>{{ objNotification.data.post_title }}</h4>
-          <p class="post-excerpt">"{{ objNotification.data.message || 'Ver publicación...' }}"</p>
           <div class="post-meta">
-            <span class="post-type">{{ objNotification.data.type | titlecase }}</span>
-            <span class="post-date">{{ formatDate(objNotification.created_at) }}</span>
+            <span class="post-type">
+              <i class="pi pi-tag"></i>
+              {{ objNotification.data.type | titlecase }}
+            </span>
+            <span class="post-date">
+              <i class="pi pi-calendar"></i>
+              {{ formatDate(objNotification.created_at) }}
+            </span>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- Acciones -->
     <div class="notification-actions">
-      <button pButton pRipple 
-              *ngIf="objNotification.data.post_id"
-              label="Ver Publicación" 
-              icon="pi pi-external-link" 
-              class="p-button-outlined action-button"
-              (click)="navigateToPost()"></button>
-      <button pButton pRipple 
-              label="Ver Perfil" 
-              icon="pi pi-user" 
-              class="action-button"
-              (click)="navigateToProfile()"></button>
-    </div>
-
-    <div class="notification-status">
-      <p-tag [value]="objNotification.is_read ? 'Leída' : 'No leída'" 
-             [severity]="objNotification.is_read ? 'success' : 'warn'"
-             icon="pi pi-circle-fill"></p-tag>
-      <small *ngIf="objNotification.read_at" class="read-date">
-        {{ formatDate(objNotification.read_at) }}
-      </small>
+      <button pButton 
+              icon="pi pi-ellipsis-h" 
+              class="p-button-rounded p-button-text more-actions"
+              (click)="displayActionsDialog = true">
+      </button>
+      
+      <div class="primary-actions">
+        <button pButton 
+                *ngIf="objNotification.data.post_id"
+                label="Ver Publicación" 
+                icon="pi pi-external-link" 
+                class="p-button-outlined p-button-sm action-button"
+                (click)="navigateToPost()">
+        </button>
+        <button pButton 
+                label="Ver Perfil" 
+                icon="pi pi-user" 
+                class="p-button-outlined p-button-sm action-button"
+                (click)="navigateToProfile()">
+        </button>
+      </div>
     </div>
   </div>
+
+  <!-- Diálogo de acciones adicionales -->
+  <p-dialog [(visible)]="displayActionsDialog" 
+            [modal]="true" 
+            [dismissableMask]="true"
+            [style]="{width: '350px'}" 
+            header="Opciones"
+            [draggable]="false" 
+            [resizable]="false">
+    <div class="dialog-actions">
+      <button pButton 
+              label="Marcar como leída" 
+              icon="pi pi-eye" 
+              class="p-button-text"
+              *ngIf="!objNotification?.is_read"
+              [loading]="markAsReadLoading"
+              (click)="markNotificationAsRead(); displayActionsDialog = false">
+      </button>
+      <button pButton 
+              label="Marcar como no leída" 
+              icon="pi pi-eye-slash" 
+              class="p-button-text"
+              *ngIf="objNotification?.is_read"
+              [loading]="markAsReadLoading"
+              (click)="markNotificationAsUnread(); displayActionsDialog = false">
+      </button>
+      <button pButton 
+              label="Copiar enlace" 
+              icon="pi pi-copy" 
+              class="p-button-text"
+              (click)="copyLink()">
+      </button>
+    </div>
+  </p-dialog>
 </div>
