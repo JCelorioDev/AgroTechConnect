@@ -339,8 +339,53 @@
     transition: all 0.2s;
 
     &:hover {
-      background: rgba(255, 0, 0, 0.1) !important;
+    background: rgba(255, 0, 0, 0.1) !important;
       transform: scale(1.1);
     }
   }
+}
+
+
+
+.reactions-dialog-content {
+  position: relative;
+  min-height: 300px; 
+  
+  .dialog-loading-spinner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 100;
+    border-radius: 6px;
+    
+    .spinner-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      
+      .custom-spinner {
+        width: 50px !important;
+        height: 50px !important;
+        
+        ::ng-deep .p-progress-spinner-circle {
+          stroke: var(--primary-color);
+          animation: p-progress-spinner-dash 1.5s ease-in-out infinite;
+        }
+      }
+      
+      .loading-text {
+        color: var(--text-color-secondary);
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+    }
+  }
+
 }

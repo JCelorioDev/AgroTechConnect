@@ -103,8 +103,13 @@
 
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
-    <div class="loading-spinner" *ngIf="loadingReactions">
-      <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+    <div class="dialog-loading-spinner" *ngIf="loadingReactions">
+      <div class="spinner-container">
+        <p-progressSpinner strokeWidth="4" 
+                          animationDuration=".5s"
+                          styleClass="custom-spinner"></p-progressSpinner>
+        <span class="loading-text">Cargando reacciones...</span>
+      </div>
     </div>
 
     <!-- Contenido de reacciones -->
