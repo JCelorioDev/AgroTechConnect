@@ -164,13 +164,14 @@
 
 <!-- Sección de respuestas -->
 <div class="responses-section">
-  <h4>Respuestas ({{ commentData?.data?.replies_count || 0 }})</h4>
   
   <div *ngIf="loadingResponses" class="loading-spinner-small">
     <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
   </div>
 
   <div *ngIf="!loadingResponses">
+    <h4>Respuestas ({{ commentData?.data?.replies_count || 0 }})</h4>
+    
     <div *ngIf="responses.length === 0" class="no-responses">
       No hay respuestas aún.
     </div>
