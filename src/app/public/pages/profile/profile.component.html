@@ -457,6 +457,7 @@
     </div>
   </div>
   <button 
+  *ngIf="objUser.roles[0].name ==='admin' && hisToken"
   pButton 
   (click)="deleteAccoutUser()"
   type="button" 
