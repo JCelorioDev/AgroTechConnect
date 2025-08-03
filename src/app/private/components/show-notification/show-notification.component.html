@@ -1,0 +1,78 @@
+<div class="notification-container">
+  <!-- Spinner de carga -->
+  <div class="loading-spinner" *ngIf="loading">
+    <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
+  </div>
+
+  <!-- Contenido principal -->
+  <div *ngIf="!loading && objNotification" class="notification-content">
+    <div class="notification-header">
+      <div class="notification-badge">
+        <i [class]="getNotificationIcon(objNotification.type)" 
+           class="notification-icon"
+           [ngStyle]="{'color': 'var(--' + getNotificationSeverity(objNotification.type) + '-500)'}"></i>
+      </div>
+      <div class="notification-meta">
+        <span class="notification-type">{{ objNotification.type | titlecase }}</span>
+        <span class="notification-date">{{ formatDate(objNotification.created_at) }}</span>
+      </div>
+    </div>
+
+    <div class="notification-body">
+      <div class="sender-card" (click)="navigateToProfile()">
+        <p-avatar [image]="objNotification.data.sender_avatar" 
+                 [label]="objNotification.data.sender_name?.charAt(0)!" 
+                 size="xlarge" 
+                 shape="circle"
+                 class="sender-avatar"></p-avatar>
+        <div class="sender-info">
+          <span class="sender-name">{{ objNotification.data.sender_name }}</span>
+          <span class="sender-action">ha interactuado con tu publicación</span>
+        </div>
+      </div>
+
+      <div class="notification-message">
+        <p class="main-message">{{ objNotification.message }}</p>
+        <div *ngIf="objNotification.data.message" class="quote-message">
+          <i class="pi pi-quote-left"></i>
+          <p>{{ objNotification.data.message }}</p>
+          <i class="pi pi-quote-right"></i>
+        </div>
+      </div>
+
+      <div *ngIf="objNotification.data.post_title" class="post-card" (click)="navigateToPost()">
+        <div class="post-content">
+          <h4>{{ objNotification.data.post_title }}</h4>
+          <p class="post-excerpt">"{{ objNotification.data.message || 'Ver publicación...' }}"</p>
+          <div class="post-meta">
+            <span class="post-type">{{ objNotification.data.type | titlecase }}</span>
+            <span class="post-date">{{ formatDate(objNotification.created_at) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification-actions">
+      <button pButton pRipple 
+              *ngIf="objNotification.data.post_id"
+              label="Ver Publicación" 
+              icon="pi pi-external-link" 
+              class="p-button-outlined action-button"
+              (click)="navigateToPost()"></button>
+      <button pButton pRipple 
+              label="Ver Perfil" 
+              icon="pi pi-user" 
+              class="action-button"
+              (click)="navigateToProfile()"></button>
+    </div>
+
+    <div class="notification-status">
+      <p-tag [value]="objNotification.is_read ? 'Leída' : 'No leída'" 
+             [severity]="objNotification.is_read ? 'success' : 'warn'"
+             icon="pi pi-circle-fill"></p-tag>
+      <small *ngIf="objNotification.read_at" class="read-date">
+        {{ formatDate(objNotification.read_at) }}
+      </small>
+    </div>
+  </div>
+</div>

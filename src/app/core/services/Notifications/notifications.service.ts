@@ -4,6 +4,7 @@ import { Observable, BehaviorSubject, tap, interval, switchMap, startWith, catch
 import { NotificationResponse } from '../../models/Notifications/notificationsResponse.interface';
 import { environment } from '../../../../environments/environment';
 import { NotificationsUnreadResponse } from '../../models/Notifications/notificationsUnreadResponse.interface';
+import { ShowNotificationResponse } from '../../models/Notifications/showNotificationResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -116,5 +117,11 @@ export class NotificationsService {
       }
     });
     this.getUnreadNotifications().subscribe();
+  }
+
+  // Ver una notificación
+
+  showNotification(idNotificacion:string):Observable<ShowNotificationResponse>{
+    return this.httpClient.get<ShowNotificationResponse>(`${environment.apiBaseUrl}notifications/${idNotificacion}`)
   }
 }

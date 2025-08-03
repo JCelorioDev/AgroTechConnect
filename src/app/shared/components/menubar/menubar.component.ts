@@ -503,6 +503,12 @@ export class MenubarComponent {
     }
   }
 
+  // Ir al componente dde ver notificacion
+
+  goShowNotification(idNotification:string):void{
+    this.router.navigate(['menu/mostrar-notificacion', idNotification])
+  }
+
   // Marcar todas como leídas
   markAllAsRead(): void {
     if (this.unreadCount > 0) {

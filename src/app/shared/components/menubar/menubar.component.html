@@ -61,7 +61,7 @@
                     @if (activeTab === 'unread') {
                       @if (unreadNotifications.length > 0) {
                         @for (notification of unreadNotifications; track notification.id) {
-                          <div class="notification unread" (click)="markAsRead(notification)">
+                          <div class="notification unread" (click)="goShowNotification(notification.id)">
                             <div class="notification-content">
                               <p class="notification-text">{{ notification.message }}</p>
                               <div class="notification-meta">

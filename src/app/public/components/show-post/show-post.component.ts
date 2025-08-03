@@ -84,6 +84,10 @@ export class ShowPostComponent implements OnInit {
     this.postService.showPost(this.idPublicacion).subscribe({
       next: (response) => {
         this.objPublication = response.data;
+        // Formatear la fecha si es necesario
+        if (this.objPublication.created_at) {
+          this.objPublication.created_at = this.formatDate(this.objPublication.created_at);
+        }
         if (!this.objPublication.comments) {
           this.objPublication.comments = [];
         }
@@ -95,12 +99,29 @@ export class ShowPostComponent implements OnInit {
       }
     });
   }
+  
 
   loadReactions(): void {
     this.loadingReactions = true;
     this.reactionservice.getsReactionsPost(this.idPublicacion).subscribe({
       next: (response) => {
         this.reactionsData = response;
+        // Formatear las fechas de las reacciones
+        if (this.reactionsData?.data?.all_reactions) {
+          this.reactionsData.data.all_reactions.forEach(reaction => {
+            reaction.created_at = this.formatDate(reaction.created_at);
+          });
+        }
+        if (this.reactionsData?.data?.positive_reactions) {
+          this.reactionsData.data.positive_reactions.forEach(reaction => {
+            reaction.created_at = this.formatDate(reaction.created_at);
+          });
+        }
+        if (this.reactionsData?.data?.negative_reactions) {
+          this.reactionsData.data.negative_reactions.forEach(reaction => {
+            reaction.created_at = this.formatDate(reaction.created_at);
+          });
+        }
         this.loadingReactions = false;
       },
       error: (err) => {
@@ -108,6 +129,25 @@ export class ShowPostComponent implements OnInit {
         this.handleError(err);
       }
     });
+  }
+
+
+  private formatDate(dateString: string): string {
+    if (!dateString) return '';
+    
+    // Si ya está en formato ISO (como '2025-07-30T06:47:00Z'), lo dejamos igual
+    if (dateString.includes('T') && dateString.includes('Z')) {
+      return dateString;
+    }
+    
+    // Si está en formato '30/07/2025 06:47', lo convertimos a ISO
+    if (dateString.match(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}/)) {
+      const [datePart, timePart] = dateString.split(' ');
+      const [day, month, year] = datePart.split('/');
+      return `${year}-${month}-${day}T${timePart}:00Z`;
+    }
+    
+    return dateString;
   }
 
   private handleError(err: any): void {
