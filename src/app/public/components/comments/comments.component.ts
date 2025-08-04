@@ -23,6 +23,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { finalize } from 'rxjs';
 import { ReactionsService } from '../../../core/services/Reactions/reactions.service';
 import { TabViewModule } from 'primeng/tabview';
+import { TextareaModule } from 'primeng/textarea';
+
 
 @Component({
   selector: 'public-comments',
@@ -41,7 +43,8 @@ import { TabViewModule } from 'primeng/tabview';
     FormsModule,
     AccordionModule,
     FileUploadModule,
-    TabViewModule
+    TabViewModule,
+    TextareaModule
   ],
   templateUrl: './comments.component.html',
   styleUrl: './comments.component.scss'
@@ -379,6 +382,7 @@ export class CommentsComponent implements OnInit {
     this.replyUploadedFiles.forEach((file, index) => {
       formData.append(`images`, file); // Cambiado a usar el mismo nombre para múltiples archivos
     });
+    
   
     this.commentsService.createReplayComment(
       this.idPublication,

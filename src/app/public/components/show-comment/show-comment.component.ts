@@ -23,6 +23,7 @@ import { ReactionsService } from '../../../core/services/Reactions/reactions.ser
 import { ReactionsCommentResponseI } from '../../../core/models/Reactions/reactionsCommentResponse.interface';
 import { ReactionsReplayCommentResponse } from '../../../core/models/Reactions/reactionsReplayCommentResponse.interface';
 import { TabViewModule } from 'primeng/tabview';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'public-show-comment',
@@ -42,7 +43,8 @@ import { TabViewModule } from 'primeng/tabview';
     InputTextModule,
     FileUploadModule,
     PaginatorModule,
-    TabViewModule
+    TabViewModule,
+    TextareaModule
   ],
   templateUrl: './show-comment.component.html',
   styleUrl: './show-comment.component.scss'
@@ -668,5 +670,12 @@ export class ShowCommentComponent implements OnInit {
 
   goReplayComment(idReplayComment:string){
     this.router.navigate(['menu/respuesta-comentario', idReplayComment])
+  }
+
+  closeEditDialog(): void {
+    this.editDialogVisible = false;
+    this.uploadedFiles = [];
+    // Opcional: Resetear el formulario si es necesario
+    // this.editForm.reset();
   }
 }

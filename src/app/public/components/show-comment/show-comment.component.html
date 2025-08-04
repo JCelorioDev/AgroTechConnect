@@ -95,7 +95,7 @@
 
     <!-- Sección para agregar nueva respuesta -->
     <div class="add-reply-section">
-      <textarea [(ngModel)]="newReplyText" placeholder="Escribe tu respuesta..." rows="3"></textarea>
+      <textarea pTextarea [(ngModel)]="newReplyText" placeholder="Escribe tu respuesta..." rows="3"></textarea>
       <div class="reply-actions">
         <p-fileUpload mode="basic" accept="image/*" chooseLabel="Agregar imágenes" 
                      (onSelect)="onReplyFileSelect($event)" styleClass="upload-button"></p-fileUpload>
@@ -112,53 +112,82 @@
   </div>
 
   <!-- Diálogo para editar comentario -->
-  <p-dialog [(visible)]="editDialogVisible" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
-    <ng-template pTemplate="header">
-      <h4>Editar comentario</h4>
-    </ng-template>
+  <p-dialog  [(visible)]="editDialogVisible" 
+  [modal]="true" 
+  [style]="{ width: '50vw', minWidth: '300px', maxWidth: '600px' }"
+  [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
+  [draggable]="false" 
+  [resizable]="false"
+  [closable]="true"
+  [focusOnShow]="true">
+ <!-- Header mejorado -->
+ <ng-template pTemplate="header">
+  <div class="dialog-header">
+    <h4 class="dialog-title">Editar comentario</h4>
+  </div>
+  </ng-template>
 
-    <form [formGroup]="editForm">
-      <div class="p-fluid">
-        <div class="p-field">
-          <label for="comment">Comentario</label>
-          <textarea id="comment" formControlName="comment" rows="5"></textarea>
-        </div>
+ <!-- Contenido del formulario -->
+ <form [formGroup]="editForm" class="edit-form">
+  <div class="form-grid">
+    <!-- Textarea mejorado -->
+    <div class="field-group">
+      <label for="comment" class="field-label">Comentario</label>
+      <textarea pTextarea
+               id="comment" 
+               formControlName="comment" 
+               rows="5"
+               class="custom-textarea"
+               placeholder="Escribe tu comentario..."></textarea>
+    </div>
 
-        <div class="p-field">
-          <label for="images">Imágenes (opcional)</label>
-          <p-fileUpload id="images"
-                       name="images"
-                       [multiple]="true"
-                       accept="image/*"
-                       [maxFileSize]="1000000"
-                       (onUpload)="onUpload($event)"
-                       [showUploadButton]="false"
-                       [showCancelButton]="false"
-                       chooseLabel="Seleccionar imágenes">
-          </p-fileUpload>
-          <small *ngIf="uploadedFiles.length > 0">{{ uploadedFiles.length }} archivo(s) seleccionado(s)</small>
-        </div>
+    <!-- Upload de imágenes mejorado -->
+    <div class="field-group">
+      <label class="field-label">Imágenes (opcional)</label>
+      <div class="upload-container">
+        <p-fileUpload mode="basic"
+                     id="images"
+                     name="images"
+                     [multiple]="true"
+                     accept="image/*"
+                     [maxFileSize]="5000000"
+                     (onSelect)="onUpload($event)"
+                     [showUploadButton]="false"
+                     [showCancelButton]="false"
+                     chooseLabel="Seleccionar imágenes"
+                     class="custom-upload">
+        </p-fileUpload>
+        <small class="file-hint" *ngIf="uploadedFiles.length > 0">
+          {{ uploadedFiles.length }} archivo(s) seleccionado(s)
+        </small>
+        <small class="file-hint">Formatos soportados: JPG, PNG, GIF (Máx. 5MB)</small>
       </div>
-    </form>
+    </div>
+  </div>
+</form>
 
-    <ng-template pTemplate="footer">
-      <button pButton pRipple
-              type="button"
-              label="Cancelar"
-              icon="pi pi-times"
-              class="p-button-text"
-              (click)="editDialogVisible = false; uploadedFiles = []">
-      </button>
-      <button pButton pRipple
-              type="button"
-              label="Guardar cambios"
-              icon="pi pi-check"
-              class="p-button-success"
-              (click)="editComment()"
-              [disabled]="editForm.invalid || isEditing">
-              <i *ngIf="isEditing" class="pi pi-spinner pi-spin"></i>
-      </button>
-    </ng-template>
+<!-- Footer con acciones -->
+<ng-template pTemplate="footer">
+  <div class="dialog-footer">
+    <button pButton 
+            type="button"
+            label="Cancelar"
+            icon="pi pi-times"
+            class="p-button-outlined"
+            (click)="closeEditDialog()">
+    </button>
+    <button pButton 
+            type="button"
+            label="Guardar cambios"
+            icon="pi pi-check"
+            [iconPos]="isEditing ? 'right' : 'left'"
+            class="save-button"
+            (click)="editComment()"
+            [disabled]="editForm.invalid || isEditing">
+      <i *ngIf="isEditing" class="pi pi-spinner pi-spin"></i>
+    </button>
+  </div>
+</ng-template>
   </p-dialog>
 </div>
 

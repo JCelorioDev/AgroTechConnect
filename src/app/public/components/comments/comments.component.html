@@ -58,7 +58,7 @@
           <!-- Sección de respuestas (acordeón) -->
           <div  *ngIf="activeIndex[comment.id]" class="responses-container">
             <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
-              <div (click)="goToComment(response.id, 'replayComment', idPublication)" class="response-main">
+              <div (click)="goToComment(comment.id, '', idPublication)" class="response-main">
                 <p-avatar [image]="response.user.image?.url"
                          [label]="getAvatarLabel(response.user)"
                          size="normal"
@@ -109,7 +109,7 @@
 
               <!-- Sección para agregar nueva respuesta -->
             <div class="new-reply" *ngIf="replyingToCommentId === comment.id">
-              <textarea pInputTextarea
+              <textarea pTextarea
                         [(ngModel)]="replyCommentText"
                         placeholder="Escribe tu respuesta..."
                         rows="3"></textarea>
@@ -183,7 +183,7 @@
 
     <div class="new-comment">
       <!-- Textarea para el comentario -->
-      <textarea pInputTextarea
+      <textarea pTextarea
                 [(ngModel)]="newComment"
                 placeholder="Escribe un comentario..."
                 rows="3"></textarea>
