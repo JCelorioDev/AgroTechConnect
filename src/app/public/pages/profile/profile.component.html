@@ -427,7 +427,7 @@
     </h2>
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
     <button 
-    *ngIf="objUsuario.roles[0].name === 'admin' && hisToken"
+    *ngIf="objUsuario.roles[0].name === 'admin' && hisToken && encryptedId()"
     pButton 
     (click)="deleteAccoutUser()"
     type="button" 

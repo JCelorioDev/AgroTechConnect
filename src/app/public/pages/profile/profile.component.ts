@@ -143,6 +143,7 @@ export class ProfileComponent {
 
   ngOnInit(): void {
     this.getUser();
+
   
      this.route.params.pipe(
       switchMap(params => {
