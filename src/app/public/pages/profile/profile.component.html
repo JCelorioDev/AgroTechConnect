@@ -414,7 +414,10 @@
     </div> 
   </div>
 
+  
+
   <div class="perfil-contenido">
+    
     <div class="perfil-rango-container">
       <p-tag *ngIf="range?.name" severity="success" [value]="range?.name" class="perfil-estado"></p-tag>
       <img [src]="getRangeImageUrl(range?.name)" alt="Rango del usuario" class="rango-imagen" />
@@ -423,7 +426,17 @@
       {{(objUser?.name || '') + ' ' + (objUser?.lastname || '')}} <i *ngIf="objUser?.email_verified"></i>
     </h2>
     <p class="perfil-rol">{{objUser?.username ? '@' + objUser.username : ''}}</p>
-
+    <button 
+    *ngIf="objUsuario.roles[0].name === 'admin' && hisToken"
+    pButton 
+    (click)="deleteAccoutUser()"
+    type="button" 
+    icon="pi pi-user-minus" 
+    label="Eliminar Cuenta" 
+    class="p-button-danger admin-delete-btn"
+    pTooltip="Eliminar permanentemente esta cuenta"
+    tooltipPosition="bottom">
+    </button>
     <div class="perfil-metricas">
 
       
@@ -456,16 +469,6 @@
       </a>
     </div>
   </div>
-  <button 
-  *ngIf="objUsuario.roles[0].name ==='admin' && hisToken"
-  pButton 
-  (click)="deleteAccoutUser()"
-  type="button" 
-  icon="pi pi-trash" 
-  label="Eliminar Cuenta" 
-  class="p-button-danger"
-  style="position: absolute; top: 0.6rem; left: 0.5rem; z-index: 2;">
-</button>
 </div>
 
 

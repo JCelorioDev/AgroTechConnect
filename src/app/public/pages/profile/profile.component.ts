@@ -1016,7 +1016,7 @@ loadMoreMeFollowing(): void {
   // Eliminar cuenta por administrador
 
   deleteAccoutUser():void{
-    this.alertService.alertwithDialogs('Estás seguro que deseas borrar esta cuenta?', 'Despues no podrás revertir esta acción', 'warning' ,3000, (() => {
+    this.alertService.alertwithDialogs('Estás seguro que deseas borrar esta cuenta de manera permanente?', 'Despues no podrás revertir esta acción', 'warning' ,3000, (() => {
       this.userService.deleteAccoutAdmin(this.objUser.id).subscribe({
         next: (s) => {
           this.router.navigate(['menu/publicaciones']);

@@ -58,6 +58,7 @@ export class ShowPostComponent implements OnInit {
   public reactionsData: ReactionsResponseI | null = null;
   public activeReactionTab = 0;
   public isReacting = false;
+  public rolUser!:string;
 
   public responsiveOptions: any[] = [
     {
@@ -75,6 +76,7 @@ export class ShowPostComponent implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!).roles[0].name || '';
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
     this.loadPublication();
     this.loadReactions();
@@ -100,7 +102,7 @@ export class ShowPostComponent implements OnInit {
       }
     });
   }
-  
+
 
   loadReactions(): void {
     this.loadingReactions = true;
@@ -135,19 +137,19 @@ export class ShowPostComponent implements OnInit {
 
   private formatDate(dateString: string): string {
     if (!dateString) return '';
-    
+
     // Si ya está en formato ISO (como '2025-07-30T06:47:00Z'), lo dejamos igual
     if (dateString.includes('T') && dateString.includes('Z')) {
       return dateString;
     }
-    
+
     // Si está en formato '30/07/2025 06:47', lo convertimos a ISO
     if (dateString.match(/\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}/)) {
       const [datePart, timePart] = dateString.split(' ');
       const [day, month, year] = datePart.split('/');
       return `${year}-${month}-${day}T${timePart}:00Z`;
     }
-    
+
     return dateString;
   }
 
@@ -224,15 +226,15 @@ export class ShowPostComponent implements OnInit {
   reactionAPost(type: string): void {
     if (this.isReacting) return;
     this.isReacting = true;
-  
+
     const hadPositive = this.hasReacted('positivo');
     const hadNegative = this.hasReacted('negativo');
     const isSameReaction = (type === 'positivo' && hadPositive) || (type === 'negativo' && hadNegative);
-  
+
     // Guardar los valores originales para posible reversión
     const originalPositiveCount = this.objPublication.positive_reactions_count;
     const originalNegativeCount = this.objPublication.negative_reactions_count;
-  
+
     // Actualización visual inmediata (incluyendo contadores)
     if (type === 'positivo') {
       if (hadPositive) {
@@ -257,15 +259,15 @@ export class ShowPostComponent implements OnInit {
         }
       }
     }
-  
+
     // Actualizar lista de reacciones localmente
     this.updateLocalReactionState(type, hadPositive, hadNegative);
-  
+
     // Determinar si es para agregar o quitar reacción
     const action = isSameReaction ?
       this.reactionservice.removeReactionAPost(this.idPublicacion) :
       this.reactionservice.reactionsAPost(this.idPublicacion, type);
-  
+
     action.subscribe({
       next: (response: any) => {
         // Actualizar con datos reales del servidor
@@ -275,7 +277,7 @@ export class ShowPostComponent implements OnInit {
             this.objPublication.positive_reactions_count = response.data.counts.positive || this.objPublication.positive_reactions_count;
             this.objPublication.negative_reactions_count = response.data.counts.negative || this.objPublication.negative_reactions_count;
           }
-          
+
           // Actualizar lista completa de reacciones solo si existe
           if (response.data.all_reactions) {
             this.reactionsData = response.data;
@@ -284,7 +286,7 @@ export class ShowPostComponent implements OnInit {
           // Si no hay data en la respuesta, recargar las reacciones
           this.loadReactions();
         }
-        
+
         this.isReacting = false;
         this.changeDetector.detectChanges();
       },
@@ -382,7 +384,7 @@ export class ShowPostComponent implements OnInit {
 
   reportPost(event: Event): void {
     event.stopPropagation();
-    
+
     Swal.fire({
       title: 'Reportar publicación',
       input: 'textarea',
@@ -404,7 +406,7 @@ export class ShowPostComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         const description = result.value;
-        
+
         this.postService.reportPublication(this.idPublicacion, description).subscribe({
           next: () => {
             this.alertService.miniAlert('El reporte se realizó correctamente.', 'success', 3000);
@@ -419,5 +421,25 @@ export class ShowPostComponent implements OnInit {
         });
       }
     });
+  }
+
+  // Eliminar publicacion por admin
+
+  eliminatePostAdmin():void{
+    this.alertService.alertwithDialogs('¿Estás seguro de eliminar esta publicación', 'Déspues no podrás revertir esta acción', 'warning', 3000, (() => {
+      this.postService.deleteMePost(this.idPublicacion).subscribe({
+        next: (s) => {
+          this.router.navigate(['menu/publicaciones']);
+          this.alertService.miniAlert('La publicaciíon se eliminó correctamente','success', 3000);
+        },
+        error: (err) => {
+          if (err.status === 422) {
+            this.alertService.showValidationErrors(err.error);
+          } else {
+            this.alertService.miniAlert(err.error?.message || 'Ocurrió un error al reportar', 'error', 3000);
+          }
+        }
+      })
+    }), 'No, deseo.', 'Si, deseo.');
   }
 }

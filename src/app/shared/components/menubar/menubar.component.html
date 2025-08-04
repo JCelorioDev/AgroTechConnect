@@ -79,7 +79,7 @@
                     } @else {
                       @if (notifications.length > 0) {
                         @for (notification of notifications; track notification.id) {
-                          <div class="notification" [class.unread]="!notification.is_read">
+                          <div (click)="goShowNotification(notification.id)" class="notification" [class.unread]="!notification.is_read">
                             <div class="notification-content">
                               <p class="notification-text">{{ notification.message }}</p>
                               <div class="notification-meta">

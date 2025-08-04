@@ -30,10 +30,18 @@
           </div>
 
           <button pButton 
+          *ngIf="rolUser !== 'admin'"
           icon="pi pi-flag" 
           class="p-button-rounded p-button-text p-button-sm report-button"
           (click)="reportPost($event)"
           pTooltip="Reportar publicación"
+          tooltipPosition="bottom"></button>
+          <button pButton 
+          *ngIf="rolUser == 'admin'"
+          icon="pi pi-trash" 
+          class="p-button-rounded p-button-text p-button-sm report-button"
+          (click)="eliminatePostAdmin()"
+          pTooltip="Eliminar publicación"
           tooltipPosition="bottom"></button>
         </div>
       </ng-template>
