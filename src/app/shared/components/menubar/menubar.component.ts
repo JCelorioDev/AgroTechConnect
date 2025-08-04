@@ -521,6 +521,7 @@ export class MenubarComponent {
   }
 
   setClickPost(): void {
+    this.router.navigate(['menu/publicaciones']);
     const currentValue = this.postService.isCreatePost();
     this.postService.setAddPublication(!currentValue);
   }

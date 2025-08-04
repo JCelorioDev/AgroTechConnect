@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, HostListener, Inject, PLATFORM_ID, OnInit, OnDestroy, inject } from '@angular/core';
-import { RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -29,6 +29,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   isMobile = false;
   checked: boolean = false;
   private readonly postService = inject(PostService);
+  private readonly router = inject(Router);
 
   private resizeListener: (() => void) | null = null; // Corrección aquí
 
@@ -109,6 +110,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   setClickPost(): void {
+    this.router.navigate(['menu/publicaciones']);
     const currentValue = this.postService.isCreatePost();
     this.postService.setAddPublication(!currentValue);
   }
