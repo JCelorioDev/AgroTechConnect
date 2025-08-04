@@ -35,10 +35,12 @@
               <div class="post-card">
                 <div class="post-header">
                   <div (click)="goPerfilUser(post.user.id)" class="user-profile-container">
-                    <p-avatar [image]="post?.user?.image?.url"
-                              [shape]="'circle'"
-                              size="large"
-                              class="user-avatar-side">
+                    <p-avatar 
+                    [image]="post?.user?.image?.url || undefined"
+                    [label]="!post?.user?.image?.url ? getInitials(post?.user) : undefined"
+                    [shape]="'circle'"
+                    size="large"
+                    class="user-avatar-side">
                     </p-avatar>
                     <div class="user-info-side">
                       <h3>{{ post?.user?.name }} {{ post?.user?.lastname }}</h3>

@@ -468,4 +468,16 @@ export class PostComponent implements OnInit, OnDestroy {
 
     return this.domSanitizer.bypassSecurityTrustHtml(cleaned);
   }
+
+  getInitials(user: any): string {
+    if (!user) return '';
+    
+    // Obtener la primera letra del nombre
+    const firstNameInitial = user.name ? user.name.charAt(0).toUpperCase() : '';
+    
+    // Obtener la primera letra del apellido (si existe)
+    const lastNameInitial = user.lastname ? user.lastname.charAt(0).toUpperCase() : '';
+    
+    return `${firstNameInitial}${lastNameInitial}`;
+}
 }
