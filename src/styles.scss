@@ -502,7 +502,7 @@ html.custom-dark-mode .editor-footer .p-button {
 
 .custom-dark-mode .post-container button {
   background-color: #c5c2c248 !important;
-} 
+}
 
 .custom-dark-mode .p-galleria-indicator-active .p-galleria-indicator-button {
   background-color: #ffffff !important;
@@ -552,6 +552,20 @@ html.custom-dark-mode .post-footer {
 
 html.custom-dark-mode .p-galleria {
   border-style: none !important;
+}
+
+html.custom-dark-mode .p-tabpanels {
+  background-color: transparent !important;
+  color: white;
+}
+
+html.custom-dark-mode  .p-tablist-tab-list {
+  background-color: transparent !important;
+  border-style: none;
+}
+
+html.custom-dark-mode  .p-dialog {
+  border: none !important;
 }
 
 

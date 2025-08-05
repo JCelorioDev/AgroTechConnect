@@ -74,7 +74,7 @@
       <ng-template pTemplate="footer">
         <div class="comment-footer">
           <div class="comment-stats">
-            <span class="stat-item" (click)="reactToComment('positive')" 
+            <span class="stat-item" (click)="reactToComment('positive')"
                   [class.reacted-positive]="hasReactedToComment('positive')">
               <i class="pi pi-thumbs-up"></i> {{ commentData?.data?.positive_reactions_count }}
             </span>
@@ -97,7 +97,7 @@
     <div class="add-reply-section">
       <textarea pTextarea [(ngModel)]="newReplyText" placeholder="Escribe tu respuesta..." rows="3"></textarea>
       <div class="reply-actions">
-        <p-fileUpload mode="basic" accept="image/*" chooseLabel="Agregar imágenes" 
+        <p-fileUpload mode="basic" accept="image/*" chooseLabel="Agregar imágenes"
                      (onSelect)="onReplyFileSelect($event)" styleClass="upload-button"></p-fileUpload>
         <button pButton label="Responder" (click)="postReply()" [disabled]="!newReplyText"></button>
       </div>
@@ -112,11 +112,11 @@
   </div>
 
   <!-- Diálogo para editar comentario -->
-  <p-dialog  [(visible)]="editDialogVisible" 
-  [modal]="true" 
+  <p-dialog  [(visible)]="editDialogVisible"
+  [modal]="true"
   [style]="{ width: '50vw', minWidth: '300px', maxWidth: '600px' }"
   [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
-  [draggable]="false" 
+  [draggable]="false"
   [resizable]="false"
   [closable]="true"
   [focusOnShow]="true">
@@ -134,8 +134,8 @@
     <div class="field-group">
       <label for="comment" class="field-label">Comentario</label>
       <textarea pTextarea
-               id="comment" 
-               formControlName="comment" 
+               id="comment"
+               formControlName="comment"
                rows="5"
                class="custom-textarea"
                placeholder="Escribe tu comentario..."></textarea>
@@ -169,14 +169,14 @@
 <!-- Footer con acciones -->
 <ng-template pTemplate="footer">
   <div class="dialog-footer">
-    <button pButton 
+    <button pButton
             type="button"
             label="Cancelar"
             icon="pi pi-times"
             class="p-button-outlined"
             (click)="closeEditDialog()">
     </button>
-    <button pButton 
+    <button pButton
             type="button"
             label="Guardar cambios"
             icon="pi pi-check"
@@ -193,14 +193,14 @@
 
 <!-- Sección de respuestas -->
 <div class="responses-section">
-  
+
   <div *ngIf="loadingResponses" class="loading-spinner-small">
     <p-progressSpinner strokeWidth="4" animationDuration=".5s"></p-progressSpinner>
   </div>
 
   <div *ngIf="!loadingResponses">
     <h4>Respuestas ({{ commentData?.data?.replies_count || 0 }})</h4>
-    
+
     <div *ngIf="responses.length === 0" class="no-responses">
       No hay respuestas aún.
     </div>
@@ -216,19 +216,19 @@
           <span class="response-date">{{ response.created_at | date:'medium' }}</span>
         </div>
       </div>
-      
+
       <div class="response-content">
         <p>{{ response.comment }}</p>
-        
+
         <!-- Galería de imágenes para respuestas -->
         <div *ngIf="response.images?.length > 0" class="response-images">
-          <img *ngFor="let img of response.images" 
-               [src]="img.url" 
+          <img *ngFor="let img of response.images"
+               [src]="img.url"
                alt="Imagen de respuesta"
                class="response-image">
         </div>
       </div>
-      
+
       <div class="response-footer">
         <span class="stat-item" (click)="reactToReply(response.id, 'positive')"
               [class.reacted-positive]="hasReactedToReply(response.id, 'positive')">
@@ -254,14 +254,14 @@
 </div>
 
 <!-- Diálogo de reacciones de comentarios -->
-<p-dialog [(visible)]="displayCommentReactionsDialog" 
+<p-dialog [(visible)]="displayCommentReactionsDialog"
           [modal]="true"
           [style]="{ width: '50vw', maxHeight: '70vh' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           header="Reacciones del comentario"
           [draggable]="false"
           [resizable]="false">
-  
+
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
     <div class="loading-spinner" *ngIf="loadingCommentReactions">
@@ -284,7 +284,7 @@
                   'positive': reaction.type === 'positive',
                   'negative': reaction.type === 'negative'
                 }">
-                  {{ reaction.type === 'positive' ? '👍' : '👎' }}
+                  {{ reaction.type === 'positive' ? '👎' : '👍' }}
                 </span>
                 <span class="reaction-date">{{ reaction.created_at }}</span>
               </div>
@@ -332,14 +332,14 @@
 </p-dialog>
 
 <!-- Diálogo de reacciones de respuestas -->
-<p-dialog [(visible)]="displayReplyReactionsDialog" 
+<p-dialog [(visible)]="displayReplyReactionsDialog"
           [modal]="true"
           [style]="{ width: '50vw', maxHeight: '70vh' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           [header]="'Reacciones de la respuesta'"
           [draggable]="false"
           [resizable]="false">
-  
+
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
     <div class="loading-spinner" *ngIf="loadingReplyReactions">
