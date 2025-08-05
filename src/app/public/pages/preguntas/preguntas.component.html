@@ -1,11 +1,7 @@
 <div class="preguntas-container">
-  <div class="header">
-    <h1>Preguntas sin resolver</h1>
-    <p>Publicaciones que aún no tienen respuestas</p>
-  </div>
-
   <!-- Loading State -->
   <div *ngIf="loading" class="posts-grid">
+    
     @for (item of [1,2,3]; track $index) {
       <p-card class="skeleton-card">
         <div class="skeleton-content">

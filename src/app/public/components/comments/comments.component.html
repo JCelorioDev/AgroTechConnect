@@ -3,16 +3,18 @@
     <div class="comments-container" *ngIf="!loadingComments; else loading">
       <div class="comments-list">
         <div *ngFor="let comment of listComment?.data?.data; trackBy: trackByCommentId" class="comment-item">
-          <div (click)="goToComment(comment.id, '', idPublication)" class="comment-main">
+          <div style="cursor: pointer;" (click)="goToComment(comment.id, '', idPublication)" class="comment-main">
             <p-avatar [image]="comment.user.image?.url!"
                      [label]="getAvatarLabel(comment.user)"
                      size="normal"
                      shape="circle"
-                     class="comment-avatar"></p-avatar>
+                     class="comment-avatar"
+                     (click)="goPerfilByID(comment.user.id); $event.stopPropagation()"
+                     ></p-avatar>
 
             <div class="comment-content">
               <div class="comment-header">
-                <strong class="comment-author">
+                <strong (click)="goPerfilByID(comment.user.id); $event.stopPropagation()" class="comment-author">
                   {{ comment.user.name }} {{ comment.user.lastname }}
                   <p-tag *ngIf="comment.user.ranges?.[0]?.name"
                         [value]="comment.user.ranges[0].name"
@@ -34,12 +36,12 @@
 
               <div class="comment-footer">
                 <div class="reactions">
-                  <span class="stat-item" 
+                  <span class="stat-item"
                         (click)="reactionAComment(comment.id, 'positivo'); $event.stopPropagation()"
                         [class.reacted-positive]="hasReactedToComment(comment.id, 'positivo')">
                     <i class="pi pi-thumbs-up"></i> {{ comment.positive_reactions_count }}
                   </span>
-                  <span class="stat-item" 
+                  <span class="stat-item"
                         (click)="reactionAComment(comment.id, 'negativo'); $event.stopPropagation()"
                         [class.reacted-negative]="hasReactedToComment(comment.id, 'negativo')">
                     <i class="pi pi-thumbs-down"></i> {{ comment.negative_reactions_count }}
@@ -89,12 +91,12 @@
 
                   <div class="response-footer">
                     <div class="reactions">
-                      <span class="stat-item" 
+                      <span class="stat-item"
                             (click)="reactionAReplayComment(response.id, 'positivo'); $event.stopPropagation()"
                             [class.reacted-positive]="hasReactedToReplay(response.id, 'positivo')">
                         <i class="pi pi-thumbs-up"></i> {{ response.positive_reactions_count }}
                       </span>
-                      <span class="stat-item" 
+                      <span class="stat-item"
                             (click)="reactionAReplayComment(response.id, 'negativo'); $event.stopPropagation()"
                             [class.reacted-negative]="hasReactedToReplay(response.id, 'negativo')">
                         <i class="pi pi-thumbs-down"></i> {{ response.negative_reactions_count }}
@@ -104,7 +106,7 @@
                 </div>
               </div>
 
-              <p (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem"> Reportar</i></p>
+              <p (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem; cursor: pointer"> Reportar</i></p>
             </div>
 
               <!-- Sección para agregar nueva respuesta -->
@@ -113,7 +115,7 @@
                         [(ngModel)]="replyCommentText"
                         placeholder="Escribe tu respuesta..."
                         rows="3"></textarea>
-              
+
               <div class="image-upload-container">
                 <p-fileUpload #replyFileUpload
                               mode="basic"
@@ -123,18 +125,18 @@
                               (onSelect)="onReplyFileSelect($event)"
                               styleClass="upload-button">
                 </p-fileUpload>
-              
+
                 <div class="image-previews" *ngIf="replyPreviewImages.length > 0">
                   <div class="image-preview-item" *ngFor="let img of replyPreviewImages; let i = index">
                     <img [src]="img" alt="Preview" class="preview-image">
-                    <button pButton 
-                            icon="pi pi-times" 
+                    <button pButton
+                            icon="pi pi-times"
                             class="p-button-rounded p-button-danger remove-image-btn"
                             (click)="removeReplyImage(i)"></button>
                   </div>
                 </div>
               </div>
-              
+
               <div class="reply-actions">
                 <button pButton
                         label="Cancelar"
@@ -187,7 +189,7 @@
                 [(ngModel)]="newComment"
                 placeholder="Escribe un comentario..."
                 rows="3"></textarea>
-    
+
       <!-- Selector de imágenes -->
       <div class="image-upload-container">
         <p-fileUpload #fileUpload
@@ -198,19 +200,19 @@
                       (onSelect)="onFileSelect($event)"
                       styleClass="upload-button">
         </p-fileUpload>
-    
+
         <!-- Previsualización de imágenes -->
         <div class="image-previews" *ngIf="previewImages.length > 0">
           <div class="image-preview-item" *ngFor="let img of previewImages; let i = index">
             <img [src]="img" alt="Preview" class="preview-image">
-            <button pButton 
-                    icon="pi pi-times" 
+            <button pButton
+                    icon="pi pi-times"
                     class="p-button-rounded p-button-danger remove-image-btn"
                     (click)="removeImage(i)"></button>
           </div>
         </div>
       </div>
-    
+
       <!-- Botón de enviar -->
       <button pButton
               icon="pi pi-send"
@@ -231,14 +233,14 @@
 
 
 <!-- Nuevo diálogo de reacciones de comentarios -->
-<p-dialog [(visible)]="displayCommentReactionsDialog" 
+<p-dialog [(visible)]="displayCommentReactionsDialog"
           [modal]="true"
           [style]="{ width: '50vw', maxHeight: '70vh' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           header="Reacciones del comentario"
           [draggable]="false"
           [resizable]="false">
-  
+
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
     <div class="loading-spinner" *ngIf="loadingCommentReactions">
@@ -309,14 +311,14 @@
 </p-dialog>
 
 
-<p-dialog [(visible)]="displayReplayReactionsDialog" 
+<p-dialog [(visible)]="displayReplayReactionsDialog"
           [modal]="true"
           [style]="{ width: '50vw', maxHeight: '70vh' }"
           [breakpoints]="{ '960px': '75vw', '640px': '90vw' }"
           header="Reacciones de la respuesta"
           [draggable]="false"
           [resizable]="false">
-  
+
   <div class="reactions-dialog-content">
     <!-- Spinner de carga -->
     <div class="loading-spinner" *ngIf="loadingReplayReactions">

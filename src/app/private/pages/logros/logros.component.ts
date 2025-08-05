@@ -39,8 +39,6 @@ export class LogrosComponent {
 
   constructor() {
     this.objUsuario = JSON.parse(localStorage.getItem('userLogin')!);
-    // Aquí deberías obtener los puntos actuales del usuario si están disponibles
-    // this.currentPoints = this.objUsuario.points || 0;
   }
 
   ngOnInit(): void {

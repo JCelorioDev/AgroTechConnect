@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
-import { CommentsPublicactionResponseInterfaceTs, Data, Datum } from '../../../core/models/Comments/commentsPublicationResponse.interface';
+import { CommentsPublicactionResponseInterfaceTs, Data, Datum, User } from '../../../core/models/Comments/commentsPublicationResponse.interface';
 import { Data as DataComments, Datum as ResponseDatum } from '../../../core/models/Comments/responseOfComments.interface';
 import { Data as DataReactionsComment } from '../../../core/models/Reactions/reactionsCommentResponse.interface';
 import { Data as DataReactionsReplayComment } from '../../../core/models/Reactions/reactionsReplayCommentResponse.interface';
@@ -89,6 +89,7 @@ export class CommentsComponent implements OnInit {
   public replayReactionsData: DataReactionsReplayComment | null = null;
   public activeReplayReactionTab = 0;
   public reactingReplayId: string | null = null;
+  private objUser !:User;
 
   @Input() idPublication!: string;
   @Output() closeDialog = new EventEmitter<void>();
@@ -96,6 +97,7 @@ export class CommentsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
     if (this.idPublication) {
       this.loadComments();
     }
@@ -282,6 +284,9 @@ export class CommentsComponent implements OnInit {
     if (!this.newComment.trim() && this.uploadedFiles.length === 0) {
       this.alertService.miniAlert('El comentario no puede estar vacío', 'warning', 3000);
       return;
+    }else if (!this.objUser) {
+      this.alertService.miniAlert('No tienes una cuenta activa primero', 'info', 3000);
+      return ;
     }
 
     this.postingComment = true;
@@ -371,6 +376,9 @@ export class CommentsComponent implements OnInit {
     if (!this.replyCommentText.trim() && this.replyUploadedFiles.length === 0) {
       this.alertService.miniAlert('La respuesta no puede estar vacía', 'warning', 3000);
       return;
+    }else if (!this.objUser) {
+      this.alertService.miniAlert('No tienes una cuenta activa', 'info', 3000);
+      return ;
     }
   
     this.postingReply = true;
@@ -552,6 +560,7 @@ export class CommentsComponent implements OnInit {
 
   reactionAComment(commentId: string, type: string): void {
     if (this.reactingCommentId === commentId) return;
+    if (!this.objUser) return ;
     this.reactingCommentId = commentId;
 
     const hadPositive = this.hasReactedToComment(commentId, 'positivo');
@@ -786,5 +795,12 @@ export class CommentsComponent implements OnInit {
     }
 
     this.changeDetector.detectChanges();
+  }
+
+  // Ir al perfil del usuario por ID
+
+
+  goPerfilByID(idUsuario:string):void{
+    this.router.navigate(['menu/perfil', idUsuario]);
   }
 }

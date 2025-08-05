@@ -12,7 +12,7 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map, of, switchMap } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop'; 
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Dialog } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -26,7 +26,7 @@ import { DividerModule } from 'primeng/divider';
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ 
+  imports: [
     CommonModule,
     CardModule,
     ButtonModule,
@@ -40,7 +40,7 @@ import { DividerModule } from 'primeng/divider';
     FormsModule,
     ReactiveFormsModule,
     PasswordModule,
-    TextareaModule, 
+    TextareaModule,
     DividerModule
   ],
   templateUrl: './profile.component.html',
@@ -56,7 +56,7 @@ export class ProfileComponent {
   private readonly route = inject(ActivatedRoute);
   public formChangePassword!:FormGroup;
   private formBuilder = inject(FormBuilder);
-  public visibleChangePassword:boolean = false; 
+  public visibleChangePassword:boolean = false;
   hoverAvatar = false;
   @ViewChild('fileInput') fileInput!: ElementRef;
   selectedImage: File | null = null;
@@ -68,7 +68,7 @@ export class ProfileComponent {
   public visibleModalUpdateInformation:boolean = false;
   public formUpdateinformationAdictional!:FormGroup;
   private objUserInformation!:UserInformation;
-  activeLinks: number = 1; 
+  activeLinks: number = 1;
   private updateConfirm:boolean = false;
   @ViewChild('descriptionInput') descriptionInput!: ElementRef<HTMLTextAreaElement>;
   showDialog = false;
@@ -112,7 +112,7 @@ export class ProfileComponent {
     }, {
         validators: passwordMatchValidator('new_password', 'new_password_confirmation')
     });
-    
+
     const userLogin = localStorage.getItem('userLogin');
     this.hisToken = userLogin ? !!JSON.parse(userLogin)?.token : false;
 
@@ -125,7 +125,7 @@ export class ProfileComponent {
 
     this.userService.currentUserPhoto$.subscribe(newUrl => {
       this.currentPhotoUrl = newUrl;
-      
+
       // Actualiza tanto el currentPhotoUrl como el objUser.image.url
       if (this.objUser?.image) {
         if (newUrl === '') {
@@ -144,7 +144,7 @@ export class ProfileComponent {
   ngOnInit(): void {
     this.getUser();
 
-  
+
      this.route.params.pipe(
       switchMap(params => {
         const id = params['id'];
@@ -165,7 +165,7 @@ export class ProfileComponent {
       },
       error: (err) => this.handleError(err)
     });
-  
+
     if (!this.encryptedId()) {
       this.getAllEmojis();
     }
@@ -210,9 +210,9 @@ export class ProfileComponent {
 
   private processRanges(): void {
     if (this.objUser?.ranges?.length > 0) {
-      this.range = this.objUser.ranges.reduce((prev, current) => 
-        (current.max_range > prev.max_range) ? current : prev, 
-        this.objUser.ranges[0] // Valor inicial seguro
+      this.range = this.objUser?.ranges?.reduce((prev, current) =>
+        (current?.max_range > prev?.max_range) ? current : prev,
+        this.objUser?.ranges[0] // Valor inicial seguro
       );
     }
   }
@@ -255,8 +255,8 @@ export class ProfileComponent {
 
 
   getRangeImageUrl(rangeName: string | undefined): string {
-    if (!rangeName) return 'img/trofeos/novato.png'; 
-    
+    if (!rangeName) return 'img/trofeos/novato.png';
+
     const rangeImages: {[key: string]: string} = {
       'aprendiz': 'img/trofeos/aprendiz.png',
       'contribuyente': 'img/trofeos/contribuyente.png',
@@ -265,11 +265,11 @@ export class ProfileComponent {
       'leyenda': 'img/trofeos/leyenda.png',
       'novato': 'img/trofeos/novato.png'
     };
-  
+
 
     const normalizedRange = rangeName.toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  
+
     return rangeImages[normalizedRange] || rangeImages['novato'];
   }
 
@@ -279,21 +279,21 @@ export class ProfileComponent {
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-  
+
     if (!input.files?.length) return;
-  
+
     const file = input.files[0];
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     const maxSizeMB = 3;
-  
+
     // Validaciones...
-  
+
     this.selectedImage = file;
-  
+
     const reader = new FileReader();
     reader.onload = () => {
       const previewUrl = reader.result as string;
-  
+
       this.alertService.alertwithDialogs(
         '¿Estás seguro de cambiar la foto de tu perfil?',
         'Después no podrás revertir esta acción',
@@ -303,7 +303,7 @@ export class ProfileComponent {
           if (!this.selectedImage) return;
 
           this.loading_spinning = true;
-  
+
           const formData = new FormData();
           formData.append('avatar', this.selectedImage);
 
@@ -330,12 +330,12 @@ export class ProfileComponent {
         `<img src="${previewUrl}" alt="Vista previa" style="margin-top: 1rem; width: 150px; height: 150px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 10px rgba(0,0,0,0.2);" />`
       );
     };
-  
+
     reader.readAsDataURL(file);
   }
 
 
-  
+
 
   deletePhoto() {
     this.alertService.alertwithDialogs(
@@ -430,7 +430,7 @@ export class ProfileComponent {
       this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500);
       this.formChangePassword.markAllAsTouched(); return ;
     }
-    
+
     this.loading_spinning = true;
 
     this.userService.updatePassword(this.formChangePassword.value).subscribe({
@@ -481,13 +481,13 @@ export class ProfileComponent {
 
   // Mostrar información adicional de usuario
 
-  showInformationOpc(): void {    
+  showInformationOpc(): void {
     this.loading_spinning2 = true;
 
     this.userService.showInformationOpc().subscribe({
       next: (s) => {
         this.objUserInformation = s.data.user_information;
-        
+
         // Actualizar el formulario con los datos del usuario
         this.formUpdateinformationAdictional.patchValue({
           description: this.objUserInformation?.description,
@@ -503,7 +503,7 @@ export class ProfileComponent {
         this.loading_spinning2 = false;
 
         if (!this.updateConfirm) {
-          this.visibleModalUpdateInformation = true; 
+          this.visibleModalUpdateInformation = true;
         }
 
         this.updateConfirm = false;
@@ -524,7 +524,7 @@ export class ProfileComponent {
     if (this.formUpdateinformationAdictional.get('link1')?.value) this.activeLinks = 1;
     if (this.formUpdateinformationAdictional.get('link2')?.value) this.activeLinks = 2;
     if (this.formUpdateinformationAdictional.get('link3')?.value) this.activeLinks = 3;
-    
+
     // Si todos los links están vacíos, mostramos al menos uno
     if (this.activeLinks === 0) this.activeLinks = 1;
   }
@@ -541,7 +541,7 @@ export class ProfileComponent {
       this.formUpdateinformationAdictional.get('link2')?.value,
       this.formUpdateinformationAdictional.get('link3')?.value
     ].filter(link => link !== null && link !== '').length;
-    
+
     return totalLinks < 3 && this.activeLinks < 3;
   }
 
@@ -556,7 +556,7 @@ export class ProfileComponent {
   removeLink(linkNumber: number): void {
     // Resetear el valor del link a null
     this.formUpdateinformationAdictional.get(`link${linkNumber}`)?.setValue(null);
-    
+
     // Si estamos eliminando el último link visible, reducimos el contador
     if (linkNumber === this.activeLinks) {
       this.activeLinks--;
@@ -595,13 +595,13 @@ export class ProfileComponent {
 
     // Insertar el emoji en la posición actual del cursor
     const newValue = currentValue.substring(0, startPos) + emoji + currentValue.substring(endPos);
-    
+
     // Actualizar el formControl
     this.formUpdateinformationAdictional.get('description')?.setValue(newValue);
-    
+
     // Cerrar el diálogo
     this.showDialog = false;
-    
+
 
     setTimeout(() => {
       textarea.focus();
@@ -617,7 +617,7 @@ export class ProfileComponent {
     this.emojiService.getsAllEmojis().subscribe({
       next: (response) => {
         const emojis = response.map(e => e.emoji);
-        this.emojis = Array.from(new Set(emojis)).sort(); 
+        this.emojis = Array.from(new Set(emojis)).sort();
         this.loading_spinning2 = false;
       },
       error: (err) => {
@@ -634,15 +634,15 @@ export class ProfileComponent {
     this.loading_spinning2 = true;
     const userLoginString = localStorage.getItem('userLogin');
     const userLogin = userLoginString ? JSON.parse(userLoginString) : {};
-  
+
     if (!userLogin.token) {
       this.loading_spinning2 = false;
       this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
       return;
     }
-  
+
     const targetId = idUser || this.encryptedId() || this.objUser.id;
-    
+
     // Eliminar la navegación automática cuando se llama desde el diálogo
     if (!this.dialogoFollowers && idUser) {
       this.router.navigate(['menu/perfil', idUser], {
@@ -650,13 +650,13 @@ export class ProfileComponent {
         state: { preventReload: true }
       });
     }
-  
+
     this.userService.followAuser(targetId).subscribe({
       next: (s) => {
         this.alertService.miniAlert('Comenzaste a seguir este usuario correctamente.', 'success', 3000);
         this.loading_spinning2 = false;
         this.readyFollowing = true;
-        
+
         // Actualización local solo si estamos en el diálogo
         if (this.dialogoFollowers && targetId) {
           const userToFollow = this.findUserInLists(targetId);
@@ -689,7 +689,7 @@ export class ProfileComponent {
                 this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
                 this.loading_spinning2 = false;
                 this.readyFollowing = false;
-                
+
                 // Actualización síncrona - Eliminar el seguimiento localmente
                 if (idUser && this.objUsuario.followings) {
                     this.objUsuario.followings = this.objUsuario.followings.filter(
@@ -719,33 +719,33 @@ export class ProfileComponent {
     // Buscar en seguidores
     const follower = this.listFollowersMe?.find(f => f.follower.id === userId);
     if (follower) return follower.follower;
-    
+
     // Buscar en seguidos
     const following = this.listFollowingsMe?.find(f => f.followed.id === userId);
     if (following) return following.followed;
-    
+
     return null;
   }
 
   // Método para saber si ya el usuario sigue a un usuario
 
-  get verifyFollowUser(): boolean {  
+  get verifyFollowUser(): boolean {
     // Verifica primero si hay usuario logueado y datos necesarios
     if (!this.objUsuario?.followings || !this.objUser?.email) {
       return false;
     }
-    
+
     return this.objUsuario.followings.some(
       (follow: any) => follow.followed?.email === this.objUser.email
     );
   }
 
-  verifyFollowByUser(emailUser: string): boolean { 
+  verifyFollowByUser(emailUser: string): boolean {
     // Verifica primero si el usuario está logueado y tiene followings
     if (!this.objUsuario || !this.objUsuario.followings) {
       return false;
     }
-    
+
     return this.objUsuario.followings.some(
       (follow: any) => follow.followed?.email === emailUser
     );
@@ -776,14 +776,14 @@ export class ProfileComponent {
               } else {
                   this.listFollowersMe = response.data.data;
               }
-              
+
               // Actualización de metadatos de paginación
               this.lastPageFollowers = response.data.last_page;
-              
+
               // Reset de estados de carga
               this.loading_spinning2 = false;
               this.loadingMoreFollowers = false;
-              
+
               // Mostrar diálogo solo si no es carga adicional
               if (!loadMore) {
                   this.dialogoFollowers = true;
@@ -793,7 +793,7 @@ export class ProfileComponent {
               // Manejo de errores
               this.loading_spinning2 = false;
               this.loadingMoreFollowers = false;
-              
+
               if (err.status === 422) {
                   this.alertService.showValidationErrors(err.error);
               } else {
@@ -836,10 +836,10 @@ meFollowing(loadMore: boolean = false): void {
             } else {
                 this.listFollowingsMe = response.data.data;
             }
-            
+
             // Actualización de metadatos de paginación
             this.lastPageMeFollowing = response.data.last_page;
-            
+
             // Reset de estados de carga
             this.loading_spinning2 = false;
             this.loadingMoreMeFollowing = false;
@@ -848,7 +848,7 @@ meFollowing(loadMore: boolean = false): void {
             // Manejo de errores
             this.loading_spinning2 = false;
             this.loadingMoreMeFollowing = false;
-            
+
             if (err.status === 422) {
                 this.alertService.showValidationErrors(err.error);
             } else {
@@ -906,14 +906,14 @@ loadMoreMeFollowing(): void {
             } else {
                 this.listFollowersMe = response.data.data;
             }
-            
+
             // Actualización de metadatos de paginación
             this.lastPageFollowers = response.data.last_page;
-            
+
             // Reset de estados de carga
             this.loading_spinning2 = false;
             this.loadingMoreFollowers = false;
-            
+
             // Mostrar diálogo solo si no es carga adicional
             if (!loadMore) {
                 this.dialogoFollowers = true;
@@ -923,7 +923,7 @@ loadMoreMeFollowing(): void {
             // Manejo de errores
             this.loading_spinning2 = false;
             this.loadingMoreFollowers = false;
-            
+
             if (err.status === 422) {
                 this.alertService.showValidationErrors(err.error);
             } else {
@@ -956,10 +956,10 @@ loadMoreMeFollowing(): void {
             } else {
                 this.listFollowingsMe = response.data.data;
             }
-            
+
             // Actualización de metadatos de paginación
             this.lastPageMeFollowing = response.data.last_page;
-            
+
             // Reset de estados de carga
             this.loading_spinning2 = false;
             this.loadingMoreMeFollowing = false;
@@ -968,7 +968,7 @@ loadMoreMeFollowing(): void {
             // Manejo de errores
             this.loading_spinning2 = false;
             this.loadingMoreMeFollowing = false;
-            
+
             if (err.status === 422) {
                 this.alertService.showValidationErrors(err.error);
             } else {
@@ -979,7 +979,7 @@ loadMoreMeFollowing(): void {
   }
 
 
-  // Obtener data de usuario 
+  // Obtener data de usuario
 
   public objUsuario:any;
 

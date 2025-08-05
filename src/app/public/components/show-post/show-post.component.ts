@@ -18,6 +18,7 @@ import { ReactionsService } from '../../../core/services/Reactions/reactions.ser
 import { Data as DataReactions, ReactionsResponseI } from '../../../core/models/Reactions/reactionsResponse.interface';
 import { TabViewModule } from 'primeng/tabview';
 import Swal from 'sweetalert2';
+import { User } from '../../../core/models/Comments/commentsPublicationResponse.interface';
 
 @Component({
   selector: 'app-show-post',
@@ -59,6 +60,7 @@ export class ShowPostComponent implements OnInit {
   public activeReactionTab = 0;
   public isReacting = false;
   public rolUser!:string;
+  private objUser !:User;
 
   public responsiveOptions: any[] = [
     {
@@ -80,6 +82,7 @@ export class ShowPostComponent implements OnInit {
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
     this.loadPublication();
     this.loadReactions();
+    this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
   }
 
   loadPublication(): void {
@@ -225,6 +228,7 @@ export class ShowPostComponent implements OnInit {
 
   reactionAPost(type: string): void {
     if (this.isReacting) return;
+    if (!this.objUser) return ;
     this.isReacting = true;
 
     const hadPositive = this.hasReacted('positivo');

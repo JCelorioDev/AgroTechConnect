@@ -31,11 +31,16 @@ export class AddPostComponent {
   uploadedFiles: File[] = [];
   isLoading: boolean = false;
   private readonly alertService = inject(AlertService);
+  private hasToken!:boolean;
 
   constructor(public postsService: PostService) {}
 
   getObjectUrl(file: File): string {
     return URL.createObjectURL(file);
+  }
+
+  ngOnInit():void{
+    this.hasToken = !!JSON.parse(localStorage.getItem('userLogin')!).token;
   }
 
   onFileSelect(event: any) {
@@ -61,6 +66,9 @@ export class AddPostComponent {
 
     if (!this.title && cleanContent) {
       this.title = cleanContent.substring(0, 100) || 'Sin título';
+    }else if(!this.hasToken){
+      this.isLoading = false;
+      this.alertService.alertDefault('No tienes una cuenta activa', 'warning', 3000); return ;
     }
   
     const postData = {
