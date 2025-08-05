@@ -24,7 +24,7 @@
                 <p-tag [value]="objPublication.user.ranges?.[0]?.name"
                       [severity]="getRangeSeverity(objPublication.user.ranges?.[0]?.name)"
                       class="user-range"></p-tag>
-                <span class="post-date">{{ objPublication.created_at }}</span>
+                <span class="post-date">{{ objPublication.created_at | date:'MMM d, y, h:mm:ss a'  }}</span>
               </div>
             </div>
           </div>

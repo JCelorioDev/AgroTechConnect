@@ -675,7 +675,11 @@ export class ShowCommentComponent implements OnInit {
   closeEditDialog(): void {
     this.editDialogVisible = false;
     this.uploadedFiles = [];
-    // Opcional: Resetear el formulario si es necesario
-    // this.editForm.reset();
+  }
+
+  // Ir al perfil de usuario por ID 
+
+  goProfileByID(idUsuario:string){
+    this.router.navigate(['menu/perfil', idUsuario]);
   }
 }

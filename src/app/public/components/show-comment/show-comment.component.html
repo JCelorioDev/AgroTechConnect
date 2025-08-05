@@ -205,13 +205,13 @@
       No hay respuestas aún.
     </div>
 
-    <div (click)="goReplayComment(response.id)" *ngFor="let response of responses" class="response-item">
+    <div (click)="goReplayComment(response.id)" style="cursor: pointer;" *ngFor="let response of responses" class="response-item">
       <div class="response-header">
         <p-avatar [image]="response.user.image?.url"
                  [label]="getAvatarLabel(response.user)"
                  size="normal"
                  shape="circle"></p-avatar>
-        <div class="response-user-info">
+        <div class="response-user-info" (click)="goProfileByID(response.user.id)">
           <span class="user-name">{{ response.user.name }} {{ response.user.lastname }}</span>
           <span class="response-date">{{ response.created_at | date:'medium' }}</span>
         </div>
