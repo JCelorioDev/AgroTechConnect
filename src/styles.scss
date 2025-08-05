@@ -550,6 +550,10 @@ html.custom-dark-mode .post-footer {
   background-color: #25282E !important;
 }
 
+html.custom-dark-mode .p-galleria {
+  border-style: none !important;
+}
+
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -592,3 +596,6 @@ html.custom-dark-mode .organic-subtext{
   backdrop-filter: blur(0) !important;
 }
 
+html.custom-dark-mode .user-details .user-name {
+  color: #fff;
+}
