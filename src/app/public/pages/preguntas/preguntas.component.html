@@ -1,1 +1,99 @@
-<p>preguntas works!</p>
+<div class="preguntas-container">
+  <div class="header">
+    <h1>Preguntas sin resolver</h1>
+    <p>Publicaciones que aún no tienen respuestas</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="posts-grid">
+    @for (item of [1,2,3]; track $index) {
+      <p-card class="skeleton-card">
+        <div class="skeleton-content">
+          <div class="skeleton-header">
+            <p-skeleton shape="circle" size="3rem" class="mr-2"></p-skeleton>
+            <div>
+              <p-skeleton width="8rem" height="1rem" class="mb-2"></p-skeleton>
+              <p-skeleton width="6rem" height="1rem"></p-skeleton>
+            </div>
+          </div>
+          <p-skeleton width="100%" height="1.5rem" class="mt-3"></p-skeleton>
+          <p-skeleton width="100%" height="5rem" class="mt-3"></p-skeleton>
+          <div class="skeleton-footer">
+            <p-skeleton width="5rem" height="2rem" class="mt-3"></p-skeleton>
+            <p-skeleton width="5rem" height="2rem" class="mt-3"></p-skeleton>
+          </div>
+        </div>
+      </p-card>
+    }
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && unansweredPosts.length === 0" class="empty-state">
+    <img src="assets/images/empty-questions.svg" alt="No hay preguntas" class="empty-image">
+    <h3>No hay preguntas sin resolver</h3>
+    <p>¡Todo parece estar respondido por ahora!</p>
+    <p-button label="Recargar" icon="pi pi-refresh" (click)="getUnansweredPosts()"></p-button>
+  </div>
+
+  <!-- Posts Grid -->
+  <div *ngIf="!loading && unansweredPosts.length > 0" class="posts-grid">
+    @for (post of unansweredPosts; track post.id) {
+      <p-card class="post-card">
+        <div class="post-header">
+          <div class="user-info">
+            <p-avatar 
+              [image]="post.user.image?.url" 
+              [label]="!post?.user?.image?.url ? getInitials(post?.user) : undefined"
+              size="large" 
+              shape="circle"
+             >
+            </p-avatar>
+            <div class="user-details">
+              <span class="username">{{ post.user.name }} {{ post.user.lastname }}</span>
+              <span class="post-date">{{ post.created_at | date:'mediumDate' }}</span>
+            </div>
+          </div>
+          <p-tag severity="danger" icon="pi pi-question-circle">Sin respuestas</p-tag>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="post-content">
+          <h3>{{ post.title }}</h3>
+          <p class="post-description">{{ post.description }}</p>
+        </div>
+
+        <p-divider></p-divider>
+
+        <div class="post-footer">
+          <div class="reactions">
+            <span class="positive-reactions" [pTooltip]="'Reacciones positivas'" tooltipPosition="top">
+              <i class="pi pi-thumbs-up"></i> {{ post.positive_reactions_count || 0 }}
+            </span>
+            <span class="negative-reactions" [pTooltip]="'Reacciones negativas'" tooltipPosition="top">
+              <i class="pi pi-thumbs-down"></i> {{ post.negative_reactions_count || 0 }}
+            </span>
+          </div>
+          <p-button 
+            (onClick)="showPostByID(post.id)"
+            label="Responder" 
+            icon="pi pi-reply" 
+            [routerLink]="['/posts', post.id]"
+            styleClass="p-button-outlined p-button-help">
+          </p-button>
+        </div>
+      </p-card>
+    }
+  </div>
+
+  <!-- Paginator -->
+  <div *ngIf="!loading && totalUnansweredPosts > itemsPerPage" class="paginator-container">
+    <p-paginator 
+      [first]="first"
+      [rows]="itemsPerPage" 
+      [totalRecords]="totalUnansweredPosts" 
+      [rowsPerPageOptions]="[5, 10, 20]"
+      (onPageChange)="onPageChange($event)">
+    </p-paginator>
+  </div>
+</div>
