@@ -570,6 +570,10 @@ html.custom-dark-mode .post-footer .p-button {
   color:  rgb(211, 117, 255) !important;
 }
 
+html.custom-dark-mode .filters-container .p-button {
+  background-color: transparent !important;
+}
+
 html.custom-dark-mode  .p-dialog {
   border: none !important;
 }
