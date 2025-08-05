@@ -2,6 +2,7 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  background-color: transparent !important;
 
   .header {
     text-align: center;
@@ -20,6 +21,7 @@
 
   .posts-grid {
     display: grid;
+    background-color: transparent !important;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
@@ -27,6 +29,7 @@
 
   .post-card {
     height: 100%;
+    background-color: transparent !important;
     transition: all 0.3s ease;
     border-left: 4px solid var(--red-500);
     
@@ -146,6 +149,172 @@
 
     .posts-grid {
       grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* Animación base para los skeletons */
+@keyframes shimmer {
+  0% { background-position: -468px 0 }
+  100% { background-position: 468px 0 }
+}
+
+.skeleton-card-improved {
+  background: var(--surface-card);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--surface-border);
+}
+
+.skeleton-header-improved {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  
+  .skeleton-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    margin-right: 1rem;
+  }
+  
+  .skeleton-user-info {
+    flex: 1;
+    
+    .skeleton-line-medium {
+      height: 16px;
+      width: 60%;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      margin-bottom: 8px;
+      border-radius: 4px;
+    }
+    
+    .skeleton-line-small {
+      height: 12px;
+      width: 40%;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 4px;
+    }
+  }
+}
+
+.skeleton-content-improved {
+  margin-bottom: 1.5rem;
+  
+  .skeleton-line-large {
+    height: 20px;
+    width: 70%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    margin-bottom: 12px;
+    border-radius: 4px;
+  }
+  
+  .skeleton-line-full {
+    height: 14px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  
+  .skeleton-line-80 {
+    height: 14px;
+    width: 80%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 4px;
+  }
+}
+
+.skeleton-footer-improved {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  .skeleton-reactions {
+    display: flex;
+    gap: 1rem;
+    
+    .skeleton-badge {
+      width: 50px;
+      height: 28px;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 14px;
+    }
+  }
+  
+  .skeleton-button {
+    width: 100px;
+    height: 36px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 18px;
+  }
+}
+
+/* Efecto de pulso sutil para todo el card */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 0.95 }
+  50% { opacity: 0.85 }
+}
+
+.skeleton-card-improved {
+  animation: subtlePulse 2s ease-in-out infinite;
+}
+
+/* Mejoras responsive */
+@media (max-width: 768px) {
+  .skeleton-header-improved {
+    .skeleton-avatar {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .skeleton-line-medium {
+      height: 14px;
+    }
+    
+    .skeleton-line-small {
+      height: 10px;
+    }
+  }
+  
+  .skeleton-content-improved {
+    .skeleton-line-large {
+      height: 18px;
+    }
+    
+    .skeleton-line-full, .skeleton-line-80 {
+      height: 12px;
+    }
+  }
+  
+  .skeleton-footer-improved {
+    .skeleton-badge {
+      width: 40px;
+      height: 24px;
+    }
+    
+    .skeleton-button {
+      width: 80px;
+      height: 32px;
     }
   }
 }

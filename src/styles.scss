@@ -516,6 +516,20 @@ html.custom-dark-mode .editor-footer .p-button {
   color: #fff !important;
 }
 
+.custom-dark-mode .p-card {
+  background-color: transparent !important;
+}
+
+.custom-dark-mode .p-card-body {
+  border: none;
+  background-color: transparent !important;
+  color: white;
+}
+
+.custom-dark-mode .p-divider-solid.p-divider-horizontal:before {
+  border-block-start-style: none;
+}
+
 html.custom-dark-mode  .post-container .p-card {
   background-color: #25282E !important;
 }

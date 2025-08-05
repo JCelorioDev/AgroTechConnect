@@ -2,7 +2,7 @@
   <img src="anim/spinnin_loading2.svg" alt="spinning loading">
 </div>
 
-<p-accordion class="post-creator-accordion">
+<p-accordion class="post-creator-accordion" *ngIf="!isLoading">
   <p-accordionTab [selected]="postsService.isCreatePost()">
     <ng-template pTemplate="header">
       <div class="accordion-header">
