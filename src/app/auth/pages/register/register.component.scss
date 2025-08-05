@@ -87,17 +87,17 @@
           margin-bottom: 1rem;
 
           .error-message {
-            color: #ebebeb; 
+            color: #ebebeb;
             font-size: 0.875rem;
             margin-top: 0.5rem;
             line-height: 1.5;
           }
-          
+
           .requirements-list {
             padding-left: 1.25rem;
             margin: 0.5rem 0 0 0;
           }
-          
+
           .requirements-list li {
             margin-bottom: 0.25rem;
           }
@@ -178,12 +178,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; 
-  backdrop-filter: blur(2px); 
+  z-index: 9999;
+  backdrop-filter: blur(2px);
 }
 
 .responsive-spinner {
-  width: clamp(60px, 15vw, 120px); 
+  width: clamp(60px, 15vw, 120px);
   height: auto;
   animation: spin 1s linear infinite;
 }
@@ -203,7 +203,7 @@
   }
 
   .checkbox-label {
-    color: #ffffff;
+    color: #000000;
     font-size: 0.9rem;
   }
 

@@ -76,7 +76,7 @@ export class ShowPostComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!).roles[0].name || '';
+    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!)?.roles[0]?.name || '';
     this.idPublicacion = this.route.snapshot.paramMap.get('id')!;
     this.loadPublication();
     this.loadReactions();
