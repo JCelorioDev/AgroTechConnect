@@ -191,6 +191,8 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
+  public notHasPost:boolean = false;
+
   getsMePost(): void {
     if (!this.isHandlingNewPost) {
       this.loading = true;
@@ -204,14 +206,6 @@ export class PostComponent implements OnInit, OnDestroy {
       this.monthFilter
     ).subscribe({
       next: (response) => {
-        if (response.data.data.length === 0) {
-          this.alertService.miniAlert('No tienes publicaciones aún', 'warning', 3000);
-          this.msjValidation = 'Crea tu primera publicación.';
-          this.validation = true;
-          this.loading = false;
-          return;
-        }
-
         this.listPost = response.data.data;
         this.totalRecords = response.data.total;
         this.loading = false;
@@ -221,6 +215,13 @@ export class PostComponent implements OnInit, OnDestroy {
         this.loading = false;
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
+        } else if (err.status === 404) {
+          this.alertService.miniAlert('No tienes publicaciones aún', 'warning', 3000);
+          this.msjValidation = 'Crea tu primera publicación.';
+          this.validation = true;
+          this.loading = false;
+          this.notHasPost = true;
+          return;
         } else {
           this.alertService.miniAlert(err.error.message, 'error', 3000);
         }
@@ -306,7 +307,7 @@ export class PostComponent implements OnInit, OnDestroy {
               this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
-        });   
+        });
       }
   }
 
@@ -503,5 +504,9 @@ export class PostComponent implements OnInit, OnDestroy {
     this.router.navigate(['menu/auth/login'], {
       queryParams: { returnUrl: this.router.url }
     });
+  }
+
+  goToPost():void{
+    this.router.navigate(['menu/publicaciones']);
   }
 }

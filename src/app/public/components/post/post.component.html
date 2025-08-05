@@ -23,18 +23,17 @@
     </div>
     
     <div class="auth-message">
-      <h2>Acceso Requerido</h2>
       <p>{{msjValidation}}</p>
+      <p-button (onClick)="goToPost()" *ngIf="notHasPost" label="Crear publicación" severity="success" />
     </div>
   </div>
 }@else if (notToken) {
   <div class="auth-required-container">
-    <div class="auth-animation">
-      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
+    <div class="auth-message">
+      <p>{{msjValidation}}</p>
     </div>
     
     <div class="auth-message">
-      <h2>Acceso Requerido</h2>
       <p>Para interactuar con las {{nameError}}, por favor inicia sesión o regístrate</p>
     </div>
   </div>

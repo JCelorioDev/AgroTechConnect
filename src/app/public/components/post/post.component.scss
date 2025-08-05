@@ -457,3 +457,35 @@
       }
     }
   }
+
+  .auth-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    
+    p {
+      font-size: 1.1rem;
+      color: var(--text-color-secondary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .p-button {
+      margin-top: 0.5rem;
+      min-width: 180px;
+      padding: 0.75rem 1.25rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }

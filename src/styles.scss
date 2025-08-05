@@ -564,6 +564,12 @@ html.custom-dark-mode  .p-tablist-tab-list {
   border-style: none;
 }
 
+html.custom-dark-mode .post-footer .p-button {
+  background-color: transparent !important;
+  border: none !important;
+  color:  rgb(211, 117, 255) !important;
+}
+
 html.custom-dark-mode  .p-dialog {
   border: none !important;
 }
