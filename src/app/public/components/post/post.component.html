@@ -18,7 +18,9 @@
 
 @if(validation){
     {{msjValidation}}
-}@else{
+}@else if (notToken) {
+ Ingresa sesion primero
+} @else{
     <div class="publication-container">
         <div class="loading-spinner" *ngIf="loading">
           <img src="anim/spinnin_loading2.svg" alt="spinning loading">

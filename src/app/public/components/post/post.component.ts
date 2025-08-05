@@ -259,6 +259,8 @@ export class PostComponent implements OnInit, OnDestroy {
     });
   }
 
+  public notToken !:boolean;
+
   // Obtener publicaciones de mis seguidos
 
   getPostsMyFollowings():void{
@@ -266,35 +268,38 @@ export class PostComponent implements OnInit, OnDestroy {
         this.loading = true;
       }
 
+      if (!this.userLogin()?.token) {
+        this.notToken = true;
+      } else {
+        this.listPost = [];
 
-      this.listPost = [];
+        this.postService.getPostMeFollowings(
+          this.currentPage,
+          10,
+          this.searchQuery,
+          this.yearFilter,
+          this.monthFilter
+        ).pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (response) => {
+            this.listPost = response.data.data;
+            this.totalRecords = response.data.total;
+            this.loading = false;
 
-      this.postService.getPostMeFollowings(
-        this.currentPage,
-        10,
-        this.searchQuery,
-        this.yearFilter,
-        this.monthFilter
-      ).pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (response) => {
-          this.listPost = response.data.data;
-          this.totalRecords = response.data.total;
-          this.loading = false;
-
-          if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
-            this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
+            if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
+              this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
+            }
+          },
+          error: (err) => {
+            this.loading = false;
+            if (err.status === 422) {
+              this.alertService.showValidationErrors(err.error);
+            } else {
+              this.alertService.miniAlert(err.error.message, 'error', 3000);
+            }
           }
-        },
-        error: (err) => {
-          this.loading = false;
-          if (err.status === 422) {
-            this.alertService.showValidationErrors(err.error);
-          } else {
-            this.alertService.miniAlert(err.error.message, 'error', 3000);
-          }
-        }
-      });
+        });   
+      }
   }
 
 
@@ -471,13 +476,13 @@ export class PostComponent implements OnInit, OnDestroy {
 
   getInitials(user: any): string {
     if (!user) return '';
-    
+
     // Obtener la primera letra del nombre
     const firstNameInitial = user.name ? user.name.charAt(0).toUpperCase() : '';
-    
+
     // Obtener la primera letra del apellido (si existe)
     const lastNameInitial = user.lastname ? user.lastname.charAt(0).toUpperCase() : '';
-    
+
     return `${firstNameInitial}${lastNameInitial}`;
 }
 }
