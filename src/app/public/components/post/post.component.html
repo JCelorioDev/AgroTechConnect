@@ -17,9 +17,27 @@
 
 
 @if(validation){
-    {{msjValidation}}
+  <div class="auth-required-container">
+    <div class="auth-animation">
+      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
+    </div>
+    
+    <div class="auth-message">
+      <h2>Acceso Requerido</h2>
+      <p>{{msjValidation}}</p>
+    </div>
+  </div>
 }@else if (notToken) {
- Ingresa sesion primero
+  <div class="auth-required-container">
+    <div class="auth-animation">
+      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
+    </div>
+    
+    <div class="auth-message">
+      <h2>Acceso Requerido</h2>
+      <p>Para interactuar con las {{nameError}}, por favor inicia sesión o regístrate</p>
+    </div>
+  </div>
 } @else{
     <div class="publication-container">
         <div class="loading-spinner" *ngIf="loading">

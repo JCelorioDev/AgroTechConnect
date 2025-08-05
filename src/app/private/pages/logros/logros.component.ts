@@ -11,6 +11,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
 import { AvatarModule } from 'primeng/avatar';
+import { LottieComponent, AnimationOptions } from 'ngx-lottie';
+
 
 @Component({
   selector: 'app-logros',
@@ -23,7 +25,8 @@ import { AvatarModule } from 'primeng/avatar';
     SkeletonModule,
     DividerModule,
     BadgeModule,
-    AvatarModule
+    AvatarModule,
+    LottieComponent
   ],
   templateUrl: './logros.component.html',
   styleUrls: ['./logros.component.scss']
@@ -37,17 +40,24 @@ export class LogrosComponent {
   public loading: boolean = true;
   public currentPoints: number = 0; // Asume que tienes esta información del usuario
 
+  options: AnimationOptions = {
+    path: 'anim/chicky_animation.json',
+  };
+
+
   constructor() {
     this.objUsuario = JSON.parse(localStorage.getItem('userLogin')!);
   }
 
   ngOnInit(): void {
-    this.getRangeUser();
+    if(this.objUsuario){
+      this.getRangeUser();
+    }
   }
 
   getRangeUser(): void {
     this.loading = true;
-    this.userService.getInformationnByID(this.objUsuario.id).subscribe({
+    this.userService.getInformationnByID(this.objUsuario?.id).subscribe({
       next: (response) => {
         this.ranges = response.data.ranges;
         this.ranges.sort((a, b) => a.min_range - b.min_range);
@@ -77,4 +87,9 @@ export class LogrosComponent {
   isRangeCompleted(range: Range): boolean {
     return this.currentPoints >= range.max_range;
   }
+
+  styles: Partial<CSSStyleDeclaration> = {
+    maxWidth: '500px',
+    margin: '0 auto',
+  };
 }

@@ -17,7 +17,7 @@ import { Dialog } from 'primeng/dialog';
 import { Data } from '../../../core/models/Post/showPostResponse.interface';
 import Swal from 'sweetalert2';
 import { DomSanitizer } from '@angular/platform-browser';
-
+import { LottieComponent, AnimationOptions } from 'ngx-lottie';
 
 @Component({
   selector: 'public-post',
@@ -31,7 +31,8 @@ import { DomSanitizer } from '@angular/platform-browser';
     DividerModule,
     ProgressSpinnerModule,
     PaginatorModule,
-    Dialog
+    Dialog,
+    LottieComponent
   ],
   templateUrl: './post.component.html',
   styleUrl: './post.component.scss'
@@ -61,6 +62,10 @@ export class PostComponent implements OnInit, OnDestroy {
   private monthFilter: number | null = null;
   public post!:Data;
   public emailPostUser = signal<string>("");
+
+  options: AnimationOptions = {
+    path: 'anim/chicky_animation.json',
+  };
 
   ngOnInit(): void {
     this.route.queryParams.pipe(
@@ -121,6 +126,8 @@ export class PostComponent implements OnInit, OnDestroy {
     }
   }
 
+  public nameError!:string;
+
   verifyRoute(): void {
     const baseRoute = this.router.url.split('?')[0];
     this.segments = baseRoute.split('/');
@@ -134,15 +141,16 @@ export class PostComponent implements OnInit, OnDestroy {
       this.getPostsByUser(
       this.route.snapshot.paramMap.get('id')!);
     } else if (this.segments[2] === 'publicaciones') {
+      this.nameError = this.segments[2]
       this.getPosts();
     } else if (this.segments[2] === 'comunidad') {
+      this.nameError = this.segments[2]
       this.getPostsMyFollowings();
     } else {
       if (!hasToken) {
         this.validation = true;
         this.loading = false;
         this.msjValidation = 'Ingresa una cuenta primero para realizar una publicación.';
-        this.alertService.miniAlert('Ingresa una cuenta primero', 'warning', 3000);
         return;
       }
       this.getsMePost();
@@ -484,5 +492,16 @@ export class PostComponent implements OnInit, OnDestroy {
     const lastNameInitial = user.lastname ? user.lastname.charAt(0).toUpperCase() : '';
 
     return `${firstNameInitial}${lastNameInitial}`;
-}
+  }
+
+  styles: Partial<CSSStyleDeclaration> = {
+    maxWidth: '500px',
+    margin: '0 auto',
+  };
+
+  goToLogin(): void {
+    this.router.navigate(['menu/auth/login'], {
+      queryParams: { returnUrl: this.router.url }
+    });
+  }
 }

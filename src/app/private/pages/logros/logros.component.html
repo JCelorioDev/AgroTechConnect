@@ -4,7 +4,7 @@
       <h2>Mis Logros</h2>
       <p>Tu progreso en la plataforma</p>
     </div>
-  
+
     <div *ngIf="loading" class="grid">
       @for (item of [1,2,3,4]; track $index) {
         <p-card class="skeleton-card">
@@ -17,10 +17,10 @@
         </p-card>
       }
     </div>
-  
+
     <div *ngIf="!loading" class="grid">
       @for (range of ranges; track range.id) {
-        <p-card 
+        <p-card
           [class.current-range]="isCurrentRange(range)"
           [class.completed-range]="isRangeCompleted(range)"
           class="range-card">
@@ -40,15 +40,15 @@
               <p-badge value="Actual" severity="info"></p-badge>
             }
           </div>
-  
+
           <p-divider></p-divider>
-  
+
           <p class="range-description">{{ range.description }}</p>
-  
+
           <div class="progress-container">
             <small>Progreso: {{ currentPoints }}/{{ range.max_range }}</small>
-            <p-progressBar 
-              [value]="getProgressPercentage(range)" 
+            <p-progressBar
+              [value]="getProgressPercentage(range)"
               [showValue]="false"
               [styleClass]="isRangeCompleted(range) ? 'completed-progress' : ''">
             </p-progressBar>
@@ -58,6 +58,15 @@
     </div>
   </div>
 }@else{
-  No tienes una cuenta activa
+  <div class="auth-required-container">
+    <div class="auth-animation">
+      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
+    </div>
+    
+    <div class="auth-message">
+      <h2>Acceso Requerido</h2>
+      <p>No tienes una cuenta activa</p>
+    </div>
+  </div>
 }
 
