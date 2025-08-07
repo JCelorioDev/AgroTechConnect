@@ -578,6 +578,21 @@ html.custom-dark-mode  .p-dialog {
   border: none !important;
 }
 
+html.custom-dark-mode .perfil-contenido .p-button {
+  background-color: #e78e1a !important;
+  box-shadow: none !important;
+}
+
+html.custom-dark-mode .notification-view .p-button {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html.custom-dark-mode .comment-content .p-button {
+  background-color: transparent !important;
+  border: none !important;
+}
+
 
 ::-webkit-scrollbar {
   width: 6px;
