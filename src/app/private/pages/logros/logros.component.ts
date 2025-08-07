@@ -5,7 +5,7 @@ import { Range } from '../../../core/models/User/userResponse.interface';
 import { User } from '../../../core/models/Comments/commentsPublicationResponse.interface';
 import { AlertService } from '../../../shared/alerts/alert.service';
 import { CardModule } from 'primeng/card';
-import { ProgressBarModule } from 'primeng/progressbar';
+import { ProgressBar } from 'primeng/progressbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { SkeletonModule } from 'primeng/skeleton';
 import { DividerModule } from 'primeng/divider';
@@ -20,7 +20,7 @@ import { LottieComponent, AnimationOptions } from 'ngx-lottie';
   imports: [
     CommonModule,
     CardModule,
-    ProgressBarModule,
+    ProgressBar,
     TooltipModule,
     SkeletonModule,
     DividerModule,
@@ -74,18 +74,17 @@ export class LogrosComponent {
     });
   }
 
-  getProgressPercentage(range: Range): number {
-    if (this.currentPoints >= range.max_range) return 100;
-    if (this.currentPoints <= range.min_range) return 0;
-    return ((this.currentPoints - range.min_range) / (range.max_range - range.min_range)) * 100;
+  getProgressPercentage(): number {
+    return 100; 
   }
 
   isCurrentRange(range: Range): boolean {
-    return this.currentPoints >= range.min_range && this.currentPoints < range.max_range;
+    return true ;
   }
+  
 
-  isRangeCompleted(range: Range): boolean {
-    return this.currentPoints >= range.max_range;
+  get isRangeCompleted(): boolean {
+    return true;
   }
 
   styles: Partial<CSSStyleDeclaration> = {

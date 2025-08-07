@@ -578,6 +578,10 @@ html.custom-dark-mode  .p-dialog {
   border: none !important;
 }
 
+html.custom-dark-mode  .completed-progress .p-progressbar-value {
+  background: #c4eb1a;
+}
+
 
 ::-webkit-scrollbar {
   width: 6px;

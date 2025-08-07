@@ -163,13 +163,18 @@ export class CommentsComponent implements OnInit {
       return;
     }
 
+    // Marcamos como activo inmediatamente para mostrar el área de respuesta
+    this.activeIndex[idComentario] = true;
+
     if (!this.listResponseOfComments[idComentario]) {
       this.commentsService.getsCommentsResponse(idComentario).subscribe({
         next: (s) => {
           this.listResponseOfComments[idComentario] = s.data;
-          this.activeIndex[idComentario] = true;
         },
         error: (err) => {
+          // Creamos un objeto Data completo con valores por defecto
+          this.listResponseOfComments[idComentario] = this.createEmptyDataResponse();
+
           if (err.status === 422) {
             this.alertService.showValidationErrors(err.error);
           } else {
@@ -177,9 +182,26 @@ export class CommentsComponent implements OnInit {
           }
         }
       });
-    } else {
-      this.activeIndex[idComentario] = !this.activeIndex[idComentario];
     }
+  }
+
+  // Método para crear una respuesta Data vacía con todas las propiedades requeridas
+  private createEmptyDataResponse(): DataComments {
+    return {
+      current_page: 1,
+      data: [],
+      first_page_url: '',
+      from: 0,
+      last_page: 1,
+      last_page_url: '',
+      links: [],
+      next_page_url: null,
+      path: '',
+      per_page: 10,
+      prev_page_url: null,
+      to: 0,
+      total: 0
+    };
   }
 
   trackByCommentId(index: number, comment: Datum): string {
@@ -372,26 +394,25 @@ export class CommentsComponent implements OnInit {
 
   postReply(): void {
     if (!this.replyingToCommentId) return;
-  
+
     if (!this.replyCommentText.trim() && this.replyUploadedFiles.length === 0) {
       this.alertService.miniAlert('La respuesta no puede estar vacía', 'warning', 3000);
       return;
-    }else if (!this.objUser) {
+    } else if (!this.objUser) {
       this.alertService.miniAlert('No tienes una cuenta activa', 'info', 3000);
-      return ;
+      return;
     }
-  
+
     this.postingReply = true;
-  
+
     const formData = new FormData();
     formData.append('comment', this.replyCommentText);
-  
-    // Adjuntar imágenes correctamente
+
+    // Adjuntar imágenes con formato images[]
     this.replyUploadedFiles.forEach((file, index) => {
-      formData.append(`images`, file); // Cambiado a usar el mismo nombre para múltiples archivos
+      formData.append(`images[${index}]`, file); // Cambiado a usar images[index]
     });
-    
-  
+
     this.commentsService.createReplayComment(
       this.idPublication,
       this.replyingToCommentId,
@@ -399,26 +420,24 @@ export class CommentsComponent implements OnInit {
     ).subscribe({
       next: (response) => {
         if (response.data) {
-          // Asegurar compatibilidad con la interfaz
           const newResponse: ResponseDatum = {
             ...response.data,
             reactions_count: (response.data.positive_reactions_count || 0) + (response.data.negative_reactions_count || 0),
             images: response.data.images || [],
             user: response.data.user || this.getCurrentUser()
           };
-  
-          // Actualización local segura
+
           if (this.listResponseOfComments[this.replyingToCommentId!]) {
             this.listResponseOfComments[this.replyingToCommentId!].data.unshift(newResponse);
             this.listResponseOfComments[this.replyingToCommentId!].total++;
-            
+
             const parentComment = this.listComment?.data?.data.find(c => c.id === this.replyingToCommentId);
             if (parentComment) {
               parentComment.replies_count = (parentComment.replies_count || 0) + 1;
             }
           }
         }
-        
+
         this.resetReplyState();
       },
       error: (err) => {
@@ -457,15 +476,15 @@ export class CommentsComponent implements OnInit {
     this.replyPreviewImages = [];
     this.changeDetector.detectChanges();
   }
-  
+
   private handleReplyError(err: any): void {
     this.postingReply = false;
     if (err.status === 422) {
       this.alertService.showValidationErrors(err.error);
     } else {
       this.alertService.miniAlert(
-        err.error?.message || 'Error al publicar la respuesta', 
-        'error', 
+        err.error?.message || 'Error al publicar la respuesta',
+        'error',
         3000
       );
     }

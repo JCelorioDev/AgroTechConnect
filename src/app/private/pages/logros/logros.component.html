@@ -22,7 +22,7 @@
       @for (range of ranges; track range.id) {
         <p-card
           [class.current-range]="isCurrentRange(range)"
-          [class.completed-range]="isRangeCompleted(range)"
+          [class.completed-range]="isRangeCompleted"
           class="range-card">
           <div class="card-header">
             @if (range.image_url) {
@@ -32,9 +32,9 @@
             }
             <div class="range-info">
               <h3>{{ range.name }}</h3>
-              <small>{{ range.min_range }} - {{ range.max_range }} puntos</small>
+              <small>{{  range.max_range }} - {{ range.max_range }} puntos</small>
             </div>
-            @if (isRangeCompleted(range)) {
+            @if (isRangeCompleted) {
               <p-badge value="Completado" severity="success"></p-badge>
             } @else if (isCurrentRange(range)) {
               <p-badge value="Actual" severity="info"></p-badge>
@@ -46,12 +46,12 @@
           <p class="range-description">{{ range.description }}</p>
 
           <div class="progress-container">
-            <small>Progreso: {{ currentPoints }}/{{ range.max_range }}</small>
-            <p-progressBar
-              [value]="getProgressPercentage(range)"
+            <small>Progreso: {{ range.max_range  }}/{{ range.max_range }}</small>
+            <p-progressbar
+              [value]="100"
               [showValue]="false"
-              [styleClass]="isRangeCompleted(range) ? 'completed-progress' : ''">
-            </p-progressBar>
+              [styleClass]="isRangeCompleted ? 'completed-progress' : ''">
+            </p-progressbar>
           </div>
         </p-card>
       }
