@@ -1,6 +1,6 @@
 :host ::ng-deep {
   .p-dialog {
-    background: #d8d7d7 !important;
+    background: #e7e7e7  !important;
     border-radius: 16px;
     padding: 2rem;
     max-width: 400px;
@@ -46,7 +46,7 @@
       .login-subtext {
         font-size: 0.8rem;
         text-align: center;
-        color: #bbb;
+        color: #2c2c2c;
         margin-bottom: 1.5rem;
 
         a {
@@ -61,8 +61,8 @@
         justify-content: start;
         padding-left: 1rem;
         font-weight: 500;
-        background-color: #2f3335 !important;
-        border: #2ff77b solid 1px !important;
+        background-color: #d1d1d1  !important;
+        border: #a9a9a9  solid 1px !important;
         display: flex;
         align-items: center;
         min-height: 2.75rem !important;
@@ -70,8 +70,8 @@
         overflow: hidden;
 
         &.google {
-          border: 1px solid #4caf50;
-          color: #fff;
+          border: 1px solid #585757;
+          color: #3d3b3b;
           background: transparent;
 
           .pi {
@@ -82,8 +82,8 @@
         }
 
         &.facebook {
-          border: 1px solid #4caf50;
-          color: #fff;
+          border: 1px solid #585757;
+          color: #3d3b3b;
           background: transparent;
 
           .pi {

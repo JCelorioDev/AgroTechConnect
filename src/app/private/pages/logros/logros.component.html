@@ -1,4 +1,4 @@
-@if(objUsuario){
+@if(objUsuario && !notRange()){
   <div class="logros-container">
     <div class="header">
       <h2>Mis Logros</h2>
@@ -57,12 +57,22 @@
       }
     </div>
   </div>
+} @else if (notRange()) {
+  <div class="auth-required-container">
+    <div class="auth-animation">
+      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options2"></ng-lottie>
+    </div>
+
+    <div class="auth-message">
+      <h2>Sin rango aún</h2>
+      <p>Sigue interactuando con la comunidad para subir de rango</p>
+    </div> </div>
 }@else{
   <div class="auth-required-container">
     <div class="auth-animation">
       <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
     </div>
-    
+
     <div class="auth-message">
       <h2>Acceso Requerido</h2>
       <p>No tienes una cuenta activa</p>

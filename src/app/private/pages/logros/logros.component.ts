@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/services/User/user.service';
 import { Range } from '../../../core/models/User/userResponse.interface';
@@ -34,14 +34,19 @@ import { LottieComponent, AnimationOptions } from 'ngx-lottie';
 export class LogrosComponent {
   private readonly userService = inject(UserService);
   private readonly alertService = inject(AlertService);
-  
+
   public ranges: Range[] = [];
   public objUsuario!: User;
   public loading: boolean = true;
   public currentPoints: number = 0; // Asume que tienes esta información del usuario
+  public notRange = signal<boolean>(false);
 
   options: AnimationOptions = {
     path: 'anim/chicky_animation.json',
+  };
+
+  options2: AnimationOptions = {
+    path: 'anim/notrange_animation.json'
   };
 
 
@@ -59,6 +64,10 @@ export class LogrosComponent {
     this.loading = true;
     this.userService.getInformationnByID(this.objUsuario?.id).subscribe({
       next: (response) => {
+        if (response.data.ranges.length === 0) {
+          this.loading = false;
+          this.notRange.set(true); return ;
+        }
         this.ranges = response.data.ranges;
         this.ranges.sort((a, b) => a.min_range - b.min_range);
         this.loading = false;

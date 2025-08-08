@@ -63,7 +63,7 @@ export class PostComponent implements OnInit, OnDestroy {
   public post!:Data;
   public emailPostUser = signal<string>("");
 
-  options: AnimationOptions = {
+  options: any = {
     path: 'anim/chicky_animation.json',
   };
 
@@ -298,12 +298,19 @@ export class PostComponent implements OnInit, OnDestroy {
             if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
               this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
             }
+
+
           },
           error: (err) => {
             this.loading = false;
             if (err.status === 422) {
               this.alertService.showValidationErrors(err.error);
-            } else {
+            } else if (err.status == 404){
+              this.validation = true;
+              this.options.path = 'anim/world_animation.json'
+              this.msjValidation = 'Comienza a seguir para hacer conexión con los demás.'
+            }
+            else {
               this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
@@ -509,4 +516,7 @@ export class PostComponent implements OnInit, OnDestroy {
   goToPost():void{
     this.router.navigate(['menu/publicaciones']);
   }
+
+
+
 }
