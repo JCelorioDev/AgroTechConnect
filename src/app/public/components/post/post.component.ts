@@ -63,7 +63,7 @@ export class PostComponent implements OnInit, OnDestroy {
   public post!:Data;
   public emailPostUser = signal<string>("");
 
-  options: AnimationOptions = {
+  options: any = {
     path: 'anim/chicky_animation.json',
   };
 
@@ -173,6 +173,12 @@ export class PostComponent implements OnInit, OnDestroy {
     .subscribe({
       next: (response) => {
         this.listPost = response.data.data;
+        // Inicializa el estado en tus métodos de carga de posts (getPosts(), getsMePost(), etc.)
+        this.listPost.forEach(post => {
+          if (post.images?.length > 0) {
+            this.imageLoaded[post.id] = false; // Inicia como no cargada
+          }
+        });
         this.totalRecords = response.data.total;
         this.loading = false;
 
@@ -207,6 +213,12 @@ export class PostComponent implements OnInit, OnDestroy {
     ).subscribe({
       next: (response) => {
         this.listPost = response.data.data;
+        // Inicializa el estado en tus métodos de carga de posts (getPosts(), getsMePost(), etc.)
+        this.listPost.forEach(post => {
+          if (post.images?.length > 0) {
+            this.imageLoaded[post.id] = false; // Inicia como no cargada
+          }
+        });
         this.totalRecords = response.data.total;
         this.loading = false;
         this.validation = false;
@@ -252,6 +264,11 @@ export class PostComponent implements OnInit, OnDestroy {
         this.listPost = response.data.data;
         this.totalRecords = response.data.total;
         this.loading = false;
+        this.listPost.forEach(post => {
+          if (post.images?.length > 0) {
+            this.imageLoaded[post.id] = false; // Inicia como no cargada
+          }
+        });
 
         if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
           this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
@@ -292,18 +309,30 @@ export class PostComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (response) => {
             this.listPost = response.data.data;
+            this.listPost.forEach(post => {
+              if (post.images?.length > 0) {
+                this.imageLoaded[post.id] = false; // Inicia como no cargada
+              }
+            });
             this.totalRecords = response.data.total;
             this.loading = false;
 
             if ((this.searchQuery || this.yearFilter || this.monthFilter) && this.listPost.length === 0) {
               this.alertService.miniAlert('No se encontraron publicaciones con los filtros aplicados', 'info', 2000);
             }
+
+
           },
           error: (err) => {
             this.loading = false;
             if (err.status === 422) {
               this.alertService.showValidationErrors(err.error);
-            } else {
+            } else if (err.status == 404){
+              this.validation = true;
+              this.options.path = 'anim/world_animation.json'
+              this.msjValidation = 'Comienza a seguir para hacer conexión con los demás.'
+            }
+            else {
               this.alertService.miniAlert(err.error.message, 'error', 3000);
             }
           }
@@ -509,4 +538,14 @@ export class PostComponent implements OnInit, OnDestroy {
   goToPost():void{
     this.router.navigate(['menu/publicaciones']);
   }
+
+  public imageLoaded: { [key: string]: boolean } = {};
+
+  // Método para manejar la carga de imágenes
+  setImageLoaded(postId: string) {
+    setTimeout(() => {
+      this.imageLoaded[postId] = true;
+    }, 2000); // 2 segundos de delay para testing
+  }
+
 }

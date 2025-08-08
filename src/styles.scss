@@ -582,6 +582,27 @@ html.custom-dark-mode  .completed-progress .p-progressbar-value {
   background: #c4eb1a;
 }
 
+html.custom-dark-mode .perfil-contenido .p-button {
+  background-color: #e78e1a !important;
+  box-shadow: none !important;
+}
+
+html.custom-dark-mode .notification-view .p-button {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html.custom-dark-mode .comment-content .p-button {
+  background-color: transparent !important;
+  border: none !important;
+}
+
+html.custom-dark-mode .login-modal .p-button {
+  background-color: transparent !important;
+  border: #93b87d 1.5px solid !important;
+  box-shadow: 0 1.5px 6px #0dc252;
+}
+
 
 ::-webkit-scrollbar {
   width: 6px;

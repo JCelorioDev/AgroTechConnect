@@ -80,7 +80,19 @@
                   <div class="post-description" [innerHTML]="sanitizeHtml(post?.description!)"></div>
 
                   <div *ngIf="post?.images?.length! > 0" class="post-image-container">
-                    <img [src]="post?.images?.[0]?.url" [alt]="post?.title" class="post-image">
+                    <!-- Spinner SVG -->
+                    <div *ngIf="!imageLoaded[post.id]" class="image-loading-overlay">
+                      <img src="anim/pulse-3.svg" alt="Cargando..." class="svg-spinner">
+                    </div>
+                    
+                    <!-- Imagen del post -->
+                    <img 
+                      [src]="post?.images?.[0]?.url" 
+                      [alt]="post?.title" 
+                      class="post-image"
+                      (load)="setImageLoaded(post.id)"
+                      [class.loaded]="imageLoaded[post.id]"
+                    >
                   </div>
                 </div>
 
