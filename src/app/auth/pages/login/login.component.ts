@@ -59,7 +59,7 @@ export class LoginComponent {
       this.onDialogHide();
       }
     */
-
+      this.loginSocialNetworks.isLoadingGoogle(false);
   }
 
   onDialogHide() {

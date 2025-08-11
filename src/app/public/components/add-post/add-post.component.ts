@@ -14,11 +14,11 @@ import { Accordion } from 'primeng/accordion';
   selector: 'public-add-post',
   standalone: true,
   imports: [
-    EditorModule, 
-    FileUploadModule, 
-    ButtonModule, 
-    CommonModule, 
-    FormsModule, 
+    EditorModule,
+    FileUploadModule,
+    ButtonModule,
+    CommonModule,
+    FormsModule,
     InputTextModule,
     AccordionModule
   ],
@@ -40,7 +40,7 @@ export class AddPostComponent {
   }
 
   ngOnInit():void{
-    this.hasToken = !!JSON.parse(localStorage.getItem('userLogin')!).token;
+    this.hasToken = !!JSON.parse(localStorage.getItem('userLogin') || 'null')?.token;
   }
 
   onFileSelect(event: any) {
@@ -57,7 +57,7 @@ export class AddPostComponent {
 
   submitPost() {
     this.isLoading = true;
-    
+
     // Limpiar el contenido HTML
     let cleanContent = this.htmlContent;
     if (cleanContent) {
@@ -70,7 +70,7 @@ export class AddPostComponent {
       this.isLoading = false;
       this.alertService.alertDefault('No tienes una cuenta activa', 'warning', 3000); return ;
     }
-  
+
     const postData = {
       title: this.title,
       description: cleanContent,
@@ -81,7 +81,7 @@ export class AddPostComponent {
       this.isLoading = false;
       this.alertService.miniAlert('Campos vacíos o inválidos.', 'info', 2500); return ;
     }
-  
+
     this.postsService.addPost(postData).subscribe({
       next: (response) => {
         this.resetForm();
@@ -102,19 +102,19 @@ export class AddPostComponent {
   private cleanHtmlContent(html: string): string {
     // 1. Eliminar todos los <span> (no aportan formato)
     let cleaned = html.replace(/<\/?span[^>]*>/g, '');
-  
+
     // 2. Eliminar <p> si no contienen formato (opcional)
     cleaned = cleaned.replace(/<p[^>]*>(.*?)<\/p>/g, '$1');
-  
+
     // 3. Eliminar atributos innecesarios (como class, style, etc.)
     cleaned = cleaned.replace(/<(\w+)[^>]*>/g, '<$1>');
-  
+
     // 4. Eliminar &nbsp; y espacios extras
     cleaned = cleaned.replace(/&nbsp;/g, ' ').trim();
-  
+
     return cleaned;
   }
-  
+
   private closeAccordion() {
     const accordion = document.querySelector('.post-creator-accordion');
     if (accordion) {
@@ -133,7 +133,7 @@ export class AddPostComponent {
     this.uploadedFiles.forEach(file => {
       URL.revokeObjectURL(this.getObjectUrl(file));
     });
-    
+
     this.htmlContent = '';
     this.title = '';
     this.uploadedFiles = [];

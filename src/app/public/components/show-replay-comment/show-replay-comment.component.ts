@@ -86,7 +86,7 @@ export class ShowReplayCommentComponent implements OnInit {
 
   constructor() {
     this.objUser = JSON.parse(localStorage.getItem('userLogin')!);
-    this.rolUser = JSON.parse(localStorage.getItem('userLogin')!)?.roles[0]?.name;
+    this.rolUser = JSON.parse(localStorage.getItem('userLogin') || 'null')?.roles?.[0]?.name || '';
   }
 
   ngOnInit(): void {

@@ -29,10 +29,13 @@
   </div>
 }@else if (notToken) {
   <div class="auth-required-container">
+    <div class="auth-animation">
+      <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
+    </div>
     <div class="auth-message">
       <p>{{msjValidation}}</p>
     </div>
-    
+
     <div class="auth-message">
       <p>Para interactuar con las {{nameError}}, por favor inicia sesión o regístrate</p>
     </div>
