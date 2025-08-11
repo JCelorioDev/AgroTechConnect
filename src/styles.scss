@@ -607,7 +607,65 @@ html.custom-dark-mode .organic-dialog .organic-title {
   color: #fff !important;
 }
 
+html.custom-dark-mode  .connections-dialog {
+  background: #25282E !important;
+  color: #fff
+}
 
+html.custom-dark-mode .connections-dialog-content dialog-header {
+  color: #fff;
+}
+
+html.custom-dark-mode .connections-dialog .connections-dialog-content .connections-grid .connections-column .column-header h3 {
+  color: #fff !important;
+}
+
+html.custom-dark-mode .connections-dialog .connections-dialog-content .dialog-header h2 {
+  color: #fff !important;
+}
+
+
+html.custom-dark-mode connections-dialog .connections-dialog-content .connections-grid .connections-column .user-list .user-card .user-details .user-handle {
+  color: #fff !important;
+}
+
+html.custom-dark-mode .organic-change-password-dialog .p-dialog{
+  background-color: #25282E !important;
+  color: #ffffff;
+}
+
+html.custom-dark-mode .user-profile-dialog {
+  background-color: #25282E !important;
+}
+
+html.custom-dark-mode .change-password-dialog {
+  background: #25282E !important;
+}
+
+html.custom-dark-mode .change-password-dialog .change-password-dialog-content .change-password-input-group .p-float-label label {
+  color: #ffffff !important;
+}
+
+html.custom-dark-mode .user-profile-dialog .user-profile-dialog-content .user-profile-input-group .profile-description-container .profile-description-input {
+  color: #fff !important;
+}
+
+html.custom-dark-mode .p-dialog .login-modal .social-btn.google  {
+  background: #25282E !important;
+}
+
+
+html.custom-dark-mode .p-dialog .login-modal .social-btn.facebook {
+  background: #25282E !important;
+}
+
+html.custom-dark-mode .eliminate-dialog {
+  background: #25282E !important;
+}
+
+html.custom-dark-mode .eliminate-code-dialog {
+  background: #25282E !important;
+}
 
 ::-webkit-scrollbar {
   width: 6px;

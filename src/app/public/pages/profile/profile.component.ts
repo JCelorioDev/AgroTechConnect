@@ -470,6 +470,7 @@ export class ProfileComponent {
       },
       error: (err) => {
         this.visibleModalUpdateInformation = false;
+        this.loading_spinning2 = false;
         if (err.status === 422) {
           this.alertService.showValidationErrors(err.error);
         } else {

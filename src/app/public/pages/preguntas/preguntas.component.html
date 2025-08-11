@@ -1,35 +1,41 @@
 <div class="preguntas-container">
+  <!-- Skeleton Loader -->
   <div *ngIf="loading" class="posts-grid">
     @for (item of [1,2,3]; track $index) {
-      <div class="skeleton-card-improved">
-        <!-- Header con efecto de gradiente animado -->
-        <div class="skeleton-header-improved">
-          <div class="skeleton-avatar"></div>
-          <div class="skeleton-user-info">
-            <div class="skeleton-line-medium"></div>
-            <div class="skeleton-line-small"></div>
+      <p-card class="post-card skeleton-card">
+        <div class="post-header">
+          <div class="user-info">
+            <div class="skeleton skeleton-avatar"></div>
+            <div class="user-details">
+              <div class="skeleton skeleton-line-medium"></div>
+              <div class="skeleton skeleton-line-small"></div>
+            </div>
           </div>
+          <div class="skeleton skeleton-tag"></div>
         </div>
-        
-        <!-- Contenido principal -->
-        <div class="skeleton-content-improved">
-          <div class="skeleton-line-large"></div>
-          <div class="skeleton-line-full"></div>
-          <div class="skeleton-line-full"></div>
-          <div class="skeleton-line-80"></div>
+
+        <p-divider></p-divider>
+
+        <div class="post-content">
+          <div class="skeleton skeleton-line-title"></div>
+          <div class="skeleton skeleton-line-full"></div>
+          <div class="skeleton skeleton-line-80"></div>
         </div>
-        
-        <!-- Footer con botones esqueleto -->
-        <div class="skeleton-footer-improved">
-          <div class="skeleton-reactions">
-            <div class="skeleton-badge"></div>
-            <div class="skeleton-badge"></div>
+
+        <p-divider></p-divider>
+
+        <div class="post-footer">
+          <div class="reactions">
+            <div class="skeleton skeleton-badge"></div>
+            <div class="skeleton skeleton-badge"></div>
           </div>
-          <div class="skeleton-button"></div>
+          <div class="skeleton skeleton-button"></div>
         </div>
-      </div>
+      </p-card>
     }
   </div>
+
+
 
   <!-- Empty State -->
   <div *ngIf="!loading && unansweredPosts.length === 0" class="empty-state">

@@ -313,7 +313,7 @@
 
 :host ::ng-deep {
   .change-password-dialog {
-    background: #1f1f1f !important;
+    background: #cfcfcf !important;
     border-radius: 16px;
     padding: 2rem;
     color: #fff;
@@ -367,11 +367,11 @@
           }
 
           label {
-            color: #bbb;
+            color: #181818;
             font-size: 0.9rem;
             left: 1rem;
             top: -0.6rem;
-            background-color: #1f1f1f;
+            background-color: transparent;
             padding: 0 0.3rem;
             transition: color 0.3s ease;
           }
@@ -436,7 +436,7 @@
 
 :host ::ng-deep .organic-change-password-dialog {
   .p-dialog {
-    background: #25282E !important;
+    background: #aeb1b7  !important;
     border-radius: 1rem;
     padding: 1.2rem;
     color: #ffffff;
@@ -457,7 +457,7 @@
   .menu-option {
     display: flex;
     align-items: center;
-    background-color: #a4a8af1f;
+    background-color: rgba(234, 235, 236, 0.122);;
     color: #ffffff;
     padding: 0.75rem 1rem;
     font-weight: 500;
@@ -498,7 +498,7 @@
 :host ::ng-deep {
 
   .user-profile-dialog {
-    background: #1f1f1f !important;
+    background: #ffffff !important;
     border-radius: 16px;
     padding: 2rem;
     color: #fff;
@@ -532,7 +532,7 @@
             background-color: transparent;
             border: 1px solid #4caf50;
             border-radius: 6px;
-            color: #fff;
+            color: #333333;
             transition: all 0.3s ease;
             resize: none;
 
@@ -583,7 +583,7 @@
                   background-color: transparent;
                   border: 1px solid #4caf50;
                   border-radius: 6px;
-                  color: #fff;
+                  color: #1f1e1e;
                   transition: all 0.3s ease;
 
                   &:focus {
@@ -759,10 +759,10 @@
 
     :host ::ng-deep {
       .connections-dialog {
-        background: #1f1f1f !important;
+        background: #dbdbdb5d ;
         border-radius: 16px;
         padding: 1.5rem;
-        color: #fff;
+        color: #272727;
         font-family: 'Segoe UI', sans-serif;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -775,7 +775,7 @@
               margin: 0;
               font-size: 1.5rem;
               font-weight: 600;
-              color: #fff;
+              color: #242424;
               display: flex;
               align-items: center;
               gap: 0.75rem;
@@ -821,7 +821,7 @@
                   margin: 0;
                   font-size: 1.1rem;
                   font-weight: 600;
-                  color: #fff;
+                  color: #202020;
                   display: flex;
                   align-items: center;
                   gap: 0.5rem;
@@ -874,7 +874,7 @@
                     
                     .user-handle {
                       font-size: 0.8rem;
-                      color: #bbb;
+                      color: #252424;
                       opacity: 0.9;
                     }
                   }
@@ -961,7 +961,7 @@
               position: relative;
               
               span {
-                background: #1f1f1f;
+                background: transparent;
                 color: #bbb;
                 padding: 0 0.75rem;
                 font-size: 0.9rem;

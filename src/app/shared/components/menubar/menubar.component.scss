@@ -651,7 +651,7 @@
   }
 
   .eliminate-dialog {
-    background: #1f1f1f !important;
+    background: #ececec !important;
     border-radius: 16px;
     padding: 2rem;
     color: #fff;
@@ -684,7 +684,7 @@
               background-color: transparent;
               border: 1px solid #4caf50;
               border-radius: 6px;
-              color: #fff;
+              color: #383838;
               transition: all 0.3s ease;
 
               &:focus {
@@ -709,7 +709,7 @@
             font-size: 0.9rem;
             left: 1rem;
             top: -0.6rem;
-            background-color: #1f1f1f;
+            background-color: transparent;
             padding: 0 0.3rem;
             transition: color 0.3s ease;
           }
@@ -726,7 +726,7 @@
   }
 
   .eliminate-code-dialog {
-    background: #1f1f1f !important;
+    background: #f0f0f0 !important;
     border-radius: 16px;
     padding: 2rem;
     color: #fff;
