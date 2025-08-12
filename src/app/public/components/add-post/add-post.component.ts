@@ -58,6 +58,9 @@ export class AddPostComponent {
   submitPost() {
     this.isLoading = true;
 
+    this.hasToken = !!JSON.parse(localStorage.getItem('userLogin') || 'null')?.token;
+
+
     // Limpiar el contenido HTML
     let cleanContent = this.htmlContent;
     if (cleanContent) {

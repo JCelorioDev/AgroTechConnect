@@ -30,11 +30,18 @@
           </div>
 
           <button pButton 
-          *ngIf="rolUser !== 'admin'"
+          *ngIf="rolUser !== 'admin' && objUser?.email !== objPublication?.user?.email"
           icon="pi pi-flag" 
           class="p-button-rounded p-button-text p-button-sm report-button"
           (click)="reportPost($event)"
           pTooltip="Reportar publicación"
+          tooltipPosition="bottom"></button>
+          <button pButton 
+          *ngIf="rolUser !== 'admin' && objUser?.email === objPublication?.user?.email"
+          icon="pi pi-pen-to-square" 
+          class="p-button-rounded p-button-text p-button-sm report-button"
+          (click)="goEditPost()"
+          pTooltip="Modificar publicación!"
           tooltipPosition="bottom"></button>
           <button pButton 
           *ngIf="rolUser == 'admin'"
@@ -50,6 +57,8 @@
       <div class="post-body">
         <h2 class="post-title">{{ objPublication.title }}</h2>
         <p class="post-description" [innerHTML]="sanitizeHtml(objPublication?.description!)"></p>
+
+        
 
         <!-- Galería de imágenes -->
         <p-galleria *ngIf="objPublication.images.length > 0"

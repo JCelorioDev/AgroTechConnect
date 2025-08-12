@@ -122,7 +122,7 @@
                 }">
                   {{ reaction.type === 'positive' ? '👍' : '👎' }}
                 </span>
-                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+                <span class="reaction-date">{{ reaction.created_at }}</span>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@
                        shape="circle"></p-avatar>
               <div class="reaction-details">
                 <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
-                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+                <span class="reaction-date">{{ reaction.created_at}}</span>
               </div>
             </div>
           </div>
@@ -152,7 +152,7 @@
                        shape="circle"></p-avatar>
               <div class="reaction-details">
                 <span class="user-name">{{ reaction.user.name }} {{ reaction.user.lastname }}</span>
-                <span class="reaction-date">{{ reaction.created_at | date:'medium' }}</span>
+                <span class="reaction-date">{{ reaction.created_at }}</span>
               </div>
             </div>
           </div>

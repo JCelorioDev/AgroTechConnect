@@ -54,12 +54,13 @@
             </div>
 
 
-            <p (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem"> Reportar</i></p>
+            <p *ngIf="objUser?.roles?.[0]?.name !== 'admin'" (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem">Reportar</i></p>
+            <p *ngIf="objUser?.roles?.[0]?.name == 'admin'" (click)="deleteComment(comment.id); $event.stopPropagation();"><i class="pi pi-trash" style="font-size: 1rem"> Borrar</i></p>
           </div>
 
           <!-- Sección de respuestas (acordeón) -->
           <div  *ngIf="activeIndex[comment.id]" class="responses-container">
-            <div class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
+            <div style="cursor : pointer;" class="response-item" *ngFor="let response of listResponseOfComments[comment.id]?.data; trackBy: trackByResponseId">
               <div (click)="goToComment(comment.id, '', idPublication)" class="response-main">
                 <p-avatar [image]="response.user.image?.url"
                          [label]="getAvatarLabel(response.user)"
@@ -106,7 +107,8 @@
                 </div>
               </div>
 
-              <p (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem; cursor: pointer"> Reportar</i></p>
+              <p *ngIf="objUser?.roles?.[0]?.name !== 'admin'" (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem; cursor: pointer"> Reportar</i></p>
+              <p style="cursor: pointer;" *ngIf="objUser?.roles?.[0]?.name == 'admin'" (click)="deleteComment(response.id, 'replayComment'); $event.stopPropagation(); "><i class="pi pi-trash" style="font-size: 1rem"> Borrar</i></p>
             </div>
 
               <!-- Sección para agregar nueva respuesta -->

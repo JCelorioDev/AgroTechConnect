@@ -60,7 +60,7 @@ export class ShowPostComponent implements OnInit {
   public activeReactionTab = 0;
   public isReacting = false;
   public rolUser!:string;
-  private objUser !:User;
+  public objUser !:User;
 
   public responsiveOptions: any[] = [
     {
@@ -445,5 +445,11 @@ export class ShowPostComponent implements OnInit {
         }
       })
     }), 'No, deseo.', 'Si, deseo.');
+  }
+
+  // Ir para modificar publicacion
+
+  goEditPost():void{
+    this.router.navigate(['menu/modificar-publicacion', this.idPublicacion]);
   }
 }

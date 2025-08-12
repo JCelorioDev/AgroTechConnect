@@ -128,6 +128,7 @@ export class ShowReplayCommentComponent implements OnInit {
 
   reactToComment(type: 'positive' | 'negative'): void {
     if (this.reactingId) return;
+    if (!this.objUser) return ;
     this.reactingId = this.idReplayComment;
 
     const hadPositive = this.hasReactedToComment('positive');

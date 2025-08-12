@@ -261,6 +261,7 @@ export class ShowCommentComponent implements OnInit {
 
   reactToComment(type: 'positive' | 'negative'): void {
     if (this.reactingCommentId) return;
+    if (!this.objUser) return ;
     this.reactingCommentId = this.idComentario;
 
     const hadPositive = this.hasReactedToComment('positive');

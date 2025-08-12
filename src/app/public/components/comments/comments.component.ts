@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { CommentsService } from '../../../core/services/Comments/comments.service';
@@ -56,6 +56,7 @@ export class CommentsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly reactionsService = inject(ReactionsService);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly location = inject(Location);
 
   // Datos de comentarios
   public listComment: CommentsPublicactionResponseInterfaceTs | null = null;
@@ -89,7 +90,7 @@ export class CommentsComponent implements OnInit {
   public replayReactionsData: DataReactionsReplayComment | null = null;
   public activeReplayReactionTab = 0;
   public reactingReplayId: string | null = null;
-  private objUser !:User;
+  public objUser !:any;
 
   @Input() idPublication!: string;
   @Output() closeDialog = new EventEmitter<void>();
@@ -821,5 +822,35 @@ export class CommentsComponent implements OnInit {
 
   goPerfilByID(idUsuario:string):void{
     this.router.navigate(['menu/perfil', idUsuario]);
+  }
+
+
+  deleteComment(idComentario:string, status ?:string): void {
+    const baseRoute = this.router.url.split('?')[0];
+    const segments = baseRoute.split('/');
+
+    this.alertService.alertwithDialogs('Estás seguro que deseas eliminar este comentario?', 'Después no podrás revertir esta acción', 'warning', 3000, (() => {
+      if (status === 'replayComment') {
+        this.commentsService.deleteReplayComment(idComentario).subscribe({
+          next: (s) => {
+            this.alertService.miniAlert('El comentario se eliminó correctamente', 'success', 3000);
+            this.loadComments();
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        });
+      } else {
+        this.commentsService.deleteComment(idComentario).subscribe({
+          next: (s) => {
+            this.loadComments();
+            this.alertService.miniAlert('El comentario se eliminó correctamente', 'success', 3000);
+          },
+          error: (err) => {
+            this.handleError(err);
+          }
+        });
+      }
+    }));
   }
 }
