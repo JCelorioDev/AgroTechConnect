@@ -39,7 +39,7 @@ export class AlertService {
         const element = popup as HTMLElement;
         element.style.bottom = `${offset}px`;
         element.style.right = '20px';
-        
+
         popup.onmouseenter = Swal.stopTimer;
         popup.onmouseleave = Swal.resumeTimer;
       },
@@ -92,18 +92,18 @@ export class AlertService {
         cancelButtonColor: "#d33",
         confirmButtonText: txtButtonConfirm,
         cancelButtonText: txtButtonCancel,
-        allowOutsideClick: false,  
-        allowEscapeKey: false,   
-        html: htmlContent || undefined  
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        html: htmlContent || undefined
       }).then((result) => {
         if (result.isConfirmed) {
-          onConfirm?.(); 
+          onConfirm?.();
         }
       });
     }
-    
 
-  // Alertas de validaciones 
+
+  // Alertas de validaciones
   showValidationErrors(errorResponse: any): void {
     const errors = errorResponse.data;
     let errorMessages: string[] = [];
@@ -122,4 +122,6 @@ export class AlertService {
       });
     }
   }
+
+  
 }

@@ -54,7 +54,7 @@
             </div>
 
 
-            <p *ngIf="objUser?.roles?.[0]?.name !== 'admin'" (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem">Reportar</i></p>
+            <p *ngIf="objUser?.roles?.[0]?.name !== 'admin' && objUser?.email !== comment.user.email" (click)="denuncieComment(comment.id); $event.stopPropagation();"><i class="pi pi-flag" style="font-size: 1rem">Reportar</i></p>
             <p *ngIf="objUser?.roles?.[0]?.name == 'admin'" (click)="deleteComment(comment.id); $event.stopPropagation();"><i class="pi pi-trash" style="font-size: 1rem"> Borrar</i></p>
           </div>
 

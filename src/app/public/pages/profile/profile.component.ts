@@ -118,9 +118,9 @@ export class ProfileComponent {
 
     this.formUpdateinformationAdictional = this.formBuilder.group({
       description: ['', [Validators.required, Validators.maxLength(500)]],
-      link1: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
-      link2: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]],
-      link3: ['', [Validators.pattern(/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/)]]
+      link1: [''],
+      link2: [''],
+      link3: ['']
     });
 
     this.userService.currentUserPhoto$.subscribe(newUrl => {
@@ -469,10 +469,15 @@ export class ProfileComponent {
         this.loading_spinning2 = false;
       },
       error: (err) => {
+        console.log(err);
         this.visibleModalUpdateInformation = false;
         this.loading_spinning2 = false;
         if (err.status === 422) {
-          this.alertService.showValidationErrors(err.error);
+          if(err.error.errors.link1 || err.error.errors.link2 || err.error.errors.link3 ){
+            this.alertService.miniAlert('Verifique los links válidos', 'warning', 3000);
+          }else{
+            this.alertService.showValidationErrors(err.error.errors);
+          }
         } else {
           this.alertService.miniAlert(err.error.message, 'error', 3000);
         }

@@ -1,3 +1,3 @@
 export const environment = {
-  apiBaseUrl:'http://localhost:8080/api/v1/',
+  apiBaseUrl:'https://api.agrotechconnect.online/api/v1/',
 };
