@@ -38,7 +38,7 @@
 
 
   <!-- Empty State -->
-  <div *ngIf="!loading && unansweredPosts.length === 0" class="empty-state">
+  <div *ngIf="!loading && unansweredPosts?.length === 0" class="empty-state">
     <img src="assets/images/empty-questions.svg" alt="No hay preguntas" class="empty-image">
     <h3>No hay preguntas sin resolver</h3>
     <p>¡Todo parece estar respondido por ahora!</p>
@@ -46,21 +46,21 @@
   </div>
 
   <!-- Posts Grid -->
-  <div *ngIf="!loading && unansweredPosts.length > 0" class="posts-grid">
+  <div *ngIf="!loading && unansweredPosts?.length! > 0" class="posts-grid">
     @for (post of unansweredPosts; track post.id) {
       <p-card class="post-card">
         <div class="post-header">
           <div class="user-info">
-            <p-avatar 
-              [image]="post.user.image?.url" 
+            <p-avatar
+              [image]="post.user.image?.url"
               [label]="!post?.user?.image?.url ? getInitials(post?.user) : undefined"
-              size="large" 
+              size="large"
               shape="circle"
              >
             </p-avatar>
             <div class="user-details">
               <span class="username">{{ post.user.name }} {{ post.user.lastname }}</span>
-              <span class="post-date">{{ post.created_at | date:'mediumDate' }}</span>
+              <span class="post-date">{{ post.created_at}}</span>
             </div>
           </div>
           <p-tag severity="danger" icon="pi pi-question-circle">Sin respuestas</p-tag>
@@ -84,10 +84,10 @@
               <i class="pi pi-thumbs-down"></i> {{ post.negative_reactions_count || 0 }}
             </span>
           </div>
-          <p-button 
+          <p-button
             (onClick)="showPostByID(post.id)"
-            label="Responder" 
-            icon="pi pi-reply" 
+            label="Responder"
+            icon="pi pi-reply"
             [routerLink]="['/posts', post.id]"
             styleClass="p-button-outlined p-button-help">
           </p-button>
@@ -98,10 +98,10 @@
 
   <!-- Paginator -->
   <div *ngIf="!loading && totalUnansweredPosts > itemsPerPage" class="paginator-container">
-    <p-paginator 
+    <p-paginator
       [first]="first"
-      [rows]="itemsPerPage" 
-      [totalRecords]="totalUnansweredPosts" 
+      [rows]="itemsPerPage"
+      [totalRecords]="totalUnansweredPosts"
       [rowsPerPageOptions]="[5, 10, 20]"
       (onPageChange)="onPageChange($event)">
     </p-paginator>
