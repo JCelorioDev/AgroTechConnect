@@ -309,7 +309,7 @@
               <span class="user-name">{{follower?.follower?.name}} {{follower?.follower?.lastname}}</span>
               <span class="user-handle">{{'@' + follower?.follower?.username}}</span>
             </div>
-            @if(verifyFollowByUser(follower?.follower?.email)){
+            @if(verifyFollowByUser(follower?.follower?.id)){
               <button (click)="unFollowUser(follower?.follower?.id); $event.stopPropagation()" class="unfollow-button">
                 <i class="pi pi-user-minus"></i>
               </button>
@@ -354,7 +354,7 @@
               <span class="user-name">{{following?.followed?.name}} {{following?.followed?.lastname}}</span>
               <span class="user-handle">{{'@' + following?.followed?.username}}</span>
             </div>
-            @if(verifyFollowByUser(following?.followed?.email)){
+            @if(verifyFollowByUser(following?.followed?.id)){
               <button (click)="unFollowUser(following?.followed?.id); $event.stopPropagation()"  class="unfollow-button">
                 <i class="pi pi-user-minus"></i>
               </button>

@@ -735,23 +735,23 @@ export class ProfileComponent {
 
   get verifyFollowUser(): boolean {
     // Verifica primero si hay usuario logueado y datos necesarios
-    if (!this.objUsuario?.followings || !this.objUser?.email) {
+    if (!this.objUsuario?.followings || !this.objUser?.id) {
       return false;
     }
 
     return this.objUsuario.followings.some(
-      (follow: any) => follow.followed?.email === this.objUser.email
+      (follow: any) => follow.followed?.id === this.objUser.id
     );
   }
 
-  verifyFollowByUser(emailUser: string): boolean {
+  verifyFollowByUser(userId: string): boolean {
     // Verifica primero si el usuario está logueado y tiene followings
     if (!this.objUsuario || !this.objUsuario.followings) {
       return false;
     }
 
     return this.objUsuario.followings.some(
-      (follow: any) => follow.followed?.email === emailUser
+      (follow: any) => follow.followed?.id === userId
     );
   }
 
