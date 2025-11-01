@@ -58,13 +58,13 @@ export class NoVerificationComponent {
     this.router.navigate(['menu/publicaciones']);
   }
 
-  
+
 
   logout(): void {
     this.isLoggingOut = true;
 
 
-  
+
     this.alertService.alertwithDialogs(
       '¿Estás seguro de cerrar sesión?',
       'Después no podrás revertir esta acción',
@@ -105,20 +105,25 @@ export class NoVerificationComponent {
       'Sí, deseo'
     );
   }
-  
 
-  
+
+
   sendEmailVerification():void{
     this.loading = true;
     this.autenticationService.sendEmailVerification().subscribe({
       next: (s) => {
         this.alertService.miniAlert('Se envio de nuevo la verificación de correo, revise el buzón de correos.', 'info', 2500);
         this.loading = false;
-      }, 
+      },
       error: (err) => {
-        this.router.navigate(['menu/publicaciones']);
-        this.authService.setEmailVerified(true);
-        this.alertService.miniAlert(err.error.message, 'error', 3000);
+        console.log(err);
+        if (err.error.statusCode == 429) {
+          this.alertService.alertDefault('Superaste el maximo permitido de reenvio de verificaciones, inténtalo en 1 hora.', 'error', 3000);
+        }else {
+          this.router.navigate(['menu/publicaciones']);
+          this.authService.setEmailVerified(true);
+          this.alertService.miniAlert(err.error.message, 'error', 3000);
+        }
         this.loading = false;
       }
     })

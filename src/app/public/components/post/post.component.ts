@@ -447,7 +447,7 @@ export class PostComponent implements OnInit, OnDestroy {
   // Reportar una publicacion
 
   reportPublication():void{
-    if (!this.userLogin()?.token) {
+    if (!this.userLogin()) {
       this.alertService.miniAlert('Inicia sesión primero para reportar esta publicación.', 'warning', 3000); return;
     }
 

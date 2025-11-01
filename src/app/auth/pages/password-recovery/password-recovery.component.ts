@@ -32,8 +32,8 @@ export class PasswordRecoveryComponent {
   private readonly alertService = inject(AlertService);
   public isLoadingRecoveryPassword:boolean = false;
 
-  
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { 
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     this.formPasswordReset = this.formbuilder.group({
       password : new FormControl('', [Validators.required, Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])[A-Za-z\d\S]{8,15}$/)]),
       password_confirmation : new FormControl('', [Validators.required])
@@ -43,11 +43,11 @@ export class PasswordRecoveryComponent {
   }
 
   ngOnInit(): void {
-    this.toggleDarkMode();
+    //this.toggleDarkMode();
     this.route.queryParams.subscribe(params => {
       // Obtener el token
       this.token = params['token'] || '';
-      
+
       // Obtener el email y decodificar el %40 como @
       const emailParam = params['email'] || '';
       this.email = decodeURIComponent(emailParam);
@@ -58,6 +58,7 @@ export class PasswordRecoveryComponent {
 
   reset_password():void{
     if (this.formPasswordReset.invalid) {
+      this.alertService.miniAlert('Campos inválidos o vacíos.', 'warning', 3000);
       this.formPasswordReset.markAllAsTouched(); return ;
     }
 
@@ -70,7 +71,7 @@ export class PasswordRecoveryComponent {
 
     this.isLoadingRecoveryPassword = true;
 
-  
+
     this.authService.resetPassword(requestData).subscribe({
       next: (s) => {
         this.router.navigate(['menu/publicaciones']);

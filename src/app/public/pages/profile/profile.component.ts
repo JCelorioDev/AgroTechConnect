@@ -641,7 +641,7 @@ export class ProfileComponent {
     const userLoginString = localStorage.getItem('userLogin');
     const userLogin = userLoginString ? JSON.parse(userLoginString) : {};
 
-    if (!userLogin.token) {
+    if (!userLogin) {
       this.loading_spinning2 = false;
       this.alertService.miniAlert('Para seguir a este usuario tienes que tener una cuenta.', 'warning', 3000);
       return;
@@ -689,7 +689,7 @@ export class ProfileComponent {
     this.loading_spinning2 = true;
     let userLogin = JSON.parse(localStorage.getItem('userLogin')!);
 
-    if (!!userLogin.token) {
+    if (!!userLogin) {
         this.userService.unFollow(idUser ? idUser : this.encryptedId()).subscribe({
             next: (s) => {
                 this.alertService.miniAlert('Dejaste de seguir este usuario correctamente.', 'success', 3000);
@@ -702,8 +702,6 @@ export class ProfileComponent {
                         (follow: any) => follow.followed.id !== idUser
                     );
                 }
-
-
             },
             error: (err) => {
                 this.loading_spinning2 = false;

@@ -346,7 +346,7 @@
               background-color: transparent;
               border: 1px solid #4caf50;
               border-radius: 6px;
-              color: #fff;
+              color: #2e2d2d;
               transition: all 0.3s ease;
 
               &:focus {
@@ -378,7 +378,7 @@
         }
 
         .error-message {
-          color: #c0b9b9;
+          color: #1b1a1a;
           font-size: 0.75rem;
 
           .requirements-list {
@@ -387,7 +387,7 @@
             padding-left: 1rem;
 
             li {
-              color: #afacac;
+              color: #323232;
               &.valid {
                 color: #58c05b;
               }
