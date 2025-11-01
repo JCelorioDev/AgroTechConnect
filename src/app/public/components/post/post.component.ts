@@ -133,8 +133,8 @@ export class PostComponent implements OnInit, OnDestroy {
     this.segments = baseRoute.split('/');
 
     this.userLogin.set(JSON.parse(localStorage.getItem('userLogin')!));
-    const hasToken = this.userLogin() ? !!this.userLogin()?.token : false;
 
+    const hasToken = this.userLogin() ? !!this.userLogin() : false;
 
 
     if (this.route.snapshot.paramMap.get('id')){
@@ -144,7 +144,7 @@ export class PostComponent implements OnInit, OnDestroy {
       this.nameError = this.segments[2]
       this.getPosts();
     } else if (this.segments[2] === 'comunidad') {
-      this.nameError = this.segments[2]
+      this.nameError = this.segments[2];
       this.getPostsMyFollowings();
     } else {
       if (!hasToken) {
@@ -294,7 +294,7 @@ export class PostComponent implements OnInit, OnDestroy {
         this.loading = true;
       }
 
-      if (!this.userLogin()?.token) {
+      if (!this.userLogin()) {
         this.notToken = true;
       } else {
         this.listPost = [];

@@ -21,7 +21,7 @@
     <div class="auth-animation">
       <ng-lottie width="250px" height="250px" containerClass="moving-box" [styles]="styles" [options]="options"></ng-lottie>
     </div>
-    
+
     <div class="auth-message">
       <p>{{msjValidation}}</p>
       <p-button (onClick)="goToPost()" *ngIf="notHasPost" label="Crear publicación" severity="success" />
@@ -57,7 +57,7 @@
               <div class="post-card">
                 <div class="post-header">
                   <div (click)="goPerfilUser(post.user.id)" class="user-profile-container">
-                    <p-avatar 
+                    <p-avatar
                     [image]="post?.user?.image?.url || undefined"
                     [label]="!post?.user?.image?.url ? getInitials(post?.user) : undefined"
                     [shape]="'circle'"
@@ -87,11 +87,11 @@
                     <div *ngIf="!imageLoaded[post.id]" class="image-loading-overlay">
                       <img src="anim/pulse-3.svg" alt="Cargando..." class="svg-spinner">
                     </div>
-                    
+
                     <!-- Imagen del post -->
-                    <img 
-                      [src]="post?.images?.[0]?.url" 
-                      [alt]="post?.title" 
+                    <img
+                      [src]="post?.images?.[0]?.url"
+                      [alt]="post?.title"
                       class="post-image"
                       (load)="setImageLoaded(post.id)"
                       [class.loaded]="imageLoaded[post.id]"
