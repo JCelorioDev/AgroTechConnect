@@ -712,6 +712,24 @@ html.custom-dark-mode .organic-subtext{
   color: #4CAF50 !important;
 }
 
+html.custom-dark-mode  .notifications-header {
+   background:  #25282E !important;
+}
+
+html.custom-dark-mode .notifications-dropdown {
+  background: #25282E !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+html.custom-dark-mode .notifications-title {
+  color: #f1f1f1 !important
+}
+
+html.custom-dark-mode .notification-text {
+  color: #f1f1f1 !important
+}
+
+
 .p-dialog-mask {
   backdrop-filter: blur(0) !important;
 }

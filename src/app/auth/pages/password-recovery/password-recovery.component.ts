@@ -77,7 +77,7 @@ export class PasswordRecoveryComponent {
         this.router.navigate(['menu/publicaciones']);
         this.authService.setstatusPassword(true);
         this.isLoadingRecoveryPassword = false;
-        this.toggleDarkMode();
+        // this.toggleDarkMode();
         this.alertService.miniAlert('La contraseña se cambió correctamente, inicia sesión de nuevo', 'success', 2500);
       },
       error: (err) => {
